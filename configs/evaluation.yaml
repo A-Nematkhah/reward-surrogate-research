@@ -1,0 +1,34 @@
+# Policy evaluation configuration
+# Decision: evaluate on environment outcomes (success/collision/timeout),
+# not only cumulative reward. Metrics are stored separately for Pareto
+# analysis — no arbitrary scalar fitness is computed here.
+
+# More eval episodes to reduce label noise (was 20/50 in earlier pilots)
+n_eval_episodes: 80
+
+# Fixed evaluation environment seeds (independent of training seeds)
+eval_seed_start: 10000
+# If null, seeds are eval_seed_start .. eval_seed_start + n_eval_episodes - 1
+eval_seeds: null
+
+# Deterministic policy actions during evaluation
+deterministic: true
+
+# Metrics to record (names must match evaluator implementation)
+metrics:
+  - success_rate
+  - collision_rate
+  - timeout_rate
+  - mean_episode_length
+  - mean_path_length
+  - mean_goal_time
+  - mean_min_obstacle_distance
+  - mean_evaluation_return
+
+# Per-episode detail logging (larger on disk; useful for debugging)
+save_episode_details: true
+
+# Paths relative to experiment run directory
+output:
+  metrics_json: evaluation_metrics.json
+  episode_details_csv: episode_details.csv

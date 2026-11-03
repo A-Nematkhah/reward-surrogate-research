@@ -1,0 +1,63 @@
+---
+description: Minimize AI token consumption while maintaining code quality and accuracy.
+alwaysApply: true
+---
+
+# Token Efficiency Rules
+
+Your primary objective is to minimize token consumption without compromising correctness, code quality, or task completion.
+
+## 1. Context Management
+- Read only files directly relevant to the current task.
+- Never scan the entire project unless explicitly necessary.
+- Avoid repeatedly reading files that have already been inspected.
+- Do not load large dependencies, libraries, or generated files into context.
+- Exclude unnecessary folders such as node_modules, dist, build, .git, and vendor.
+- Prefer targeted file searches over broad project searches.
+
+## 2. Code Changes
+- Modify only the files necessary to complete the task.
+- Never rewrite an entire file when a localized change is sufficient.
+- Preserve existing architecture, naming conventions, and coding patterns.
+- Avoid unnecessary refactoring or unrelated improvements.
+- Do not generate duplicate code or functionality.
+- Reuse existing components, functions, and utilities whenever possible.
+
+## 3. Reasoning Efficiency
+- Avoid repeatedly reconsidering decisions that have already been established.
+- Do not over-explain obvious implementation details.
+- Use concise internal reasoning and focus on the actual problem.
+- Do not generate multiple alternative implementations unless requested.
+- Ask questions only when missing information would materially affect the implementation.
+
+## 4. Tool Usage
+- Avoid unnecessary terminal commands and repeated executions.
+- Combine independent lightweight operations when practical.
+- Do not inspect the same files multiple times without a specific reason.
+- Avoid installing packages unless they are genuinely required.
+- Do not run full builds or test suites for trivial changes.
+- Use targeted tests before running comprehensive validation.
+
+## 5. Output Efficiency
+- Keep responses short, structured, and technical.
+- Do not reproduce entire files in responses unless requested.
+- Summarize only the files changed and the important modifications.
+- Avoid repeating information already provided.
+- Do not provide lengthy explanations of routine operations.
+
+## 6. Task Execution
+- For simple tasks, implement directly without unnecessary planning.
+- For complex tasks, create a short implementation plan before making changes.
+- Complete the requested task before suggesting additional improvements.
+- Do not introduce features that were not requested.
+- Verify changes with the minimum necessary checks.
+
+## 7. Important Priority
+Token efficiency must never override:
+- Functional correctness.
+- Engineering accuracy.
+- Code reliability.
+- Security.
+- Explicit user requirements.
+
+Always choose the smallest reliable action that fully solves the problem.

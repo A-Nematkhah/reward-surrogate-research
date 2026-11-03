@@ -1,0 +1,51 @@
+# RewardNavigation2D-v0 environment configuration
+# Decision: compact continuous 2D navigation with circular obstacles.
+# Dynamics are kinematic (velocity control), not physics-based, for
+# stability and to avoid external simulation dependencies.
+
+env_id: RewardNavigation2D-v0
+
+workspace:
+  width: 10.0
+  height: 10.0
+  # Origin at workspace center; positions in [-width/2, width/2] x [-height/2, height/2]
+  centered: true
+
+robot:
+  radius: 0.15
+  max_speed: 1.0
+
+target:
+  radius: 0.25
+
+obstacles:
+  min_count: 2
+  max_count: 5
+  min_radius: 0.3
+  max_radius: 0.8
+  # Number of nearest obstacles encoded in the observation
+  n_nearest: 3
+  # Minimum clearance between robot spawn / target / obstacles
+  min_clearance: 0.5
+
+episode:
+  max_steps: 200
+  # Goal reached when distance(robot, target) <= robot.radius + target.radius
+  goal_tolerance: null  # derived from radii if null
+
+observation:
+  # Normalize positions by half-workspace size so values are roughly in [-1, 1]
+  normalize: true
+  include_velocity: true
+
+termination:
+  success_on_goal: true
+  collide_on_obstacle: true
+  fail_on_out_of_bounds: true
+
+randomization:
+  randomize_start: true
+  randomize_target: true
+  randomize_obstacles: true
+
+seed: 0

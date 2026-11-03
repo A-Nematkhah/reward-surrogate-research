@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Experiment artifacts (keep directory structure via .gitkeep)
+experiments/phase1/**
+!experiments/phase1/.gitkeep
+experiments/phase2/**
+!experiments/phase2/.gitkeep
+results/**
+!results/.gitkeep
+
+# Large / generated artifacts
+*.pt
+*.pth
+*.zip
+*.ckpt
+*.parquet
+*.log
+
+# Keep small example CSVs out of ignore if intentionally committed later
+# Local notebooks
+*.ipynb_checkpoints/

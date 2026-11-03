@@ -1,0 +1,170 @@
+# Reward candidate generation configuration
+# 7 linear families + 5 structurally distinct families (~108 candidates).
+
+generation_seed: 42
+
+n_candidates: 108
+
+components:
+  - progress
+  - goal
+  - collision
+  - obstacle
+  - smoothness
+  - time
+  - energy
+  - risk
+  - potential
+  - nonlinear_progress
+  - distance
+
+component_scales:
+  progress: 1.0
+  goal: 1.0
+  collision: 1.0
+  obstacle: 1.0
+  smoothness: 1.0
+  time: 1.0
+  energy: 1.0
+  risk: 1.0
+  potential: 1.0
+  nonlinear_progress: 1.0
+  distance: 1.0
+
+families:
+  balanced:
+    description: Moderate progress/goal rewards with mild safety and time costs
+    n: 10
+    weight_ranges:
+      progress: [0.5, 2.0]
+      goal: [5.0, 20.0]
+      collision: [-20.0, -5.0]
+      obstacle: [-2.0, -0.1]
+      smoothness: [-0.5, 0.0]
+      time: [-0.05, -0.001]
+
+  progress_heavy:
+    description: Strong progress/goal emphasis, weak safety
+    n: 8
+    weight_ranges:
+      progress: [1.0, 5.0]
+      goal: [10.0, 40.0]
+      collision: [-5.0, -1.0]
+      obstacle: [-0.5, 0.0]
+      smoothness: [-0.2, 0.0]
+      time: [-0.02, 0.0]
+
+  safety_heavy:
+    description: Strong collision/obstacle penalties, milder progress
+    n: 8
+    weight_ranges:
+      progress: [0.1, 1.0]
+      goal: [5.0, 15.0]
+      collision: [-50.0, -15.0]
+      obstacle: [-5.0, -1.0]
+      smoothness: [-1.0, -0.1]
+      time: [-0.05, -0.001]
+
+  efficiency:
+    description: Emphasizes time and smoothness along with progress
+    n: 8
+    weight_ranges:
+      progress: [0.5, 2.0]
+      goal: [5.0, 20.0]
+      collision: [-20.0, -5.0]
+      obstacle: [-2.0, -0.2]
+      smoothness: [-2.0, -0.5]
+      time: [-0.2, -0.02]
+
+  sparse_goal:
+    description: Sparse goal bonus with little shaping
+    n: 8
+    weight_ranges:
+      progress: [0.0, 0.2]
+      goal: [10.0, 50.0]
+      collision: [-20.0, -5.0]
+      obstacle: [-1.0, 0.0]
+      smoothness: [0.0, 0.0]
+      time: [-0.01, 0.0]
+
+  weak_unbalanced:
+    description: Deliberately weak or poorly scaled rewards for dataset diversity
+    n: 8
+    weight_ranges:
+      progress: [-1.0, 0.5]
+      goal: [-5.0, 5.0]
+      collision: [-2.0, 2.0]
+      obstacle: [-1.0, 1.0]
+      smoothness: [-0.5, 0.5]
+      time: [-0.05, 0.05]
+
+  near_zero:
+    description: Near-zero weights — expected weak learning signal
+    n: 8
+    weight_ranges:
+      progress: [-0.05, 0.05]
+      goal: [-0.1, 0.1]
+      collision: [-0.1, 0.1]
+      obstacle: [-0.05, 0.05]
+      smoothness: [-0.05, 0.05]
+      time: [-0.01, 0.01]
+
+  # --- Structurally distinct families (new component math) ---
+  energy_aware:
+    description: Penalizes action energy while keeping progress/goal signal
+    n: 10
+    weight_ranges:
+      progress: [0.5, 2.0]
+      goal: [5.0, 20.0]
+      collision: [-20.0, -5.0]
+      obstacle: [-1.0, 0.0]
+      energy: [-3.0, -0.5]
+      time: [-0.02, 0.0]
+
+  risk_sensitive:
+    description: Quadratic near-obstacle risk term dominates safety
+    n: 10
+    weight_ranges:
+      progress: [0.2, 1.5]
+      goal: [5.0, 20.0]
+      collision: [-10.0, -2.0]
+      risk: [-8.0, -1.0]
+      obstacle: [0.0, 0.0]
+      time: [-0.02, 0.0]
+
+  potential_shaping:
+    description: Potential-based shaping Φ=exp(-d) instead of linear progress
+    n: 10
+    weight_ranges:
+      potential: [5.0, 40.0]
+      goal: [5.0, 25.0]
+      collision: [-25.0, -5.0]
+      obstacle: [-2.0, 0.0]
+      progress: [0.0, 0.0]
+      time: [-0.02, 0.0]
+
+  nonlinear_progress:
+    description: Signed-squared progress shaping with mild safety
+    n: 10
+    weight_ranges:
+      nonlinear_progress: [1.0, 10.0]
+      goal: [5.0, 25.0]
+      collision: [-25.0, -5.0]
+      obstacle: [-2.0, -0.1]
+      progress: [0.0, 0.0]
+      time: [-0.02, 0.0]
+
+  distance_dense:
+    description: Dense absolute distance cost with weak sparse goal
+    n: 10
+    weight_ranges:
+      distance: [-2.0, -0.2]
+      goal: [1.0, 10.0]
+      collision: [-20.0, -5.0]
+      obstacle: [-1.0, 0.0]
+      progress: [0.0, 0.2]
+      time: [0.0, 0.0]
+
+output:
+  candidates_json: experiments/phase1/candidates.json
+  candidates_dir: experiments/phase1/candidates

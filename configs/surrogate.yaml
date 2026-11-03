@@ -1,0 +1,105 @@
+# Surrogate modeling configuration (Phase 2)
+# Decision: classical ML first — dataset is small (~24–40 candidates × seeds).
+# Grouped splits by reward family are primary; random split is secondary.
+
+random_seed: 123
+
+# Target metrics predicted independently
+targets:
+  - success_rate
+  - collision_rate
+  - timeout_rate
+  - mean_goal_time
+  - mean_path_length
+
+# Feature configurations for ablation
+feature_sets:
+  - static
+  - behavioral
+  - math
+  - interaction
+  - early
+  - hybrid
+
+# Include short-warmup PPO rollout features from Phase 1 runs
+include_early_behavioral: true
+
+# Aggregation of multi-seed Phase 1 results before surrogate training
+# Options: mean | median | per_seed (treat each seed as a row)
+seed_aggregation: mean
+
+# Family one-hot encoding is disabled for grouped/LOFO evaluation:
+# held-out family indicators are all-zero in training and cannot generalize.
+include_family_one_hot: false
+
+# Probe trajectories for behavioral features
+probes:
+  seed: 7
+  n_trajectories_per_policy: 10
+  max_steps: 200
+  policies:
+    - random
+    - goal_seeking
+    - obstacle_avoiding
+  # Saved probe set path (fixed across candidates)
+  probe_set_path: experiments/phase2/probe_trajectories.npz
+  probe_config_path: experiments/phase2/probe_config.json
+
+# Validation
+validation:
+  # Primary: leave-one-family-out (strongest grouped generalization test)
+  # Alternatives: grouped (GroupKFold with n_cv_folds)
+  strategy: leave_one_family_out
+  group_column: family_id
+  test_size: 0.25
+  n_cv_folds: 4
+  # Inner GroupKFold splits for nested hyperparameter selection
+  inner_n_splits: 3
+  # Secondary comparison only — not for primary claims
+  also_random_split: true
+  random_test_size: 0.25
+
+# Models
+baselines:
+  - mean
+  - median
+  - ridge
+
+surrogates:
+  - random_forest
+  - extra_trees
+  - hist_gradient_boosting
+  - gaussian_process
+
+# Light hyperparameter grids (avoid expensive search)
+hyperparameters:
+  ridge:
+    alphas: [0.1, 1.0, 10.0, 100.0]
+  random_forest:
+    n_estimators: 100
+    max_depth: [null, 5, 10]
+    min_samples_leaf: [1, 2]
+  extra_trees:
+    n_estimators: 100
+    max_depth: [null, 5, 10]
+    min_samples_leaf: [1, 2]
+  hist_gradient_boosting:
+    max_depth: [null, 3]
+    learning_rate: [0.05, 0.1]
+    min_samples_leaf: [5, 10]
+    max_iter: 100
+  gaussian_process:
+    # Kernel chosen in code; normalize_y recommended for GP regression
+    normalize_y: true
+    alpha: 1.0e-6
+
+preprocessing:
+  scale_features: true
+  # Fitted on training fold only
+  scaler: standard
+
+output:
+  results_dir: experiments/phase2
+  metrics_csv: experiments/phase2/surrogate_metrics.csv
+  predictions_dir: experiments/phase2/predictions
+  figures_dir: results/phase2_figures

@@ -1,0 +1,66 @@
+[
+  {
+    "fold": 0,
+    "train_families": [
+      "efficiency",
+      "near_zero",
+      "progress_heavy",
+      "safety_heavy",
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "test_families": [
+      "balanced"
+    ],
+    "overlap": [],
+    "n_test": 6
+  },
+  {
+    "fold": 1,
+    "train_families": [
+      "balanced",
+      "efficiency",
+      "progress_heavy",
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "test_families": [
+      "near_zero",
+      "safety_heavy"
+    ],
+    "overlap": [],
+    "n_test": 9
+  },
+  {
+    "fold": 2,
+    "train_families": [
+      "balanced",
+      "near_zero",
+      "safety_heavy",
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "test_families": [
+      "efficiency",
+      "progress_heavy"
+    ],
+    "overlap": [],
+    "n_test": 9
+  },
+  {
+    "fold": 3,
+    "train_families": [
+      "balanced",
+      "efficiency",
+      "near_zero",
+      "progress_heavy",
+      "safety_heavy"
+    ],
+    "test_families": [
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "overlap": [],
+    "n_test": 8
+  }
+]
