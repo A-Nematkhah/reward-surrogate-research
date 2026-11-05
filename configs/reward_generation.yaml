@@ -1,9 +1,11 @@
 # Reward candidate generation configuration
-# 7 linear families + 5 structurally distinct families (~108 candidates).
+# 12 families × 4 candidates. Learning curve: 48 labels keep within-family
+# rank near the 108-candidate model; top-3 hit falls only 83% → 77%.
+# experiments/phase1/candidates.json is the historical 108 pool. Do not regenerate it.
 
 generation_seed: 42
 
-n_candidates: 108
+n_candidates: 48
 
 components:
   - progress
@@ -34,7 +36,7 @@ component_scales:
 families:
   balanced:
     description: Moderate progress/goal rewards with mild safety and time costs
-    n: 10
+    n: 4
     weight_ranges:
       progress: [0.5, 2.0]
       goal: [5.0, 20.0]
@@ -45,7 +47,7 @@ families:
 
   progress_heavy:
     description: Strong progress/goal emphasis, weak safety
-    n: 8
+    n: 4
     weight_ranges:
       progress: [1.0, 5.0]
       goal: [10.0, 40.0]
@@ -56,7 +58,7 @@ families:
 
   safety_heavy:
     description: Strong collision/obstacle penalties, milder progress
-    n: 8
+    n: 4
     weight_ranges:
       progress: [0.1, 1.0]
       goal: [5.0, 15.0]
@@ -67,7 +69,7 @@ families:
 
   efficiency:
     description: Emphasizes time and smoothness along with progress
-    n: 8
+    n: 4
     weight_ranges:
       progress: [0.5, 2.0]
       goal: [5.0, 20.0]
@@ -78,7 +80,7 @@ families:
 
   sparse_goal:
     description: Sparse goal bonus with little shaping
-    n: 8
+    n: 4
     weight_ranges:
       progress: [0.0, 0.2]
       goal: [10.0, 50.0]
@@ -89,7 +91,7 @@ families:
 
   weak_unbalanced:
     description: Deliberately weak or poorly scaled rewards for dataset diversity
-    n: 8
+    n: 4
     weight_ranges:
       progress: [-1.0, 0.5]
       goal: [-5.0, 5.0]
@@ -100,7 +102,7 @@ families:
 
   near_zero:
     description: Near-zero weights — expected weak learning signal
-    n: 8
+    n: 4
     weight_ranges:
       progress: [-0.05, 0.05]
       goal: [-0.1, 0.1]
@@ -112,7 +114,7 @@ families:
   # --- Structurally distinct families (new component math) ---
   energy_aware:
     description: Penalizes action energy while keeping progress/goal signal
-    n: 10
+    n: 4
     weight_ranges:
       progress: [0.5, 2.0]
       goal: [5.0, 20.0]
@@ -123,7 +125,7 @@ families:
 
   risk_sensitive:
     description: Quadratic near-obstacle risk term dominates safety
-    n: 10
+    n: 4
     weight_ranges:
       progress: [0.2, 1.5]
       goal: [5.0, 20.0]
@@ -134,7 +136,7 @@ families:
 
   potential_shaping:
     description: Potential-based shaping Φ=exp(-d) instead of linear progress
-    n: 10
+    n: 4
     weight_ranges:
       potential: [5.0, 40.0]
       goal: [5.0, 25.0]
@@ -145,7 +147,7 @@ families:
 
   nonlinear_progress:
     description: Signed-squared progress shaping with mild safety
-    n: 10
+    n: 4
     weight_ranges:
       nonlinear_progress: [1.0, 10.0]
       goal: [5.0, 25.0]
@@ -156,7 +158,7 @@ families:
 
   distance_dense:
     description: Dense absolute distance cost with weak sparse goal
-    n: 10
+    n: 4
     weight_ranges:
       distance: [-2.0, -0.2]
       goal: [1.0, 10.0]

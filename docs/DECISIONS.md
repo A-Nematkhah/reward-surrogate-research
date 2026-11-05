@@ -195,6 +195,7 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 | Features = **early + math + behavioral** | Best triage set in the confirm (`early+math` stays a close runner-up). |
 | Target = **success_rate** | Selection decision. Safety rates stay in the dataset, not in the default fit. |
 | Default command = `python scripts/run_quality_pipeline.py` | Flag outliers, refresh early features, rebuild dataset, extract features, fit ExtraTrees, write the report. |
+| New pools use **48 candidates** (4 × 12 families) | Size curve on the 108-pool: within-family Spearman stays ≈ 0.63 vs 0.65; top-3 hit 0.77 vs 0.83. The 108-run archive stays in `experiments/phase1`. |
 
 ## Deferred (by design)
 

@@ -38,7 +38,7 @@ def test_load_merged_configs_keys(config_dir: Path) -> None:
     assert set(merged.keys()) == set(CONFIG_FILES.keys())
     assert merged["ppo"]["algorithm"] == "PPO"
     assert merged["environment"]["env_id"] == "RewardNavigation2D-v0"
-    assert merged["reward_generation"]["n_candidates"] == 32
+    assert merged["reward_generation"]["n_candidates"] == 48
     assert "success_rate" in merged["evaluation"]["metrics"]
     assert merged["surrogate"]["surrogates"] == ["extra_trees"]
 
@@ -93,7 +93,7 @@ def test_reward_family_counts_match_pool_intent(config_dir: Path) -> None:
     config = load_named_config("reward_generation", config_dir=config_dir)
     family_total = sum(fam["n"] for fam in config["families"].values())
     assert family_total == config["n_candidates"]
-    assert 24 <= family_total <= 40
+    assert family_total == 48
 
 
 def test_configs_are_valid_yaml(config_dir: Path) -> None:

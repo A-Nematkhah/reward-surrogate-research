@@ -165,12 +165,7 @@ def main() -> int:
     print(f"  dry_run={args.dry_run}", flush=True)
 
     if crowdnav and not args.skip_phase1:
-        locked = PROJECT_ROOT / "experiments" / "phase1" / "candidates.json"
-        candidates = (
-            "experiments/phase1/candidates.json"
-            if locked.is_file()
-            else f"{root}/candidates.json"
-        )
+        candidates = "experiments/phase1/candidates.json"
         if not (PROJECT_ROOT / candidates).is_file():
             run(
                 [
