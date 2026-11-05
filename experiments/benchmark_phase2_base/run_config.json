@@ -1,0 +1,157 @@
+{
+  "config": {
+    "random_seed": 123,
+    "n_repeats": 1,
+    "n_jobs": 4,
+    "n_bootstrap": 100,
+    "quick": true,
+    "features_dir": "experiments/phase2/features",
+    "output_dir": "experiments/benchmark_phase2_base",
+    "results_dir": "results/benchmark_phase2_base",
+    "targets": [
+      "success_rate"
+    ],
+    "feature_sets": [
+      "early+math+behavioral"
+    ],
+    "primary": {
+      "target": "success_rate",
+      "feature_set": "early+math+behavioral",
+      "models": [
+        "mean",
+        "ridge",
+        "extra_trees"
+      ]
+    },
+    "models": [
+      "mean",
+      "ridge",
+      "extra_trees"
+    ],
+    "baseline_model": "extra_trees",
+    "preprocessing": {
+      "impute": "median",
+      "drop_constant": true,
+      "standardize_for": [
+        "ridge",
+        "elasticnet",
+        "kernel_ridge",
+        "svr",
+        "knn",
+        "gp_ard",
+        "pairwise_logistic",
+        "mlp_mse",
+        "mlp_rank",
+        "stack_ridge"
+      ],
+      "target_transform_options": [
+        "none"
+      ],
+      "feature_selection_options": [
+        "none",
+        "top_k_by_spearman"
+      ],
+      "top_k_values": [
+        15,
+        30
+      ],
+      "pca_components": [
+        5,
+        10
+      ],
+      "default_target_transform": "none",
+      "default_feature_selection": "top_k_by_spearman",
+      "default_k": 15
+    },
+    "inner_cv": {
+      "strategy": "leave_one_family_out",
+      "optimize": "within_family_spearman"
+    },
+    "topk": {
+      "pooled_k": [
+        5,
+        10,
+        20
+      ],
+      "within_family_k": 3,
+      "min_family_size_for_within": 4
+    },
+    "within_family_identifiability": {
+      "enabled": true,
+      "min_range": 0.05,
+      "se_multiplier": 2.0,
+      "dataset_csv": "experiments/phase1/dataset/reward_performance_dataset.csv"
+    },
+    "higher_is_better": {
+      "success_rate": true,
+      "timeout_rate": false,
+      "collision_rate": false,
+      "mean_goal_time": false,
+      "mean_path_length": false
+    },
+    "ppo_cost_steps": {
+      "static": 0,
+      "math": 0,
+      "behavioral": 0,
+      "early": 12000,
+      "early+math+behavioral": 12000
+    },
+    "hyperparameters": {
+      "ridge": {
+        "alpha": [
+          0.1,
+          1.0,
+          10.0,
+          100.0
+        ]
+      },
+      "extra_trees": {
+        "n_estimators": [
+          250
+        ],
+        "max_depth": [
+          null,
+          8
+        ],
+        "min_samples_leaf": [
+          2,
+          4
+        ]
+      }
+    },
+    "quick_overrides": {
+      "n_repeats": 1,
+      "n_bootstrap": 100,
+      "hyperparameter_max_combos": 2
+    }
+  },
+  "targets": [
+    "success_rate"
+  ],
+  "feature_sets": [
+    "early+math+behavioral"
+  ],
+  "models_requested": [
+    "mean",
+    "ridge",
+    "extra_trees"
+  ],
+  "skipped": [],
+  "seed": 123,
+  "quick": true,
+  "package_versions": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "sklearn": "1.7.2",
+    "torch": "2.11.0+cu128",
+    "lightgbm": "not_installed",
+    "catboost": "not_installed",
+    "xgboost": "not_installed",
+    "tabpfn": "not_installed"
+  },
+  "git_commit": "f360536c98519b8c4a7434b0f038b8c8e308a391",
+  "paths": {
+    "predictions": "experiments/benchmark_phase2_base/oof_predictions.csv",
+    "metrics_summary": "experiments/benchmark_phase2_base/metrics_summary.csv"
+  }
+}

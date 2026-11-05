@@ -1,0 +1,21 @@
+{
+  "model": "extra_trees",
+  "feature_set": "early+math+behavioral",
+  "n_candidates": 108,
+  "global_best_sr": 0.8416666666666667,
+  "efficient_budget_k_within_0.02": 3,
+  "at_k10": {
+    "budget_k": 10,
+    "oracle_best": 0.8416666666666667,
+    "oracle_mean_topk": 0.8192708333333334,
+    "surrogate_best": 0.8416666666666667,
+    "surrogate_mean_topk": 0.8098958333333334,
+    "random_best_mean": 0.7666479166666667,
+    "random_best_std": 0.09874348209414326,
+    "random_mean_topk": 0.3379677083333333,
+    "regret_best_vs_oracle": 0.0,
+    "regret_best_vs_random": -0.07501875000000002,
+    "frac_oracle_top1_in_sur_topk": 1.0
+  },
+  "recommendation": "surrogate_top_k_beats_random"
+}

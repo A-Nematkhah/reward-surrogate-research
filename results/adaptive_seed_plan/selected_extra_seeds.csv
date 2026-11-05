@@ -1,0 +1,13 @@
+candidate_id,family_id,priority_score,reason,confirm_oof_spearman,n_close_pairs,mean_sr,n_seeds_now,proposed_new_seeds,n_extra_runs
+nonlinear_progress_01,nonlinear_progress,6.5,"weak_family_spearman,close_pairs=8,high_seed_std",0.43030303030303024,8,0.4000000000000001,3,"[3, 4, 5]",3
+nonlinear_progress_09,nonlinear_progress,6.25,"weak_family_spearman,close_pairs=7,high_seed_std",0.43030303030303024,7,0.5104166666666666,3,"[3, 4, 5]",3
+risk_sensitive_01,risk_sensitive,6.25,"weak_family_spearman,close_pairs=7,high_seed_std",0.39393939393939387,7,0.4520833333333334,3,"[3, 4, 5]",3
+risk_sensitive_05,risk_sensitive,6.25,"weak_family_spearman,close_pairs=7,high_seed_std",0.39393939393939387,7,0.4395833333333334,3,"[3, 4, 5]",3
+risk_sensitive_00,risk_sensitive,6.0,"weak_family_spearman,close_pairs=6,high_seed_std",0.39393939393939387,6,0.47291666666666665,3,"[3, 4, 5]",3
+nonlinear_progress_07,nonlinear_progress,5.75,"weak_family_spearman,close_pairs=5,high_seed_std",0.43030303030303024,5,0.4916666666666667,3,"[3, 4, 5]",3
+nonlinear_progress_03,nonlinear_progress,5.5,"weak_family_spearman,close_pairs=6",0.43030303030303024,6,0.4312500000000001,3,"[3, 4, 5]",3
+nonlinear_progress_05,nonlinear_progress,5.25,"weak_family_spearman,close_pairs=5",0.43030303030303024,5,0.3854166666666667,3,"[3, 4, 5]",3
+risk_sensitive_02,risk_sensitive,5.25,"weak_family_spearman,close_pairs=5",0.39393939393939387,5,0.5229166666666666,3,"[3, 4, 5]",3
+risk_sensitive_07,risk_sensitive,5.25,"weak_family_spearman,close_pairs=5",0.39393939393939387,5,0.4958333333333333,3,"[3, 4, 5]",3
+risk_sensitive_08,risk_sensitive,5.25,"weak_family_spearman,close_pairs=5",0.39393939393939387,5,0.48125,3,"[3, 4, 5]",3
+nonlinear_progress_04,nonlinear_progress,5.0,"weak_family_spearman,close_pairs=4",0.43030303030303024,4,0.4479166666666667,3,"[3, 4, 5]",3

@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "stats": {
+    "n_rows": 324,
+    "n_completed": 324,
+    "n_failed": 0,
+    "n_other": 0,
+    "n_families": 12,
+    "n_candidates": 108,
+    "families": [
+      "balanced",
+      "distance_dense",
+      "efficiency",
+      "energy_aware",
+      "near_zero",
+      "nonlinear_progress",
+      "potential_shaping",
+      "progress_heavy",
+      "risk_sensitive",
+      "safety_heavy",
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "success_rate_span": 0.86875,
+    "success_rate_mean": 0.33429783950617287,
+    "success_rate_std": 0.2788782348202229,
+    "has_performance_diversity": true,
+    "mean_seed_success_spread": 0.06753472222222223,
+    "max_seed_success_spread": 0.49375
+  }
+}

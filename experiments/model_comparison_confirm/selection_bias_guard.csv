@@ -1,0 +1,3 @@
+model,median_spearman_across_feature_sets,frac_spearman_gt_0_5,n_configs
+catboost,0.9160780661391207,1.0,6
+extra_trees,0.9377690848116804,1.0,6

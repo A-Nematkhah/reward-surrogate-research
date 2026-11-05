@@ -1,0 +1,7 @@
+repeat,feature_set,target,model,baseline,mean_spearman_diff,diff_ci_lo,diff_ci_hi,n_families,note
+0,early+math,success_rate,catboost,extra_trees,-0.13701282467354214,-0.35968795093795086,0.002077020202020207,12,n_families=12 has low power; CI descriptive only
+1,early+math,success_rate,catboost,extra_trees,-0.13995407069562435,-0.31177427631584337,-0.02465495634114686,12,n_families=12 has low power; CI descriptive only
+2,early+math,success_rate,catboost,extra_trees,-0.08691602933271096,-0.15036396013271794,-0.021799746568504447,12,n_families=12 has low power; CI descriptive only
+0,early+math+behavioral,success_rate,catboost,extra_trees,-0.1237065011710982,-0.34416036829861246,0.018014529523157317,12,n_families=12 has low power; CI descriptive only
+1,early+math+behavioral,success_rate,catboost,extra_trees,-0.06333599269828959,-0.12244964764482848,-0.01509929157741495,12,n_families=12 has low power; CI descriptive only
+2,early+math+behavioral,success_rate,catboost,extra_trees,-0.1285851348948325,-0.31543442397366805,-0.0068254263398024465,12,n_families=12 has low power; CI descriptive only

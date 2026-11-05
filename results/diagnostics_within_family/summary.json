@@ -1,0 +1,17 @@
+{
+  "dataset": "experiments/phase1/dataset/reward_performance_dataset.csv",
+  "oof": "D:/Thesis/Implementation/reward-surrogate-research/experiments/model_comparison_confirm/oof_predictions.csv",
+  "model": "extra_trees",
+  "feature_set": "early+math+behavioral",
+  "target": "success_rate",
+  "se_multiplier": 2.0,
+  "min_range": 0.05,
+  "n_families": 12,
+  "n_identifiable": 11,
+  "mean_oof_spearman_all": 0.6480746753292052,
+  "mean_oof_spearman_identifiable": 0.764717239455405,
+  "mean_top3_all": 0.8333333333333334,
+  "mean_top3_identifiable": 0.9090909090909091,
+  "table_csv": "results/diagnostics_within_family/identifiability_table.csv",
+  "report_md": "results/diagnostics_within_family/report.md"
+}

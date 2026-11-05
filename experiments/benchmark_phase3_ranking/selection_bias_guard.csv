@@ -1,0 +1,3 @@
+model,median_spearman_across_feature_sets,frac_spearman_gt_0_5,n_configs
+extra_trees,0.7267330464148996,1.0,1
+pairwise_logistic,0.8150153100570422,1.0,1

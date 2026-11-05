@@ -1,0 +1,12 @@
+﻿archived_at: 2026-11-05
+source_experiments: experiments/model_comparison_confirm
+source_results: results/model_comparison_confirm
+n_experiment_files: 7
+n_result_files: 6
+baseline_model: extra_trees
+baseline_feature_set: early+math+behavioral
+baseline_target: success_rate
+verified_mean_pooled_spearman: 0.935
+verified_mean_within_family_spearman: 0.648
+verified_within_family_top3_hit: 0.833
+note: Do not overwrite live confirm dirs without a new run_id; treat this archive as immutable baseline.

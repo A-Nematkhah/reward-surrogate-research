@@ -1,0 +1,13 @@
+{
+  "baseline": "extra_trees",
+  "challenger": "pairwise_logistic",
+  "feature_set": "early+math+behavioral",
+  "n_identifiable_families": 11,
+  "mean_delta": 0.0721852506897707,
+  "median_delta": 0.0,
+  "boot_mean": 0.07224498107664389,
+  "boot_ci_lo": -0.13411202534030367,
+  "boot_ci_hi": 0.3031789539562012,
+  "ci_excludes_zero": false,
+  "decision": "fail_to_reject_keep_extra_trees"
+}

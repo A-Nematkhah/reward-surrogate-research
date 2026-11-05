@@ -1,0 +1,2 @@
+repeat,feature_set,target,model,baseline,mean_spearman_diff,diff_ci_lo,diff_ci_hi,n_families,note
+0,early+math+behavioral,success_rate,pairwise_logistic,extra_trees,0.12932777176718982,-0.10369415925728236,0.41251811784700054,12,n_families=12 has low power; CI descriptive only

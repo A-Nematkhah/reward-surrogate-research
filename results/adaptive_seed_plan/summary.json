@@ -1,0 +1,16 @@
+{
+  "max_extra_runs": 36,
+  "extra_seeds_per_cand": 3,
+  "se_mult": 2.0,
+  "n_close_pairs": 193,
+  "n_weak_identifiable_families": 2,
+  "n_candidates_selected": 12,
+  "n_extra_runs_planned": 36,
+  "selected_families": [
+    "nonlinear_progress",
+    "risk_sensitive"
+  ],
+  "launches_ppo": false,
+  "authorization_required": true,
+  "note": "Do not overwrite experiments/phase1; use a new run root if executing."
+}
