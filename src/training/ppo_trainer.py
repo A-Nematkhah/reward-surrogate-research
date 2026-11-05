@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional
+from typing import Any, Callable, Mapping, Optional, Sequence
 
 import numpy as np
 import torch
@@ -17,7 +17,13 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv
 from src.environment.navigation_2d import make_env
 from src.evaluation.evaluator import evaluate_policy
 from src.features.early_behavioral import (
+    EARLY_FEATURES_FILENAME,
+    build_multi_checkpoint_payload,
+    checkpoint_prefix,
     collect_early_rollout_features,
+    early_payload_matches,
+    load_early_payload,
+    resolve_early_checkpoints,
     save_early_features,
 )
 from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
@@ -115,6 +121,7 @@ def is_run_complete(
     *,
     expected_timesteps: int | None = None,
     require_early_features: bool = False,
+    expected_early_checkpoints: Sequence[int] | None = None,
 ) -> bool:
     """
     A run is complete when status.json reports success and the model exists.
@@ -127,8 +134,19 @@ def is_run_complete(
     model_path = run_dir / "model.zip"
     if not status_path.is_file() or not model_path.is_file():
         return False
-    if require_early_features and not (run_dir / "early_behavioral_features.json").is_file():
-        return False
+    early_path = run_dir / EARLY_FEATURES_FILENAME
+    if require_early_features:
+        if not early_path.is_file():
+            return False
+        if expected_early_checkpoints is not None:
+            try:
+                payload = load_early_payload(early_path)
+            except (OSError, json.JSONDecodeError):
+                return False
+            if not early_payload_matches(
+                payload, expected_checkpoints=expected_early_checkpoints
+            ):
+                return False
     try:
         with status_path.open("r", encoding="utf-8") as handle:
             status = json.load(handle)
@@ -164,10 +182,12 @@ def train_candidate_seed(
     expected_timesteps = int(ppo_config["total_timesteps"])
     early_cfg = dict(ppo_config.get("early_behavioral") or {})
     early_enabled = bool(early_cfg.get("enabled", False))
+    early_checkpoints = resolve_early_checkpoints(early_cfg) if early_enabled else []
     if resume_if_complete and is_run_complete(
         run_path,
         expected_timesteps=expected_timesteps,
         require_early_features=early_enabled,
+        expected_early_checkpoints=early_checkpoints if early_enabled else None,
     ):
         logger.info(
             "Skipping completed run %s seed=%s (timesteps=%s)",
@@ -216,38 +236,21 @@ def train_candidate_seed(
         model = build_ppo(vec_env, ppo_config, seed=int(seed))
 
         t0 = time.perf_counter()
-        early_features: Optional[dict[str, float]] = None
+        early_payload: Optional[dict[str, Any]] = None
         if early_enabled:
-            early_steps = int(early_cfg.get("timesteps", 5000))
-            if early_steps <= 0:
-                raise ValueError("early_behavioral.timesteps must be positive")
-            if early_steps > expected_timesteps:
+            if max(early_checkpoints) > expected_timesteps:
                 raise ValueError(
-                    "early_behavioral.timesteps cannot exceed ppo.total_timesteps"
+                    "early_behavioral checkpoints cannot exceed ppo.total_timesteps"
                 )
-            model.learn(
-                total_timesteps=early_steps,
-                progress_bar=False,
-                log_interval=int(ppo_config.get("log_interval", 10)),
-            )
-            early_features = collect_early_rollout_features(
+            early_payload = collect_and_save_early_during_training(
                 model,
                 env_config=env_config,
                 reward_spec=reward_spec,
-                n_episodes=int(early_cfg.get("n_episodes", 12)),
-                seed_start=int(early_cfg.get("seed_offset", 50000)) + int(seed) * 1000,
-                deterministic=bool(early_cfg.get("deterministic", False)),
+                ppo_config=ppo_config,
+                seed=int(seed),
+                run_path=run_path,
+                total_timesteps=expected_timesteps,
             )
-            early_features["early_warmup_timesteps"] = float(early_steps)
-            save_early_features(run_path / "early_behavioral_features.json", early_features)
-            remaining = expected_timesteps - early_steps
-            if remaining > 0:
-                model.learn(
-                    total_timesteps=remaining,
-                    progress_bar=False,
-                    log_interval=int(ppo_config.get("log_interval", 10)),
-                    reset_num_timesteps=False,
-                )
         else:
             model.learn(
                 total_timesteps=expected_timesteps,
@@ -277,8 +280,13 @@ def train_candidate_seed(
                 "metrics": eval_result["metrics"],
                 "device": str(model.device),
                 "early_behavioral_path": (
-                    relpath_to_project(run_path / "early_behavioral_features.json")
-                    if early_features is not None
+                    relpath_to_project(run_path / EARLY_FEATURES_FILENAME)
+                    if early_payload is not None
+                    else None
+                ),
+                "early_checkpoints": (
+                    list(early_payload.get("checkpoints", []))
+                    if early_payload is not None
                     else None
                 ),
             }
@@ -311,6 +319,138 @@ def train_candidate_seed(
             exc,
         )
         raise
+    finally:
+        if vec_env is not None:
+            vec_env.close()
+
+
+def collect_and_save_early_during_training(
+    model: PPO,
+    *,
+    env_config: Mapping[str, Any],
+    reward_spec: RewardSpec,
+    ppo_config: Mapping[str, Any],
+    seed: int,
+    run_path: Path,
+    total_timesteps: int,
+) -> dict[str, Any]:
+    """
+    Train in segments, collect multi-checkpoint early features, then finish budget.
+
+    Mutates ``model`` in place (continues learning through ``total_timesteps``).
+    """
+    early_cfg = dict(ppo_config.get("early_behavioral") or {})
+    checkpoints = resolve_early_checkpoints(early_cfg)
+    primary = int(early_cfg.get("timesteps", checkpoints[-1]))
+    if primary not in checkpoints:
+        checkpoints = sorted(set(checkpoints) | {primary})
+    n_episodes = int(early_cfg.get("n_episodes", 12))
+    seed_start = int(early_cfg.get("seed_offset", 50000)) + int(seed) * 1000
+    deterministic = bool(early_cfg.get("deterministic", False))
+    stable = bool(early_cfg.get("stable_stats", True))
+    log_interval = int(ppo_config.get("log_interval", 10))
+
+    by_ckpt: dict[int, dict[str, float]] = {}
+    trained = 0
+    first_segment = True
+    for step in checkpoints:
+        delta = int(step) - trained
+        if delta < 0:
+            raise ValueError(f"Checkpoint order invalid near timesteps={step}")
+        if delta > 0:
+            model.learn(
+                total_timesteps=delta,
+                progress_bar=False,
+                log_interval=log_interval,
+                reset_num_timesteps=first_segment,
+            )
+            first_segment = False
+            trained = int(step)
+        feats = collect_early_rollout_features(
+            model,
+            env_config=env_config,
+            reward_spec=reward_spec,
+            n_episodes=n_episodes,
+            seed_start=seed_start + int(step),
+            deterministic=deterministic,
+            prefix=checkpoint_prefix(step),
+            include_stable_stats=stable,
+        )
+        feats[f"{checkpoint_prefix(step)}_warmup_timesteps"] = float(step)
+        by_ckpt[int(step)] = feats
+
+    payload = build_multi_checkpoint_payload(by_ckpt, primary_timesteps=primary)
+    save_early_features(run_path / EARLY_FEATURES_FILENAME, payload)
+
+    remaining = int(total_timesteps) - trained
+    if remaining > 0:
+        model.learn(
+            total_timesteps=remaining,
+            progress_bar=False,
+            log_interval=log_interval,
+            reset_num_timesteps=first_segment,
+        )
+    return payload
+
+
+def collect_early_features_only(
+    *,
+    env_config: Mapping[str, Any],
+    reward_spec: RewardSpec,
+    ppo_config: Mapping[str, Any],
+    seed: int,
+    run_path: str | Path,
+) -> dict[str, Any]:
+    """
+    Train a fresh PPO only up to max early checkpoint and write early features.
+
+    Does **not** overwrite ``model.zip`` or evaluation artifacts — used to refresh
+    early features for already-completed full-budget runs.
+    """
+    run_path = Path(run_path)
+    run_path.mkdir(parents=True, exist_ok=True)
+    early_cfg = dict(ppo_config.get("early_behavioral") or {})
+    checkpoints = resolve_early_checkpoints(early_cfg)
+    max_steps = max(checkpoints)
+
+    seed_meta = seed_everything(
+        int(seed),
+        deterministic_torch=bool(ppo_config.get("seed_torch_deterministic", True)),
+    )
+    vec_env: Optional[VecEnv] = None
+    try:
+        vec_env = make_vec_env(
+            env_config,
+            reward_spec,
+            n_envs=int(ppo_config["n_envs"]),
+            seed=int(seed),
+        )
+        model = build_ppo(vec_env, ppo_config, seed=int(seed))
+        # Reuse segment collector but stop at max early checkpoint (no full budget).
+        stub_cfg = dict(ppo_config)
+        stub_early = dict(early_cfg)
+        stub_early["enabled"] = True
+        stub_cfg["early_behavioral"] = stub_early
+        payload = collect_and_save_early_during_training(
+            model,
+            env_config=env_config,
+            reward_spec=reward_spec,
+            ppo_config=stub_cfg,
+            seed=int(seed),
+            run_path=run_path,
+            total_timesteps=max_steps,
+        )
+        meta_path = run_path / "early_refresh_meta.json"
+        _write_json(
+            meta_path,
+            {
+                "training_seed": int(seed),
+                "max_early_timesteps": max_steps,
+                "checkpoints": list(payload.get("checkpoints", [])),
+                "seed_metadata": seed_meta,
+            },
+        )
+        return payload
     finally:
         if vec_env is not None:
             vec_env.close()

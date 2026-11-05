@@ -242,13 +242,63 @@ def test_early_rollout_features_finite(env_config: dict, sample_spec: RewardSpec
         n_episodes=3,
         seed_start=123,
         deterministic=False,
+        include_stable_stats=True,
     )
     assert feats["early_n_episodes"] == 3.0
     assert "early_goal_progress_mean" in feats
     assert "early_return_std" in feats
+    assert "early_return_median" in feats
+    assert "early_return_iqr" in feats
     assert "success_rate" not in feats
     assert all(k.startswith("early_") for k in feats)
     assert all(np.isfinite(v) for v in feats.values())
+
+
+def test_multi_checkpoint_payload_and_dynamics() -> None:
+    from src.features.early_behavioral import (
+        build_multi_checkpoint_payload,
+        flatten_early_payload,
+    )
+
+    by = {
+        2000: {
+            "early_t2000_success_frac": 0.1,
+            "early_t2000_return_median": 1.0,
+            "early_t2000_goal_progress_median": 0.2,
+        },
+        5000: {
+            "early_t5000_success_frac": 0.4,
+            "early_t5000_return_median": 2.0,
+            "early_t5000_goal_progress_median": 0.5,
+            "early_t5000_n_episodes": 20.0,
+        },
+    }
+    payload = build_multi_checkpoint_payload(by, primary_timesteps=5000)
+    assert payload["schema_version"] == 2
+    assert payload["checkpoints"] == [2000, 5000]
+    flat = flatten_early_payload(payload)
+    assert flat["early_success_frac"] == pytest.approx(0.4)
+    assert flat["early_d2000_5000_success_frac"] == pytest.approx(0.3)
+    assert "early_span_success_frac" in flat
+
+
+def test_flag_seed_outliers() -> None:
+    from src.dataset.outlier_filter import drop_flagged_seeds, flag_seed_outliers
+
+    df = pd.DataFrame(
+        [
+            {"candidate_id": "a", "family_id": "f", "training_seed": 0, "training_status": "completed", "success_rate": 0.8},
+            {"candidate_id": "a", "family_id": "f", "training_seed": 1, "training_status": "completed", "success_rate": 0.75},
+            {"candidate_id": "a", "family_id": "f", "training_seed": 2, "training_status": "completed", "success_rate": 0.1},
+            {"candidate_id": "b", "family_id": "f", "training_seed": 0, "training_status": "completed", "success_rate": 0.5},
+            {"candidate_id": "b", "family_id": "f", "training_seed": 1, "training_status": "completed", "success_rate": 0.52},
+        ]
+    )
+    flagged = flag_seed_outliers(df, max_deviation_from_median=0.30, min_seed_span=0.35)
+    assert len(flagged) == 1
+    assert int(flagged.iloc[0]["training_seed"]) == 2
+    cleaned = drop_flagged_seeds(df, flagged)
+    assert len(cleaned) == 4
 
 
 def test_aggregate_mean() -> None:

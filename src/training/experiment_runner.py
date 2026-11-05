@@ -7,14 +7,17 @@ import time
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.features.early_behavioral import resolve_early_checkpoints
 from src.rewards.candidate_generator import load_candidates
 from src.rewards.reward_function import RewardSpec
+from src.training.parallel_run_jobs import phase1_train_job
 from src.training.ppo_trainer import (
     is_run_complete,
     run_dir_for,
     train_candidate_seed,
 )
 from src.utils.logging import get_logger
+from src.utils.parallel_jobs import map_maybe_parallel
 
 logger = get_logger("experiment_runner")
 
@@ -40,6 +43,28 @@ def iter_jobs(
     return [(cand, int(seed)) for cand in candidates for seed in seeds]
 
 
+def _skip_complete(
+    run_dir: Path,
+    *,
+    ppo_config: Mapping[str, Any],
+    results: list[dict[str, Any]],
+) -> bool:
+    expected_timesteps = int(ppo_config["total_timesteps"])
+    early_cfg = dict(ppo_config.get("early_behavioral") or {})
+    early_enabled = bool(early_cfg.get("enabled", False))
+    expected_early = resolve_early_checkpoints(early_cfg) if early_enabled else None
+    if not is_run_complete(
+        run_dir,
+        expected_timesteps=expected_timesteps,
+        require_early_features=early_enabled,
+        expected_early_checkpoints=expected_early,
+    ):
+        return False
+    with (run_dir / "status.json").open("r", encoding="utf-8") as handle:
+        results.append(json.load(handle))
+    return True
+
+
 def run_phase1(
     *,
     candidates: Sequence[RewardSpec],
@@ -51,6 +76,7 @@ def run_phase1(
     max_jobs: Optional[int] = None,
     resume: bool = True,
     stop_on_failure: bool = False,
+    workers: int = 1,
 ) -> dict[str, Any]:
     """
     Train and evaluate each (candidate, seed) pair.
@@ -80,6 +106,7 @@ def run_phase1(
         "seeds": list(seeds),
         "n_jobs": len(jobs),
         "resume": resume,
+        "workers": max(1, int(workers)),
         "ppo_total_timesteps": int(ppo_config["total_timesteps"]),
         "started_at": time.time(),
     }
@@ -88,64 +115,115 @@ def run_phase1(
     results: list[dict[str, Any]] = []
     n_completed = n_skipped = n_failed = 0
     t0 = time.perf_counter()
+    n_workers = max(1, int(workers))
 
-    for idx, (spec, seed) in enumerate(jobs):
-        run_dir = run_dir_for(experiments_root, spec.candidate_id, seed)
+    if n_workers > 1:
+        pending: list[dict[str, Any]] = []
+        for spec, seed in jobs:
+            run_dir = run_dir_for(experiments_root, spec.candidate_id, seed)
+            if resume and _skip_complete(
+                run_dir,
+                ppo_config=ppo_config,
+                results=results,
+            ):
+                n_skipped += 1
+                continue
+            pending.append(
+                {
+                    "reward_spec": spec.to_dict(),
+                    "candidate_id": spec.candidate_id,
+                    "family_id": spec.family_id,
+                    "seed": int(seed),
+                    "run_dir": str(run_dir),
+                    "env_config": dict(env_config),
+                    "ppo_config": dict(ppo_config),
+                    "eval_config": dict(eval_config),
+                    "resume": resume,
+                }
+            )
         logger.info(
-            "[%d/%d] %s seed=%s -> %s",
-            idx + 1,
-            len(jobs),
-            spec.candidate_id,
-            seed,
-            run_dir,
+            "Phase 1 parallel: %d pending, %d already complete, workers=%d",
+            len(pending),
+            n_skipped,
+            n_workers,
         )
 
-        expected_timesteps = int(ppo_config["total_timesteps"])
-        early_enabled = bool((ppo_config.get("early_behavioral") or {}).get("enabled", False))
-        if resume and is_run_complete(
-            run_dir,
-            expected_timesteps=expected_timesteps,
-            require_early_features=early_enabled,
-        ):
-            with (run_dir / "status.json").open("r", encoding="utf-8") as handle:
-                status = json.load(handle)
-            results.append(status)
-            n_skipped += 1
-            continue
-
-        try:
-            status = train_candidate_seed(
-                spec,
-                env_config=env_config,
-                ppo_config=ppo_config,
-                eval_config=eval_config,
-                seed=seed,
-                run_dir=run_dir,
-                resume_if_complete=resume,
+        def _on_result(done: int, _job: dict[str, Any], status: dict[str, Any]) -> None:
+            logger.info(
+                "[%d/%d] %s seed=%s status=%s",
+                done,
+                len(pending),
+                status.get("candidate_id"),
+                status.get("training_seed"),
+                status.get("training_status"),
             )
+
+        trained = map_maybe_parallel(
+            phase1_train_job,
+            pending,
+            workers=n_workers,
+            on_result=_on_result,
+        )
+        for status in trained:
             results.append(status)
             if status.get("training_status") == "completed":
                 n_completed += 1
             elif status.get("training_status") == "failed":
                 n_failed += 1
-        except Exception as exc:  # noqa: BLE001
-            n_failed += 1
-            failure_record = {
-                "candidate_id": spec.candidate_id,
-                "family_id": spec.family_id,
-                "training_seed": int(seed),
-                "training_status": "failed",
-                "failure": {"type": type(exc).__name__, "message": str(exc)},
-            }
-            results.append(failure_record)
-            if stop_on_failure:
-                raise
-            logger.error(
-                "Continuing after failure for %s seed=%s (%s)",
+        if stop_on_failure and n_failed:
+            raise RuntimeError(f"Phase 1 failed for {n_failed} jobs")
+    else:
+        for idx, (spec, seed) in enumerate(jobs):
+            run_dir = run_dir_for(experiments_root, spec.candidate_id, seed)
+            logger.info(
+                "[%d/%d] %s seed=%s -> %s",
+                idx + 1,
+                len(jobs),
                 spec.candidate_id,
                 seed,
-                exc,
+                run_dir,
             )
+            if resume and _skip_complete(
+                run_dir,
+                ppo_config=ppo_config,
+                results=results,
+            ):
+                n_skipped += 1
+                continue
+
+            try:
+                status = train_candidate_seed(
+                    spec,
+                    env_config=env_config,
+                    ppo_config=ppo_config,
+                    eval_config=eval_config,
+                    seed=seed,
+                    run_dir=run_dir,
+                    resume_if_complete=resume,
+                )
+                results.append(status)
+                if status.get("training_status") == "completed":
+                    n_completed += 1
+                elif status.get("training_status") == "failed":
+                    n_failed += 1
+            except Exception as exc:  # noqa: BLE001
+                n_failed += 1
+                failure_record = {
+                    "candidate_id": spec.candidate_id,
+                    "family_id": spec.family_id,
+                    "training_seed": int(seed),
+                    "training_status": "failed",
+                    "failure": {"type": type(exc).__name__, "message": str(exc)},
+                }
+                results.append(failure_record)
+                if stop_on_failure:
+                    raise
+                logger.error(
+                    "Continuing after failure for %s seed=%s (%s)",
+                    spec.candidate_id,
+                    seed,
+                    exc,
+                )
 
     summary = {
         "n_jobs": len(jobs),

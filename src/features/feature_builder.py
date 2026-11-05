@@ -26,7 +26,14 @@ from src.utils.logging import get_logger
 logger = get_logger("feature_builder")
 
 FeatureSetName = Literal[
-    "static", "behavioral", "probe", "math", "interaction", "early", "hybrid"
+    "static",
+    "behavioral",
+    "probe",
+    "math",
+    "interaction",
+    "early",
+    "behavioral_early",
+    "hybrid",
 ]
 
 TARGET_COLUMNS = [
@@ -136,7 +143,8 @@ def build_feature_tables(
     """
     Return feature tables including ablation sets:
 
-    meta, static, behavioral (alias probe), math, interaction, early, hybrid, targets.
+    meta, static, behavioral (alias probe), math, interaction, early,
+    behavioral_early, hybrid, targets.
     """
     agg = aggregate_phase1_dataset(dataset_df, how=seed_aggregation)
     meta = agg[["candidate_id", "family_id"]].copy()
@@ -179,6 +187,11 @@ def build_feature_tables(
     for frame in frames:
         frame.reset_index(drop=True, inplace=True)
 
+    behavioral_early_parts = [behavioral_df]
+    if include_early_behavioral and early_df.shape[1] > 0:
+        behavioral_early_parts.append(early_df)
+    behavioral_early_df = pd.concat(behavioral_early_parts, axis=1)
+
     hybrid_parts = [static_df, behavioral_df, math_df, interaction_df]
     if include_early_behavioral and early_df.shape[1] > 0:
         hybrid_parts.append(early_df)
@@ -192,6 +205,7 @@ def build_feature_tables(
         "math": math_df,
         "interaction": interaction_df,
         "early": early_df,
+        "behavioral_early": behavioral_early_df,
         "hybrid": hybrid_df,
         "targets": targets,
     }
@@ -226,6 +240,7 @@ def save_feature_tables(
         "n_math_features": _ncols("math"),
         "n_interaction_features": _ncols("interaction"),
         "n_early_features": _ncols("early"),
+        "n_behavioral_early_features": _ncols("behavioral_early"),
         "n_hybrid_features": _ncols("hybrid"),
         "target_columns": list(tables["targets"].columns),
         "candidate_ids": tables["meta"]["candidate_id"].tolist(),
@@ -236,12 +251,13 @@ def save_feature_tables(
         json.dump(manifest, handle, indent=2)
     paths["manifest"] = manifest_path
     logger.info(
-        "Saved features: static=%d probe=%d math=%d ix=%d early=%d hybrid=%d -> %s",
+        "Saved features: static=%d probe=%d math=%d ix=%d early=%d beh_early=%d hybrid=%d -> %s",
         manifest["n_static_features"],
         manifest["n_behavioral_features"],
         manifest["n_math_features"],
         manifest["n_interaction_features"],
         manifest["n_early_features"],
+        manifest["n_behavioral_early_features"],
         manifest["n_hybrid_features"],
         output_dir,
     )

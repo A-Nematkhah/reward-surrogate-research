@@ -1,6 +1,4 @@
-# Surrogate modeling configuration (Phase 2)
-# Decision: classical ML first — dataset is small (~24–40 candidates × seeds).
-# Grouped splits by reward family are primary; random split is secondary.
+# Surrogate modeling configuration (Phase 2) — pre-AL quality push
 
 random_seed: 123
 
@@ -12,14 +10,18 @@ targets:
   - mean_goal_time
   - mean_path_length
 
-# Feature configurations for ablation
+# Primary ablations (interaction demoted — historically near-noise under LOFO)
 feature_sets:
   - static
   - behavioral
   - math
-  - interaction
   - early
+  - behavioral_early
   - hybrid
+
+# Secondary / diagnostic only (not in primary claim set)
+secondary_feature_sets:
+  - interaction
 
 # Include short-warmup PPO rollout features from Phase 1 runs
 include_early_behavioral: true
@@ -31,6 +33,13 @@ seed_aggregation: mean
 # Family one-hot encoding is disabled for grouped/LOFO evaluation:
 # held-out family indicators are all-zero in training and cannot generalize.
 include_family_one_hot: false
+
+# Train-fold-only feature pruning (anti-leakage)
+feature_selection:
+  enabled: true
+  max_features: 40
+  # min columns before pruning kicks in
+  min_features_to_prune: 25
 
 # Probe trajectories for behavioral features
 probes:
@@ -65,33 +74,37 @@ baselines:
   - median
   - ridge
 
+# Operating surrogate after confirmatory LOFO (see docs/DECISIONS.md).
 surrogates:
-  - random_forest
   - extra_trees
-  - hist_gradient_boosting
-  - gaussian_process
 
 # Light hyperparameter grids (avoid expensive search)
 hyperparameters:
   ridge:
     alphas: [0.1, 1.0, 10.0, 100.0]
   random_forest:
-    n_estimators: 100
-    max_depth: [null, 5, 10]
+    n_estimators: 200
+    max_depth: [null, 10]
     min_samples_leaf: [1, 2]
   extra_trees:
-    n_estimators: 100
-    max_depth: [null, 5, 10]
+    n_estimators: 250
+    max_depth: [null, 10]
     min_samples_leaf: [1, 2]
   hist_gradient_boosting:
-    max_depth: [null, 3]
+    max_depth: [null, 5]
     learning_rate: [0.05, 0.1]
     min_samples_leaf: [5, 10]
-    max_iter: 100
+    max_iter: 150
   gaussian_process:
     # Kernel chosen in code; normalize_y recommended for GP regression
     normalize_y: true
     alpha: 1.0e-6
+  rank_extra_trees:
+    n_estimators: 250
+    max_depth: [null, 10]
+    min_samples_leaf: [1, 2]
+  ensemble_trees:
+    # Uses RF / ET / HGB defaults above; no separate grid
 
 preprocessing:
   scale_features: true

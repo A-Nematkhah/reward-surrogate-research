@@ -1,0 +1,166 @@
+# Model comparison experiment (does not overwrite Phase 2 artifacts)
+# Pre-registered primary configuration is fixed BEFORE looking at results.
+
+random_seed: 123
+n_repeats: 3
+n_jobs: 4
+n_bootstrap: 2000
+quick: false
+
+features_dir: experiments/phase2/features
+# Confirmatory full grid (n_repeats=3); keeps exploratory quick artifacts untouched
+output_dir: experiments/model_comparison_confirm
+results_dir: results/model_comparison_confirm
+
+# Operating target. Other metrics remain in the dataset for diagnostics.
+targets:
+  - success_rate
+
+# Operating feature set after the 3-repeat confirm (within-family Spearman ≈ 0.65, top-3 ≈ 0.83).
+feature_sets:
+  - early+math+behavioral
+
+primary:
+  target: success_rate
+  feature_set: early+math+behavioral
+  models:
+    - extra_trees
+
+models:
+  - extra_trees
+
+baseline_model: extra_trees
+
+preprocessing:
+  impute: median
+  drop_constant: true
+  standardize_for: [ridge, elasticnet, kernel_ridge, svr, knn, gp_ard, pairwise_logistic, mlp_mse, mlp_rank, stack_ridge]
+  target_transform_options: [none, logit, rank]
+  feature_selection_options: [none, top_k_by_spearman, top_k_by_mutual_info, pca]
+  top_k_values: [8, 15, 30]
+  pca_components: [5, 10]
+  # Default when not tuned (quick / fixed)
+  default_target_transform: none
+  default_feature_selection: top_k_by_spearman
+  default_k: 15
+
+inner_cv:
+  strategy: leave_one_family_out
+  optimize: within_family_spearman  # fallback MAE
+
+topk:
+  pooled_k: [5, 10, 20]
+  within_family_k: 3
+  min_family_size_for_within: 4
+
+higher_is_better:
+  success_rate: true
+  timeout_rate: false
+  collision_rate: false
+  mean_goal_time: false
+  mean_path_length: false
+
+ppo_cost_steps:
+  static: 0
+  math: 0
+  behavioral: 0
+  interaction: 0
+  early: 12000
+  hybrid: 12000
+  "early+math": 12000
+  "early+behavioral": 12000
+  "early+static": 12000
+  "math+behavioral": 0
+  "early+math+behavioral": 12000
+
+# Small, strongly regularized hyperparameter grids
+hyperparameters:
+  ridge:
+    alpha: [0.1, 1.0, 10.0, 100.0]
+  elasticnet:
+    alpha: [0.1, 1.0, 10.0]
+    l1_ratio: [0.2, 0.5, 0.8]
+  kernel_ridge:
+    alpha: [0.1, 1.0, 10.0]
+    gamma: [0.01, 0.1, 1.0]
+  svr:
+    C: [0.1, 1.0, 10.0]
+    epsilon: [0.05, 0.1]
+    gamma: [0.01, 0.1]
+  knn:
+    n_neighbors: [3, 5, 11]
+  random_forest:
+    n_estimators: [200]
+    max_depth: [null, 8]
+    min_samples_leaf: [2, 4]
+  extra_trees:
+    n_estimators: [250]
+    max_depth: [null, 8]
+    min_samples_leaf: [2, 4]
+  hist_gradient_boosting:
+    max_depth: [3, 5]
+    learning_rate: [0.05, 0.1]
+    min_samples_leaf: [10, 20]
+    max_iter: [150]
+  lightgbm:
+    n_estimators: [200]
+    learning_rate: [0.05, 0.1]
+    num_leaves: [7, 15]
+    min_child_samples: [10, 20]
+    subsample: [0.8]
+    colsample_bytree: [0.8]
+  catboost:
+    iterations: [200]
+    depth: [4, 6]
+    learning_rate: [0.05, 0.1]
+    l2_leaf_reg: [3.0, 10.0]
+  xgboost:
+    n_estimators: [200]
+    max_depth: [3, 5]
+    learning_rate: [0.05, 0.1]
+    min_child_weight: [5, 10]
+    subsample: [0.8]
+    colsample_bytree: [0.8]
+  gp_ard:
+    # ARD only after reducing to <=15 features
+    alpha: [1.0e-6]
+  lgbm_lambdarank:
+    n_estimators: [150]
+    learning_rate: [0.05, 0.1]
+    num_leaves: [7, 15]
+    min_child_samples: [10]
+    n_relevance_bins: [5]
+  xgb_rank_pairwise:
+    n_estimators: [150]
+    learning_rate: [0.05, 0.1]
+    max_depth: [3, 5]
+    n_relevance_bins: [5]
+  pairwise_logistic:
+    C: [0.1, 1.0, 10.0]
+  mlp_mse:
+    hidden: [[64, 64]]
+    dropout: [0.1, 0.2]
+    weight_decay: [1.0e-4, 1.0e-3]
+    lr: [1.0e-3]
+    max_epochs: [80]
+    patience: [10]
+    n_ensemble: [5]
+  mlp_rank:
+    hidden: [[64, 64]]
+    dropout: [0.1]
+    weight_decay: [1.0e-4]
+    lr: [1.0e-3]
+    max_epochs: [80]
+    patience: [10]
+    n_ensemble: [3]
+
+quick_overrides:
+  n_repeats: 1
+  n_bootstrap: 200
+  hyperparameter_max_combos: 2
+  mlp_mse:
+    max_epochs: [20]
+    n_ensemble: [2]
+  mlp_rank:
+    max_epochs: [20]
+    n_ensemble: [1]

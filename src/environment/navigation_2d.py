@@ -551,8 +551,19 @@ def make_env(
     *,
     reward_fn: Optional[RewardFn] = None,
     render_mode: Optional[str] = None,
-) -> RewardNavigation2D:
-    """Factory for RewardNavigation2D."""
+):
+    """Factory for the configured navigation env.
+
+    ``env_id: CrowdNavPlusPlus-v0`` selects the CrowdNav++ adapter.
+    Any other id keeps RewardNavigation2D.
+    """
+    env_id = str((config or {}).get("env_id", "RewardNavigation2D-v0"))
+    if env_id == "CrowdNavPlusPlus-v0":
+        from src.environment.crowdnav_env import CrowdNavPlusPlusEnv
+
+        return CrowdNavPlusPlusEnv(
+            config=config, reward_fn=reward_fn, render_mode=render_mode
+        )
     return RewardNavigation2D(config=config, reward_fn=reward_fn, render_mode=render_mode)
 
 

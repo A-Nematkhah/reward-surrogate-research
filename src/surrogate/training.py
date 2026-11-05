@@ -22,11 +22,14 @@ from src.surrogate.evaluation import (
     summarize_fold_rankings,
 )
 from src.surrogate.models import (
+    make_ensemble_trees,
     make_extra_trees,
     make_gaussian_process,
     make_hist_gradient_boosting,
     make_random_forest,
+    make_rank_extra_trees,
     predict_with_uncertainty,
+    select_feature_indices,
     tree_feature_importances,
 )
 from src.utils.config import relpath_to_project
@@ -41,7 +44,7 @@ def load_feature_bundle(features_dir: str | Path) -> dict[str, pd.DataFrame]:
     bundle: dict[str, pd.DataFrame] = {
         name: pd.read_csv(features_dir / f"features_{name}.csv") for name in required
     }
-    for optional in ("early", "math", "interaction", "probe"):
+    for optional in ("early", "math", "interaction", "probe", "behavioral_early"):
         path = features_dir / f"features_{optional}.csv"
         if not path.is_file() or path.stat().st_size == 0:
             continue
@@ -56,6 +59,49 @@ def load_feature_bundle(features_dir: str | Path) -> dict[str, pd.DataFrame]:
 
 def _finite_mask(y: np.ndarray) -> np.ndarray:
     return np.isfinite(np.asarray(y, dtype=np.float64))
+
+
+def _resolve_feature_sets(config: Mapping[str, Any]) -> list[str]:
+    primary = list(config.get("feature_sets", ["static", "behavioral", "hybrid"]))
+    secondary: list[str] = []
+    if bool(config.get("include_secondary_feature_sets", False)):
+        secondary = list(config.get("secondary_feature_sets", []))
+    seen: set[str] = set()
+    out: list[str] = []
+    for name in primary + secondary:
+        if name not in seen:
+            seen.add(name)
+            out.append(name)
+    return out
+
+
+def _feature_selection_cfg(config: Mapping[str, Any]) -> tuple[bool, int, int]:
+    cfg = config.get("feature_selection", {}) or {}
+    enabled = bool(cfg.get("enabled", False))
+    max_features = int(cfg.get("max_features", 40))
+    min_to_prune = int(cfg.get("min_features_to_prune", 25))
+    return enabled, max_features, min_to_prune
+
+
+def _maybe_select_features(
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_test: np.ndarray,
+    config: Mapping[str, Any],
+    *,
+    random_state: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray | None]:
+    """Apply train-fold-only pruning; returns X_tr, X_te, selected indices or None."""
+    enabled, max_features, min_to_prune = _feature_selection_cfg(config)
+    if (not enabled) or X_train.shape[1] < min_to_prune:
+        return X_train, X_test, None
+    idx = select_feature_indices(
+        X_train,
+        y_train,
+        max_features=max_features,
+        random_state=random_state,
+    )
+    return X_train[:, idx], X_test[:, idx], idx
 
 
 def _build_model(
@@ -115,6 +161,43 @@ def _build_model(
             random_state=random_state,
             scale_features=scale,
         )
+    if name == "rank_extra_trees":
+        cfg = hp.get("rank_extra_trees", hp.get("extra_trees", {}))
+        return make_rank_extra_trees(
+            n_estimators=int(params.get("n_estimators", cfg.get("n_estimators", 400))),
+            max_depth=params.get("max_depth", None),
+            min_samples_leaf=int(params.get("min_samples_leaf", 1)),
+            random_state=random_state,
+        )
+    if name == "ensemble_trees":
+        rf_cfg = hp.get("random_forest", {})
+        et_cfg = hp.get("extra_trees", {})
+        hgb_cfg = hp.get("hist_gradient_boosting", {})
+        hgb_lr = hgb_cfg.get("learning_rate", 0.1)
+        if isinstance(hgb_lr, list):
+            hgb_lr = hgb_lr[0]
+        hgb_leaf = hgb_cfg.get("min_samples_leaf", 10)
+        if isinstance(hgb_leaf, list):
+            hgb_leaf = hgb_leaf[0]
+        return make_ensemble_trees(
+            random_state=random_state,
+            rf_params={
+                "n_estimators": int(rf_cfg.get("n_estimators", 200)),
+                "max_depth": None,
+                "min_samples_leaf": 2,
+            },
+            et_params={
+                "n_estimators": int(et_cfg.get("n_estimators", 250)),
+                "max_depth": None,
+                "min_samples_leaf": 2,
+            },
+            hgb_params={
+                "max_depth": 5,
+                "learning_rate": float(hgb_lr),
+                "max_iter": int(hgb_cfg.get("max_iter", 150)),
+                "min_samples_leaf": int(hgb_leaf),
+            },
+        )
     raise ValueError(f"Unknown model '{name}'")
 
 
@@ -127,8 +210,8 @@ def _param_grid_for(name: str, config: Mapping[str, Any]) -> list[dict[str, Any]
             "min_samples_leaf": cfg.get("min_samples_leaf", [1]),
         }
         return list(ParameterGrid(grid))
-    if name == "extra_trees":
-        cfg = hp.get("extra_trees", {})
+    if name in {"extra_trees", "rank_extra_trees"}:
+        cfg = hp.get(name if name in hp else "extra_trees", hp.get("extra_trees", {}))
         grid = {
             "max_depth": cfg.get("max_depth", [None]),
             "min_samples_leaf": cfg.get("min_samples_leaf", [1]),
@@ -172,17 +255,26 @@ def _select_params_nested(
     gkf = GroupKFold(n_splits=n_splits)
     best_params = grid[0]
     best_score = float("inf")
+    rank_objective = model_name == "rank_extra_trees"
     for params in grid:
-        maes: list[float] = []
+        fold_scores: list[float] = []
         for tr, va in gkf.split(X_train, y_train, groups_train):
+            # Feature pruning already applied by the outer fold caller.
             model = _build_model(
                 model_name, config, random_state=random_state, params=params
             )
             model.fit(X_train[tr], y_train[tr])
             pred, _ = predict_with_uncertainty(model, X_train[va])
-            mae = float(np.mean(np.abs(y_train[va] - pred)))
-            maes.append(mae)
-        score = float(np.mean(maes))
+            if rank_objective:
+                # Higher Spearman is better → minimize negative Spearman
+                if len(pred) >= 2 and np.std(pred) > 0 and np.std(y_train[va]) > 0:
+                    corr = float(pd.Series(y_train[va]).corr(pd.Series(pred), method="spearman"))
+                    fold_scores.append(-corr if np.isfinite(corr) else 0.0)
+                else:
+                    fold_scores.append(0.0)
+            else:
+                fold_scores.append(float(np.mean(np.abs(y_train[va] - pred))))
+        score = float(np.mean(fold_scores))
         if score < best_score:
             best_score = score
             best_params = params
@@ -203,18 +295,28 @@ def _fit_predict_fold(
     *,
     random_state: int,
 ) -> tuple[np.ndarray, np.ndarray | None, Any, dict[str, Any]]:
+    X_tr, X_te, feat_idx = _maybe_select_features(
+        X_train,
+        y_train,
+        X_test,
+        config,
+        random_state=random_state,
+    )
     params = _select_params_nested(
         model_name,
         config,
-        X_train,
+        X_tr,
         y_train,
         groups_train,
         random_state=random_state,
     )
     model = _build_model(model_name, config, random_state=random_state, params=params)
-    model.fit(X_train, y_train)
-    pred, std = predict_with_uncertainty(model, X_test)
-    return pred, std, model, params
+    model.fit(X_tr, y_train)
+    pred, std = predict_with_uncertainty(model, X_te)
+    out_params = dict(params)
+    if feat_idx is not None:
+        out_params["n_selected_features"] = int(len(feat_idx))
+    return pred, std, model, out_params
 
 
 def run_grouped_cv(
@@ -432,7 +534,7 @@ def run_phase2_experiments(
     bundle = load_feature_bundle(features_dir)
     meta = bundle["meta"]
     targets_df = bundle["targets"]
-    feature_sets = list(config.get("feature_sets", ["static", "behavioral", "hybrid"]))
+    feature_sets = _resolve_feature_sets(config)
     targets = list(config.get("targets", list(targets_df.columns)))
     model_names = list(config.get("baselines", [])) + list(config.get("surrogates", []))
 

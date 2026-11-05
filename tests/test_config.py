@@ -40,7 +40,7 @@ def test_load_merged_configs_keys(config_dir: Path) -> None:
     assert merged["environment"]["env_id"] == "RewardNavigation2D-v0"
     assert merged["reward_generation"]["n_candidates"] == 32
     assert "success_rate" in merged["evaluation"]["metrics"]
-    assert "random_forest" in merged["surrogate"]["surrogates"]
+    assert merged["surrogate"]["surrogates"] == ["extra_trees"]
 
 
 def test_deep_update_nested() -> None:

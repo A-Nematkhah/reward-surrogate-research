@@ -8,11 +8,14 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.dataset.builder import build_and_save_phase1_dataset
+from src.dataset.outlier_filter import drop_flagged_seeds
 from src.dataset.validator import DatasetValidationError, validate_dataset
 from src.utils.logging import get_logger, setup_logging
 
@@ -36,6 +39,20 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Minimum completed rows required for validation",
     )
+    parser.add_argument(
+        "--drop-outliers-csv",
+        type=Path,
+        default=PROJECT_ROOT / "experiments" / "phase1" / "outlier_seeds.csv",
+        help=(
+            "Outlier seeds CSV from flag_ppo_outliers.py (default path). "
+            "Pass an empty string to disable dropping."
+        ),
+    )
+    parser.add_argument(
+        "--no-drop-outliers",
+        action="store_true",
+        help="Do not drop outlier seeds even if the default CSV exists",
+    )
     return parser.parse_args()
 
 
@@ -48,6 +65,27 @@ def main() -> int:
         args.experiments_root,
         output_dir=args.output_dir,
     )
+    drop_csv = None if args.no_drop_outliers else args.drop_outliers_csv
+    if drop_csv is not None and str(drop_csv).strip() and Path(drop_csv).is_file():
+        flagged = pd.read_csv(drop_csv)
+        before = len(df)
+        df = drop_flagged_seeds(df, flagged)
+        # Rewrite artifacts with filtered rows
+        out_dir = Path(paths["csv"]).parent
+        csv_path = out_dir / "reward_performance_dataset.csv"
+        df.to_csv(csv_path, index=False)
+        logger.info(
+            "Dropped outlier seeds: %d -> %d rows (using %s)",
+            before,
+            len(df),
+            drop_csv,
+        )
+    elif not args.no_drop_outliers:
+        logger.info(
+            "No outlier CSV at %s — dataset kept unfiltered. "
+            "Run scripts/flag_ppo_outliers.py first for filter-by-default.",
+            args.drop_outliers_csv,
+        )
     logger.info("Dataset shape: %s", df.shape)
 
     try:

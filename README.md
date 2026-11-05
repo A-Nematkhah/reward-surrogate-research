@@ -43,23 +43,35 @@ pip install -r requirements.txt
 
 ## Intended workflow
 
-Full resumable pipeline (candidates → Phase 1 → dataset → features → Phase 2 → reports):
+Operating surrogate is **ExtraTrees** on `early+math+behavioral` → `success_rate`.
+
+CrowdNav++ (ICRA 2023) is vendored at `third_party/CrowdNavPlusPlus`. A short simulator run that does not need Python-RVO2:
 
 ```bash
-python scripts/run_full_improvement_pipeline.py
+python scripts/run_crowdnav.py --train --timesteps 256 --humans 5
 ```
 
-Step-by-step (same stages):
+That command builds `CrowdNavPlusPlus-v0`: CrowdNav++ dynamics, ORCA humans, and this project's weighted reward inside the existing PPO trainer.
 
 ```bash
-python scripts/run_environment_demo.py
+python scripts/run_quality_pipeline.py
+```
+
+That flags outlier seeds, refreshes early features, rebuilds the dataset, extracts features, fits ExtraTrees under LOFO, and writes `results/model_comparison_confirm/`.
+
+The same surrogate steps on CrowdNav++ (separate dirs; the 2D dataset stays put):
+
+```bash
+python scripts/run_quality_pipeline.py --env crowdnav
+```
+
+Phase 1 on CrowdNav is the long step (same candidate pool and PPO budget, ORCA humans). A short pilot is `--env crowdnav --max-jobs 1 --min-completed 1`. Results land in `experiments/crowdnav/` and `results/crowdnav/`.
+
+Regenerate the Phase 1 pool only when labels themselves must be rebuilt:
+
+```bash
 python scripts/generate_candidates.py
 python scripts/run_phase1.py
-python scripts/build_dataset.py
-python scripts/extract_features.py
-# optional: --regenerate-probes ; --override surrogate.include_early_behavioral=false
-python scripts/run_phase2.py
-python scripts/generate_report.py --phase all
 ```
 
 Primary Phase 2 protocol: **LOFO** (leave-one-family-out). Random holdout is secondary only.  
@@ -94,18 +106,15 @@ reward-surrogate-research/
 - Behavioral probes use fixed, reward-independent trajectories only.
 - Negative or null surrogate results will be reported honestly.
 
-## Key results (Wave 3 scale-up)
+## Key results
 
-- Phase 1: **108** rewards × **3** seeds (**324** runs) across **12** families; success span ≈ **0.86**.
-- Phase 2 LOFO: best success ranking ≈ **Spearman 0.815** (ExtraTrees / behavioral); fold Top-3 ≈ **0.67**.
-- AL gate: **conditional yes** for triage prototyping (see `results/final_research_report.md`).
-- Pilot (32×2 / 7 families) audit archived under `docs/archive/pilot_audit/`.
+- Phase 1: **108** rewards × **3** seeds across **12** families.
+- Operating LOFO surrogate: **ExtraTrees / early+math+behavioral / success_rate** — within-family Spearman ≈ **0.65**, pooled Spearman ≈ **0.94**, within-family top-3 hit ≈ **0.83**.
+- Reliable for within-family triage. Not a replacement for full PPO.
 
 ## Reports
 
-- `results/phase1_report.md`
-- `results/phase2_report.md`
-- `results/final_research_report.md`
+- `results/model_comparison_confirm/model_comparison_report.md`
 
 ## License
 

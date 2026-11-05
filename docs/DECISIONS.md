@@ -155,6 +155,49 @@ This log records important design choices. Entries are appended as steps complet
 
 Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LOFO) remains documented above for history; Wave 3 supersedes it for primary claims.
 
+## Pre-AL quality push
+
+| Decision | Rationale |
+|----------|-----------|
+| Primary feature set for triage = **behavioral_early** | Best ExtraTrees LOFO tradeoff after Wave 2 (Spearman≈0.835, unc↔\|err\|≈0.74). |
+| Keep `rank_extra_trees` diagnostic-only for AL | Strong pooled ranking but poor uncertainty–error correlation / MAE scale. |
+| `interaction` demoted from primary ablations | Near-noise under LOFO; wastes compute. |
+| Train-fold feature prune (max 40) | Reduce hybrid noise without test leakage. |
+| Dense eval = **160 episodes** (checkpoint re-eval, no PPO retrain) | Cut seed success spread ≈0.075→0.068. |
+| Soft AL gate still Conditional yes; strict std/Top-3 targets unmet | Proceed to AL prototype with ExtraTrees/behavioral_early, not as a high-stakes skip-PPO oracle. |
+
+## Model comparison — pre-registered confirmatory baseline
+
+| Decision | Rationale |
+|----------|-----------|
+| Primary claim set = **CatBoost + ExtraTrees** on `early+math` / `success_rate` | Locked after exploratory `--quick` grid + focused full-grid top-3 (`n_repeats=1`). CatBoost led within-family Spearman / top-3 hit; ExtraTrees led pooled Spearman. |
+| Paired baseline = **ExtraTrees** | Stable reference for `paired_vs_baseline`; other models are hypotheses vs this anchor. |
+| Confirmatory run = full grids, `n_repeats=3`, outputs under `experiments/model_comparison_confirm` | Definitive CI / stability; does not overwrite exploratory `model_comparison` artifacts. |
+| HGB / XGB / rankers stay exploratory-only | Top-3 confirm did not support promoting HGB on the primary within-family metric. |
+
+## Surrogate quality push — richer early + cleaner labels
+
+| Decision | Rationale |
+|----------|-----------|
+| Early checkpoints **2k / 5k / 12k** + schema v2 | Capture learning trajectory, not a single fragile 5k snapshot. |
+| Robust rollout stats (median / IQR / MAD / winsor mean) + cross-ckpt deltas | Reduce noise from mean-only early summaries. |
+| Early refresh script trains only to 12k (keeps final `model.zip` / eval) | Upgrade features without full 50k redo. |
+| Parallel `--workers` (default 4) on early refresh / reeval | ~3–5× wall-clock with same quality; `n_envs=1` under multi-worker refresh. |
+| Keep eval at **160** episodes | 200 is costly for little gain; skip full reeval in the default pipeline. |
+| Outlier policy = **filter-by-default** (`--drop-outliers-csv`) | Prefer dropping noisy seeds over full PPO invalidate/retrain; optional outlier-only reeval. |
+| New LOFO combos: `early+static`, `math+behavioral`, `early+math+behavioral` | Test whether enriched early still wins after refresh. |
+
+## Operating surrogate (locked after confirmatory run)
+
+| Decision | Rationale |
+|----------|-----------|
+| Model = **ExtraTrees** only | 3-repeat LOFO: within-family Spearman ≈ 0.65, pooled ≈ 0.94, top-3 hit ≈ 0.83. CatBoost was worse on every repeat. |
+| Features = **early + math + behavioral** | Best triage set in the confirm (`early+math` stays a close runner-up). |
+| Target = **success_rate** | Selection decision. Safety rates stay in the dataset, not in the default fit. |
+| Default command = `python scripts/run_quality_pipeline.py` | Flag outliers, refresh early features, rebuild dataset, extract features, fit ExtraTrees, write the report. |
+
 ## Deferred (by design)
 
-- CrowdNav, LLM reward generation, and Active Learning implementation remain future work only if surrogate quality improves.
+- CrowdNav++ is vendored at `third_party/CrowdNavPlusPlus`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into `experiments/crowdnav` and fits the same ExtraTrees pipeline into `results/crowdnav`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
+- LLM reward generation remains future work.
+- Full Active Learning loop is next once this push is accepted.

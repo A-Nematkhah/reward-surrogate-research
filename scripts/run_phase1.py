@@ -57,6 +57,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Abort on first training failure",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel (candidate, seed) processes. Default 1. Does not change n_envs.",
+    )
     return parser.parse_args()
 
 
@@ -93,11 +99,12 @@ def main() -> int:
             raise SystemExit(f"Unknown candidate_ids: {sorted(missing)}")
 
     logger.info(
-        "Starting Phase 1 with %d candidates, timesteps=%s, seeds=%s, max_jobs=%s",
+        "Starting Phase 1 with %d candidates, timesteps=%s, seeds=%s, max_jobs=%s, workers=%s",
         len(candidates),
         ppo_config["total_timesteps"],
         ppo_config.get("seeds"),
         args.max_jobs,
+        args.workers,
     )
 
     summary = run_phase1(
@@ -110,6 +117,7 @@ def main() -> int:
         max_jobs=args.max_jobs,
         resume=not args.no_resume,
         stop_on_failure=args.stop_on_failure,
+        workers=int(args.workers),
     )
 
     if summary["n_failed"] > 0:

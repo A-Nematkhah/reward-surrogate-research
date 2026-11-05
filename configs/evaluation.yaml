@@ -3,8 +3,9 @@
 # not only cumulative reward. Metrics are stored separately for Pareto
 # analysis — no arbitrary scalar fitness is computed here.
 
-# More eval episodes to reduce label noise (was 20/50 in earlier pilots)
-n_eval_episodes: 80
+# Dense eval for label-noise reduction (Wave 2). Keep 160 — bumping to 200 is
+# expensive for little gain; prefer outlier filter / outlier-only re-eval instead.
+n_eval_episodes: 160
 
 # Fixed evaluation environment seeds (independent of training seeds)
 eval_seed_start: 10000

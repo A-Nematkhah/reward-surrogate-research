@@ -28,10 +28,14 @@ seeds: [0, 1, 2]
 
 early_behavioral:
   enabled: true
+  # Primary alias checkpoint (also used for legacy early_* column names)
   timesteps: 5000
-  n_episodes: 12
+  # Multi-checkpoint warmup rollouts (0→2k→5k→12k); refresh via scripts/refresh_early_features.py
+  checkpoints: [2000, 5000, 12000]
+  n_episodes: 20
   seed_offset: 50000
   deterministic: false
+  stable_stats: true
 
 save_freq_timesteps: 25000
 log_interval: 10

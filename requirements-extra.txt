@@ -1,0 +1,8 @@
+# Optional dependencies for scripts/run_model_comparison.py
+# Install only what you need; missing packages skip those models cleanly.
+
+lightgbm>=4.0.0
+catboost>=1.2.0
+xgboost>=2.0.0
+tabpfn>=2.0.0
+plotly>=5.18.0

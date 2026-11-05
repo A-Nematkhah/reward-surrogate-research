@@ -27,6 +27,16 @@ def tiny_configs(config_dir: Path) -> tuple[dict, dict, dict]:
     eval_config = load_named_config("evaluation", config_dir=config_dir)
 
     # Tiny budget for CI / local smoke tests
+    early = dict(ppo_config.get("early_behavioral") or {})
+    early.update(
+        {
+            "enabled": True,
+            "timesteps": 256,
+            "checkpoints": [128, 256],
+            "n_episodes": 2,
+            "stable_stats": True,
+        }
+    )
     ppo_config = {
         **ppo_config,
         "total_timesteps": 512,
@@ -37,6 +47,7 @@ def tiny_configs(config_dir: Path) -> tuple[dict, dict, dict]:
         "n_seeds": 1,
         "seeds": [0],
         "device": "cpu",
+        "early_behavioral": early,
     }
     eval_config = {
         **eval_config,

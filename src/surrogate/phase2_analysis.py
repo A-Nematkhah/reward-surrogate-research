@@ -686,15 +686,52 @@ def build_phase2_report(
     )
     lines.append("")
 
+    lines.append("## Uncertainty vs absolute error")
+    lines.append("")
+    if "uncertainty_error_spearman" in oof.columns:
+        unc = (
+            oof[~oof["model"].isin(CONSTANT_BASELINES)]
+            .dropna(subset=["uncertainty_error_spearman"])
+            .sort_values("uncertainty_error_spearman", ascending=False)
+        )
+        if unc.empty:
+            lines.append("- No uncertainty–error correlations available for this run.")
+        else:
+            lines.append(
+                "Spearman(pred_std, |error|) — higher means uncertainty tracks mistakes "
+                "(useful for AL acquisition; still not calibrated probabilities):"
+            )
+            lines.append("")
+            lines.append("| model | feature_set | target | unc↔|err| Spearman |")
+            lines.append("|---|---|---|---:|")
+            for _, row in unc.head(12).iterrows():
+                lines.append(
+                    f"| {row['model']} | {row['feature_set']} | {row['target']} | "
+                    f"{float(row['uncertainty_error_spearman']):.3f} |"
+                )
+            best_unc = unc.iloc[0]
+            lines.append("")
+            lines.append(
+                f"- Best observed: **{best_unc['model']}/{best_unc['feature_set']}** "
+                f"on `{best_unc['target']}` "
+                f"({float(best_unc['uncertainty_error_spearman']):.3f})."
+            )
+    else:
+        lines.append("- Column `uncertainty_error_spearman` missing from metrics.")
+    lines.append("")
+
     lines.append("## Recommendation: Phase 3 Active Learning?")
     lines.append("")
     sr_best = float("nan")
     sr_fold_std = float("nan")
+    sr_fold_mean = float("nan")
     sr_fold_top3 = float("nan")
+    sr_unc = float("nan")
     if "success_rate" in oof["target"].values:
         best_sr = pick_best_config(oof, "success_rate", exclude_baselines=True)
         sr_best = float(best_sr["spearman"]) if pd.notna(best_sr["spearman"]) else float("nan")
         sr_fold_std = float(best_sr.get("fold_spearman_std", np.nan))
+        sr_fold_mean = float(best_sr.get("fold_spearman_mean", np.nan))
         if (
             "fold_top_3_accuracy_mean" in best_sr.index
             and pd.notna(best_sr["fold_top_3_accuracy_mean"])
@@ -702,8 +739,17 @@ def build_phase2_report(
             sr_fold_top3 = float(best_sr["fold_top_3_accuracy_mean"])
         elif "top_3_accuracy" in best_sr.index and pd.notna(best_sr["top_3_accuracy"]):
             sr_fold_top3 = float(best_sr["top_3_accuracy"])
+        if "uncertainty_error_spearman" in best_sr.index:
+            sr_unc = float(best_sr.get("uncertainty_error_spearman", np.nan))
     stable_enough = np.isfinite(sr_fold_std) and sr_fold_std <= 0.35
     triage_ok = np.isfinite(sr_fold_top3) and sr_fold_top3 >= 0.5
+    lines.append(
+        f"Best success-rate config gate snapshot: pooled Spearman≈{_fmt_float(sr_best)}, "
+        f"fold≈{_fmt_float(sr_fold_mean)}±{_fmt_float(sr_fold_std)}, "
+        f"fold Top-3≈{_fmt_float(sr_fold_top3)}, "
+        f"unc↔|err|≈{_fmt_float(sr_unc)}."
+    )
+    lines.append("")
     if np.isfinite(sr_best) and sr_best >= 0.6 and stable_enough and triage_ok:
         verdict = (
             "**Conditional yes** — ranking and fold Top-3 triage are strong/stable enough "
