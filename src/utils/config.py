@@ -25,7 +25,10 @@ def relpath_to_project(path: str | Path, *, root: Path | None = None) -> str:
 CONFIG_FILES = {
     "environment": "environment.yaml",
     "ppo": "ppo.yaml",
+    "ppo_crowdnav": "ppo_crowdnav.yaml",
+    "crowdnav_run": "crowdnav_run.yaml",
     "reward_generation": "reward_generation.yaml",
+    "reward_generation_crowdnav": "reward_generation_crowdnav.yaml",
     "evaluation": "evaluation.yaml",
     "surrogate": "surrogate.yaml",
 }

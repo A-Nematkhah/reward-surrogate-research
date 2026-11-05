@@ -69,6 +69,22 @@ def extract_static_features_from_spec(spec: RewardSpec) -> dict[str, float]:
         + abs(weights[COMPONENT_NAMES.index("obstacle")]),
         abs(weights[COMPONENT_NAMES.index("progress")]) + 1e-8,
     )
+    features["ratio_goal_over_progress"] = _safe_ratio(
+        abs(weights[COMPONENT_NAMES.index("goal")]),
+        abs(weights[COMPONENT_NAMES.index("progress")]) + 1e-8,
+    )
+    features["ratio_task_over_safety"] = _safe_ratio(
+        abs(weights[COMPONENT_NAMES.index("progress")])
+        + abs(weights[COMPONENT_NAMES.index("goal")]),
+        abs(weights[COMPONENT_NAMES.index("collision")])
+        + abs(weights[COMPONENT_NAMES.index("obstacle")])
+        + abs(weights[COMPONENT_NAMES.index("risk")])
+        + 1e-8,
+    )
+    features["ratio_energy_over_progress"] = _safe_ratio(
+        abs(weights[COMPONENT_NAMES.index("energy")]),
+        abs(weights[COMPONENT_NAMES.index("progress")]) + 1e-8,
+    )
 
     # Normalized weights (L1) for scale-invariant comparisons
     l1 = features["weight_l1"]

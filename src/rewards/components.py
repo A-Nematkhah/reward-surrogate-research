@@ -16,6 +16,7 @@ import numpy as np
 from src.environment.dynamics import Circle, clearance_to_circle
 
 # Linear baseline set + structurally distinct extensions for family diversity.
+# CrowdNav-oriented terms (human_*) also apply to static obstacles in 2D.
 COMPONENT_NAMES = (
     "progress",
     "goal",
@@ -28,6 +29,9 @@ COMPONENT_NAMES = (
     "potential",
     "nonlinear_progress",
     "distance",
+    "human_proximity",
+    "human_intrusion",
+    "crowded_progress",
 )
 
 LINEAR_COMPONENT_NAMES = (
@@ -207,6 +211,94 @@ class DistanceComponent(RewardComponent):
         return float(transition["goal_distance"])
 
 
+class HumanProximityComponent(RewardComponent):
+    """
+    Soft social-distance penalty to nearest human/obstacle.
+
+    Prefer this *or* ``human_intrusion`` in a family — not both — to avoid
+    stacking the same clearance signal. Radius from transition ``comfort_radius``
+    when present (env single source of truth), else constructor default.
+    value = clip(1 - clearance / comfort_radius, 0, 1)
+    """
+
+    name = "human_proximity"
+
+    def __init__(self, comfort_radius: float = 1.0) -> None:
+        if comfort_radius <= 0:
+            raise ValueError(f"comfort_radius must be positive, got {comfort_radius}")
+        self.comfort_radius = float(comfort_radius)
+
+    def compute(self, transition: Mapping[str, Any]) -> float:
+        radius = _comfort_radius(transition, self.comfort_radius)
+        min_clearance = _min_obstacle_clearance(transition)
+        if min_clearance is None:
+            return 0.0
+        return float(np.clip(1.0 - min_clearance / radius, 0.0, 1.0))
+
+
+class HumanIntrusionComponent(RewardComponent):
+    """
+    Squared intrusion into personal space (comfort_radius), clipped to [0, 1].
+
+    Structurally sharper than linear ``human_proximity``. Prefer one of the two
+    human terms per family. Radius from transition when present.
+    """
+
+    name = "human_intrusion"
+
+    def __init__(self, comfort_radius: float = 1.0) -> None:
+        if comfort_radius <= 0:
+            raise ValueError(f"comfort_radius must be positive, got {comfort_radius}")
+        self.comfort_radius = float(comfort_radius)
+
+    def compute(self, transition: Mapping[str, Any]) -> float:
+        radius = _comfort_radius(transition, self.comfort_radius)
+        min_clearance = _min_obstacle_clearance(transition)
+        if min_clearance is None:
+            return 0.0
+        intrusion = max(0.0, radius - float(min_clearance))
+        return float(np.clip((intrusion / radius) ** 2, 0.0, 1.0))
+
+
+class CrowdedProgressComponent(RewardComponent):
+    """
+    Goal progress gated by clearance only (no second n_close discount).
+
+    progress_raw * gate, gate = clip(clearance / comfort_radius, 0, 1).
+    Encourages approaching the goal without packing into humans.
+    Radius from transition when present.
+    """
+
+    name = "crowded_progress"
+
+    def __init__(self, comfort_radius: float = 1.0) -> None:
+        if comfort_radius <= 0:
+            raise ValueError(f"comfort_radius must be positive, got {comfort_radius}")
+        self.comfort_radius = float(comfort_radius)
+
+    def compute(self, transition: Mapping[str, Any]) -> float:
+        prev_d = float(transition["prev_goal_distance"])
+        curr_d = float(transition["goal_distance"])
+        progress = prev_d - curr_d
+        radius = _comfort_radius(transition, self.comfort_radius)
+        min_clearance = _min_obstacle_clearance(transition)
+        if min_clearance is None:
+            gate = 1.0
+        else:
+            gate = float(np.clip(float(min_clearance) / radius, 0.0, 1.0))
+        return float(progress * gate)
+
+
+def _comfort_radius(transition: Mapping[str, Any], default: float) -> float:
+    raw = transition.get("comfort_radius")
+    if raw is None:
+        return float(default)
+    value = float(raw)
+    if value <= 0:
+        raise ValueError(f"comfort_radius must be positive, got {value}")
+    return value
+
+
 def _min_obstacle_clearance(transition: Mapping[str, Any]) -> float | None:
     position = np.asarray(transition["position"], dtype=np.float64)
     robot_radius = float(transition.get("robot_radius", 0.0))
@@ -229,6 +321,9 @@ def build_default_components(
     *,
     obstacle_safe_distance: float = 1.0,
     risk_radius: float = 0.75,
+    human_comfort_radius: float = 1.0,
+    human_intrusion_radius: float = 1.0,
+    crowded_progress_radius: float = 1.0,
 ) -> dict[str, RewardComponent]:
     """Create the standard component registry keyed by name."""
     components: list[RewardComponent] = [
@@ -243,6 +338,9 @@ def build_default_components(
         PotentialComponent(),
         NonlinearProgressComponent(),
         DistanceComponent(),
+        HumanProximityComponent(comfort_radius=human_comfort_radius),
+        HumanIntrusionComponent(comfort_radius=human_intrusion_radius),
+        CrowdedProgressComponent(comfort_radius=crowded_progress_radius),
     ]
     registry = {c.name: c for c in components}
     missing = set(COMPONENT_NAMES) - set(registry)

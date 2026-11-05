@@ -122,6 +122,8 @@ def _transition_from_step(
         "target": env.target,
         "robot_radius": float(env.robot_radius),
         "min_obstacle_clearance": info.get("min_obstacle_clearance"),
+        "n_humans_close": info.get("n_humans_close"),
+        "comfort_radius": info.get("comfort_radius", 1.0),
     }
 
 

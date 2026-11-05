@@ -77,23 +77,29 @@ def build_dataset_from_runs(
     experiments_root: str | Path,
     *,
     require_completed: bool = False,
+    candidate_ids: Optional[Sequence[str]] = None,
 ) -> pd.DataFrame:
     """
     Collect all run status files into a DataFrame.
 
     By default includes failed runs (with null metrics) so failures are visible.
     Set ``require_completed=True`` to keep only successful trainings.
+    If ``candidate_ids`` is set, keep only those candidate directories.
     """
+    allowed = None if candidate_ids is None else {str(c) for c in candidate_ids}
     paths = discover_status_files(experiments_root)
     records: list[dict[str, Any]] = []
     for path in paths:
+        cand_from_path = path.parent.parent.name
+        if allowed is not None and cand_from_path not in allowed:
+            continue
         try:
             status = _load_json(path)
         except (OSError, json.JSONDecodeError) as exc:
             logger.error("Failed to read %s: %s", path, exc)
             records.append(
                 {
-                    "candidate_id": path.parent.parent.name,
+                    "candidate_id": cand_from_path,
                     "family_id": None,
                     "training_seed": path.parent.name.replace("seed_", ""),
                     "training_status": "corrupt_status",
@@ -104,6 +110,8 @@ def build_dataset_from_runs(
             )
             continue
         record = status_to_record(status, status_path=path)
+        if allowed is not None and str(record.get("candidate_id")) not in allowed:
+            continue
         if require_completed and record.get("training_status") != "completed":
             continue
         records.append(record)
@@ -190,24 +198,32 @@ def build_and_save_phase1_dataset(
     experiments_root: str | Path,
     *,
     output_dir: str | Path | None = None,
+    candidate_ids: Optional[Sequence[str]] = None,
 ) -> tuple[pd.DataFrame, dict[str, Path]]:
     experiments_root = Path(experiments_root)
     output_dir = Path(output_dir) if output_dir is not None else experiments_root / "dataset"
-    df = build_dataset_from_runs(experiments_root, require_completed=False)
+    df = build_dataset_from_runs(
+        experiments_root,
+        require_completed=False,
+        candidate_ids=candidate_ids,
+    )
     df = attach_run_configs(df, experiments_root)
+    meta: dict[str, Any] = {
+        "experiments_root": str(experiments_root),
+        "n_completed": int((df["training_status"] == "completed").sum())
+        if "training_status" in df.columns and not df.empty
+        else 0,
+        "n_failed": int((df["training_status"] == "failed").sum())
+        if "training_status" in df.columns and not df.empty
+        else 0,
+    }
+    if candidate_ids is not None:
+        meta["n_candidates_filter"] = int(len(set(candidate_ids)))
     paths = save_dataset(
         df,
         csv_path=output_dir / "reward_performance_dataset.csv",
         parquet_path=output_dir / "reward_performance_dataset.parquet",
         metadata_path=output_dir / "dataset_metadata.json",
-        metadata={
-            "experiments_root": str(experiments_root),
-            "n_completed": int((df["training_status"] == "completed").sum())
-            if "training_status" in df.columns and not df.empty
-            else 0,
-            "n_failed": int((df["training_status"] == "failed").sum())
-            if "training_status" in df.columns and not df.empty
-            else 0,
-        },
+        metadata=meta,
     )
     return df, paths

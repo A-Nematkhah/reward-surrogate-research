@@ -1,0 +1,20 @@
+# Active CrowdNav experiment identity.
+# Bump ``run_id`` (or pass --run-id) for every new campaign so artifacts never
+# overwrite a previous PPO / surrogate tree.
+#
+# Paths derived by the pipeline:
+#   experiments/crowdnav_<run_id>/
+#   results/crowdnav_<run_id>/
+#
+# Archives:
+#   experiments/crowdnav_v1_50k/  — first CrowdNav Phase1 (50k, legacy pool)
+
+run_id: v2_150k
+
+# Optional human-readable tag stored in run_manifest.json
+description: "CrowdNav-aware 72 pool, PPO 150k, human proximity/intrusion/crowded_progress"
+
+# If experiments/crowdnav_<run_id>/runs already has completed jobs and
+# candidates.json pool_version differs, the pipeline refuses unless
+# force_new_run is true (or CLI --force-new-run), which appends a UTC stamp.
+force_new_run: false

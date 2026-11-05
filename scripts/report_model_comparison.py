@@ -65,6 +65,16 @@ def _agg_summary(df: pd.DataFrame) -> pd.DataFrame:
     return df.groupby(keys, as_index=False)[num_cols].mean(numeric_only=True)
 
 
+def _read_optional_csv(path: Path) -> pd.DataFrame:
+    """Return an empty frame when an optional CSV is missing or headerless."""
+    if not path.is_file() or path.stat().st_size == 0:
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path)
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame()
+
+
 def main() -> int:
     args = parse_args()
     setup_logging("INFO")
@@ -87,9 +97,9 @@ def main() -> int:
     raw = pd.read_csv(sum_path)
     summary = _agg_summary(raw)
     bias_path = exp_dir / "selection_bias_guard.csv"
-    bias = pd.read_csv(bias_path) if bias_path.is_file() else pd.DataFrame()
+    bias = _read_optional_csv(bias_path)
     paired_path = exp_dir / "paired_vs_baseline.csv"
-    paired = pd.read_csv(paired_path) if paired_path.is_file() else pd.DataFrame()
+    paired = _read_optional_csv(paired_path)
     run_cfg = {}
     rc_path = exp_dir / "run_config.json"
     if rc_path.is_file():
@@ -357,8 +367,21 @@ def main() -> int:
     lines.append("")
     lines.append("## Limitations")
     lines.append("")
-    lines.append("- n=108 candidates, 12 families; within-family signal is weak historically.")
-    lines.append("- Toy 2D navigation only; not CrowdNav.")
+    n_cand = None
+    try:
+        import pandas as _pd
+
+        _meta = _pd.read_csv(Path(exp_dir) / "oof_predictions.csv", usecols=["candidate_id"])
+        n_cand = int(_meta["candidate_id"].nunique())
+    except Exception:
+        n_cand = 108
+    lines.append(
+        f"- n={n_cand} candidates, 12 families; within-family signal is weak historically."
+    )
+    if "crowdnav" in str(exp_dir).replace("\\", "/").lower():
+        lines.append("- CrowdNav++ (ORCA humans); separate from the locked 2D pool.")
+    else:
+        lines.append("- Toy 2D navigation; CrowdNav is a separate experiment root.")
     lines.append("- Optional packages may skip models; see run_config skipped list.")
     lines.append("- Exploratory max over many configs is selection-biased.")
     lines.append("")

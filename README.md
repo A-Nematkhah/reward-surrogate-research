@@ -65,13 +65,28 @@ The same surrogate steps on CrowdNav++ (separate dirs; the 2D dataset stays put)
 python scripts/run_quality_pipeline.py --env crowdnav
 ```
 
-Phase 1 on CrowdNav is the long step (same candidate pool and PPO budget, ORCA humans). A short pilot is `--env crowdnav --max-jobs 1 --min-completed 1`. Results land in `experiments/crowdnav/` and `results/crowdnav/`.
+Phase 1 on CrowdNav is the long step (ORCA humans). Operating setup:
 
-Regenerate the Phase 1 pool only when labels themselves must be rebuilt:
+- **Pool:** 72 CrowdNav-aware candidates (`configs/reward_generation_crowdnav.yaml`) with human proximity / intrusion / crowded-progress terms and denser progress / time-pressure / clearance families
+- **PPO budget:** 150k timesteps (`configs/ppo_crowdnav.yaml`; early checkpoints 5k/12k/25k)
+- **Versioned roots:** `configs/crowdnav_run.yaml` → `experiments/crowdnav_<run_id>/` and `results/crowdnav_<run_id>/` (bump `run_id` or pass `--run-id` so campaigns never collide)
+- Archive of the first CrowdNav campaign: `experiments/crowdnav_v1_50k/`, `results/crowdnav_v1_50k/`
+
+Short pilot: `--env crowdnav --max-jobs 1 --min-completed 1`.
+
+Regenerate the 2D Phase 1 pool only when labels themselves must be rebuilt:
 
 ```bash
 python scripts/generate_candidates.py
 python scripts/run_phase1.py
+```
+
+CrowdNav (versioned; does not overwrite 2D or older CrowdNav trees):
+
+```bash
+python scripts/run_quality_pipeline.py --env crowdnav
+# or a fresh id:
+python scripts/run_quality_pipeline.py --env crowdnav --run-id v3_my_trial
 ```
 
 Primary Phase 2 protocol: **LOFO** (leave-one-family-out). Random holdout is secondary only.  

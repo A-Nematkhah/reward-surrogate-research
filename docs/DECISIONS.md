@@ -196,9 +196,17 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 | Target = **success_rate** | Selection decision. Safety rates stay in the dataset, not in the default fit. |
 | Default command = `python scripts/run_quality_pipeline.py` | Flag outliers, refresh early features, rebuild dataset, extract features, fit ExtraTrees, write the report. |
 | New pools use **48 candidates** (4 × 12 families) | Size curve on the 108-pool: within-family Spearman stays ≈ 0.63 vs 0.65; top-3 hit 0.77 vs 0.83. The 108-run archive stays in `experiments/phase1`. |
+| **Immutable baseline archive** | Frozen copy at `experiments/archives/model_comparison_confirm_2026-11-05/`. Verified means: pooled Spearman ≈ **0.935**, within-family ≈ **0.648**, top-3 hit **0.833**. Do **not** overwrite `experiments/model_comparison_confirm/` or `results/model_comparison_confirm/` without a new run_id / output dir. Do not cite unverified 0.8448/0.5751 as the 2D confirm (those are closer to CrowdNav v1). |
+| **Within-family estimand (post-audit)** | Primary within-family Spearman is reported on **identifiable** families (range vs seed-SE gate); all-12 macro remains secondary. See `research_audit/METRIC_POLICY.md`. |
+| **Identifiability metrics in LOFO** | Optional via `within_family_identifiability.enabled` (default **false** on confirm config). Benchmark config enables it and writes to `experiments/benchmark_phase2_base/` only — never into the locked confirm dirs. |
+| **Fair benchmark entrypoint** | `python scripts/run_fair_benchmark.py` (+ optional `--quick`). Locked contrast: mean / ridge / extra_trees. |
+| **Phase 3.1 feature extras** | `ratios` + `early_deltas` CSVs added; train-fold within-family std prune optional. Quick ablation did **not** beat `early+math+behavioral` on identifiable within-Spearman → keep operating features; do not promote ratios/deltas from quick screen alone. |
+| **Phase 3.2 ranking contrast** | Pre-registered `pairwise_logistic` vs ExtraTrees on identifiable within-Spearman. Point estimate favored pairwise (+0.07) but family bootstrap 90% CI included 0 → **keep ExtraTrees**; do not escalate rankers/NNs. |
+| **Phase 4 adaptive seeds (plan only)** | Cap 36 extra seed-runs focused on `risk_sensitive` + `nonlinear_progress`. Plan at `results/adaptive_seed_plan/`. **No PPO launched** until explicit authorization; never overwrite phase1 archive. |
+| **Phase 5 selection sim** | Offline ET top-k on confirm OOF beats random; finds global best by k=5 (k=3 within ~0.015). Supports triage claim; online AL still deferred. |
 
 ## Deferred (by design)
 
-- CrowdNav++ is vendored at `third_party/CrowdNavPlusPlus`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into `experiments/crowdnav` and fits the same ExtraTrees pipeline into `results/crowdnav`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
+- CrowdNav++ is vendored at `third_party/CrowdNavPlusPlus`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into versioned roots `experiments/crowdnav_<run_id>/` / `results/crowdnav_<run_id>/` (`configs/crowdnav_run.yaml`). The first campaign is archived at `experiments/crowdnav_v1_50k/` and `results/crowdnav_v1_50k/`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
 - LLM reward generation remains future work.
 - Full Active Learning loop is next once this push is accepted.

@@ -19,6 +19,9 @@ components:
   - potential
   - nonlinear_progress
   - distance
+  - human_proximity
+  - human_intrusion
+  - crowded_progress
 
 component_scales:
   progress: 1.0
@@ -32,6 +35,9 @@ component_scales:
   potential: 1.0
   nonlinear_progress: 1.0
   distance: 1.0
+  human_proximity: 1.0
+  human_intrusion: 1.0
+  crowded_progress: 1.0
 
 families:
   balanced:

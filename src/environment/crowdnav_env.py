@@ -163,6 +163,8 @@ class CrowdNavPlusPlusEnv(gym.Env):
         clearance = self._min_human_clearance()
         if clearance < self._min_clearance:
             self._min_clearance = clearance
+        comfort = float((self.config.get("crowdnav") or {}).get("comfort_radius", 1.0))
+        n_close = self._count_humans_within(comfort)
 
         success = reason == REASON_SUCCESS
         collision = reason == REASON_COLLISION
@@ -192,6 +194,8 @@ class CrowdNavPlusPlusEnv(gym.Env):
             "target": Circle(float(self._cn.robot.gx), float(self._cn.robot.gy), float(self._cn.robot.radius)),
             "robot_radius": float(self._cn.robot.radius),
             "min_obstacle_clearance": clearance,
+            "n_humans_close": n_close,
+            "comfort_radius": comfort,
         }
         reward = float(self.reward_fn(self, transition))
         self._prev_action = action_arr.astype(np.float64)
@@ -244,6 +248,16 @@ class CrowdNavPlusPlusEnv(gym.Env):
             clearances.append(dist - float(human.radius) - float(robot.radius))
         return float(min(clearances))
 
+    def _count_humans_within(self, comfort_radius: float) -> int:
+        robot = self._cn.robot
+        count = 0
+        for human in self._cn.humans:
+            dist = float(np.hypot(human.px - robot.px, human.py - robot.py))
+            clearance = dist - float(human.radius) - float(robot.radius)
+            if clearance < float(comfort_radius):
+                count += 1
+        return int(count)
+
     def _info(self, reason: str, reward: float) -> dict[str, Any]:
         info = {
             "termination_reason": reason,
@@ -256,6 +270,12 @@ class CrowdNavPlusPlusEnv(gym.Env):
             "path_length": self._path_length,
             "min_obstacle_clearance": (
                 float(self._min_clearance) if np.isfinite(self._min_clearance) else None
+            ),
+            "n_humans_close": self._count_humans_within(
+                float((self.config.get("crowdnav") or {}).get("comfort_radius", 1.0))
+            ),
+            "comfort_radius": float(
+                (self.config.get("crowdnav") or {}).get("comfort_radius", 1.0)
             ),
             "reward": reward,
             "step_count": self._step_count,

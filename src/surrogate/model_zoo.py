@@ -120,18 +120,23 @@ class PairwiseLogisticRanker(BaseEstimator, RegressorMixin):
         C: float = 1.0,
         random_state: int = 0,
         max_pairs: int = 2000,
-        within_family_frac: float = 0.7,
+        within_family_frac: float = 1.0,
+        within_family_only: bool = True,
+        min_abs_delta: float = 0.0,
     ) -> None:
         self.C = C
         self.random_state = random_state
         self.max_pairs = max_pairs
         self.within_family_frac = within_family_frac
+        self.within_family_only = within_family_only
+        self.min_abs_delta = min_abs_delta
 
     def fit(self, X, y, groups=None):
         X, y = check_X_y(X, y, dtype=np.float64, multi_output=False)
         groups = np.asarray(groups) if groups is not None else np.zeros(len(y), dtype=int)
         rng = np.random.default_rng(self.random_state)
         n = len(y)
+        min_gap = float(self.min_abs_delta)
         pairs: list[tuple[int, int]] = []
         # Prefer within-family pairs
         for g in np.unique(groups):
@@ -139,17 +144,22 @@ class PairwiseLogisticRanker(BaseEstimator, RegressorMixin):
             for a in range(len(idx)):
                 for b in range(a + 1, len(idx)):
                     i, j = int(idx[a]), int(idx[b])
-                    if y[i] == y[j]:
+                    if abs(float(y[i] - y[j])) <= min_gap:
                         continue
                     pairs.append((i, j) if y[i] > y[j] else (j, i))
         within = pairs
         cross: list[tuple[int, int]] = []
-        for _ in range(max(0, self.max_pairs)):
-            i, j = int(rng.integers(0, n)), int(rng.integers(0, n))
-            if i == j or y[i] == y[j]:
-                continue
-            cross.append((i, j) if y[i] > y[j] else (j, i))
-        n_within = int(self.within_family_frac * self.max_pairs)
+        if not bool(self.within_family_only):
+            for _ in range(max(0, self.max_pairs)):
+                i, j = int(rng.integers(0, n)), int(rng.integers(0, n))
+                if i == j or abs(float(y[i] - y[j])) <= min_gap:
+                    continue
+                cross.append((i, j) if y[i] > y[j] else (j, i))
+        n_within = (
+            int(self.max_pairs)
+            if bool(self.within_family_only)
+            else int(self.within_family_frac * self.max_pairs)
+        )
         rng.shuffle(within)
         rng.shuffle(cross)
         chosen = within[:n_within] + cross[: max(0, self.max_pairs - n_within)]
@@ -578,6 +588,10 @@ def make_model(
         return PairwiseLogisticRanker(
             C=float(p.get("C", 1.0)),
             random_state=random_state,
+            max_pairs=int(p.get("max_pairs", 2000)),
+            within_family_frac=float(p.get("within_family_frac", 1.0)),
+            within_family_only=bool(p.get("within_family_only", True)),
+            min_abs_delta=float(p.get("min_abs_delta", 0.0)),
         )
     if name == "tabpfn":
         if not _tabpfn_ready():

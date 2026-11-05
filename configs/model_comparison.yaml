@@ -43,6 +43,8 @@ preprocessing:
   default_target_transform: none
   default_feature_selection: top_k_by_spearman
   default_k: 15
+  # 0 = disabled. Train-fold only: drop cols with mean within-family std below threshold.
+  min_within_family_std: 0.0
 
 inner_cv:
   strategy: leave_one_family_out
@@ -53,6 +55,13 @@ topk:
   within_family_k: 3
   min_family_size_for_within: 4
 
+# Default OFF so historical confirm CSVs stay comparable. Enable in benchmark.yaml.
+within_family_identifiability:
+  enabled: false
+  min_range: 0.05
+  se_multiplier: 2.0
+  dataset_csv: experiments/phase1/dataset/reward_performance_dataset.csv
+
 higher_is_better:
   success_rate: true
   timeout_rate: false
@@ -60,6 +69,7 @@ higher_is_better:
   mean_goal_time: false
   mean_path_length: false
 
+# early cost = last warmup checkpoint (2D: 12k; CrowdNav PPO uses 25k — see ppo_crowdnav.yaml)
 ppo_cost_steps:
   static: 0
   math: 0
@@ -72,6 +82,9 @@ ppo_cost_steps:
   "early+static": 12000
   "math+behavioral": 0
   "early+math+behavioral": 12000
+  # CrowdNav reporting aliases (used when features include 25k early checkpoint)
+  early_crowdnav: 25000
+  "early+math+behavioral_crowdnav": 25000
 
 # Small, strongly regularized hyperparameter grids
 hyperparameters:

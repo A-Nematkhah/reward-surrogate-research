@@ -10,7 +10,10 @@ from src.environment.navigation_2d import make_env
 from src.rewards.components import (
     COMPONENT_NAMES,
     CollisionComponent,
+    CrowdedProgressComponent,
     GoalComponent,
+    HumanIntrusionComponent,
+    HumanProximityComponent,
     ObstacleProximityComponent,
     ProgressComponent,
     SmoothnessComponent,
@@ -81,6 +84,59 @@ def test_smoothness_and_time() -> None:
     # ||delta|| = 2, /sqrt(2) = sqrt(2)
     assert SmoothnessComponent()(t) == pytest.approx(np.sqrt(2.0))
     assert TimeComponent()(t) == 1.0
+
+
+def test_human_and_crowded_progress_components() -> None:
+    far = _transition(
+        position=np.array([0.0, 0.0]),
+        obstacles=[Circle(5.0, 0.0, 0.5)],
+        robot_radius=0.15,
+        prev_goal_distance=2.0,
+        goal_distance=1.0,
+        comfort_radius=1.0,
+        n_humans_close=0,
+    )
+    assert HumanProximityComponent()(far) == pytest.approx(0.0)
+    assert HumanIntrusionComponent()(far) == pytest.approx(0.0)
+    assert CrowdedProgressComponent()(far) == pytest.approx(1.0)
+
+    close = _transition(
+        position=np.array([0.0, 0.0]),
+        obstacles=[Circle(0.5, 0.0, 0.2)],
+        robot_radius=0.15,
+        prev_goal_distance=2.0,
+        goal_distance=1.0,
+        comfort_radius=1.0,
+        n_humans_close=2,
+    )
+    # clearance = 0.5 - 0.2 - 0.15 = 0.15 → gate = 0.15
+    prox = HumanProximityComponent()(close)
+    assert 0.0 < prox <= 1.0
+    intrusion = HumanIntrusionComponent()(close)
+    assert 0.0 < intrusion <= 1.0
+    gated = CrowdedProgressComponent()(close)
+    assert gated == pytest.approx(1.0 * 0.15)
+    # n_humans_close must not apply a second discount
+    close_no_count = dict(close)
+    close_no_count["n_humans_close"] = None
+    assert CrowdedProgressComponent()(close_no_count) == pytest.approx(gated)
+
+    penetrating = _transition(
+        position=np.array([0.0, 0.0]),
+        obstacles=[Circle(0.2, 0.0, 0.3)],
+        robot_radius=0.15,
+        comfort_radius=1.0,
+    )
+    # clearance negative → intrusion clipped to 1
+    assert HumanIntrusionComponent()(penetrating) == pytest.approx(1.0)
+    # transition comfort_radius overrides constructor default
+    wide = dict(close)
+    wide["comfort_radius"] = 2.0
+    # Larger comfort → same clearance is a deeper relative intrusion → higher proximity
+    assert HumanProximityComponent(comfort_radius=1.0)(wide) > prox
+    assert HumanProximityComponent(comfort_radius=1.0)(wide) == pytest.approx(
+        1.0 - 0.15 / 2.0
+    )
 
 
 def test_compute_all_components_finite() -> None:

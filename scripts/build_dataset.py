@@ -53,6 +53,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Do not drop outlier seeds even if the default CSV exists",
     )
+    parser.add_argument(
+        "--candidates-json",
+        type=Path,
+        default=None,
+        help=(
+            "If set, keep only candidate_ids listed in this pool JSON "
+            "(e.g. experiments/crowdnav/candidates.json for the 72-pool)."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -61,25 +70,51 @@ def main() -> int:
     setup_logging("INFO")
     logger = get_logger("build_dataset")
 
+    candidate_ids = None
+    if args.candidates_json is not None:
+        with Path(args.candidates_json).open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+        candidate_ids = [c["candidate_id"] for c in payload["candidates"]]
+        logger.info(
+            "Filtering dataset to %d candidates from %s",
+            len(candidate_ids),
+            args.candidates_json,
+        )
+
     df, paths = build_and_save_phase1_dataset(
         args.experiments_root,
         output_dir=args.output_dir,
+        candidate_ids=candidate_ids,
     )
     drop_csv = None if args.no_drop_outliers else args.drop_outliers_csv
-    if drop_csv is not None and str(drop_csv).strip() and Path(drop_csv).is_file():
-        flagged = pd.read_csv(drop_csv)
+    drop_path = Path(drop_csv) if drop_csv is not None else None
+    if (
+        drop_path is not None
+        and str(drop_path).strip()
+        and drop_path.is_file()
+        and drop_path.stat().st_size > 0
+    ):
+        try:
+            flagged = pd.read_csv(drop_path)
+        except pd.errors.EmptyDataError:
+            flagged = pd.DataFrame()
+        if flagged.empty or "candidate_id" not in flagged.columns:
+            logger.info("Outlier CSV has no rows; dataset kept unfiltered")
+            flagged = None
         before = len(df)
-        df = drop_flagged_seeds(df, flagged)
+        if flagged is not None:
+            df = drop_flagged_seeds(df, flagged)
         # Rewrite artifacts with filtered rows
         out_dir = Path(paths["csv"]).parent
         csv_path = out_dir / "reward_performance_dataset.csv"
         df.to_csv(csv_path, index=False)
-        logger.info(
-            "Dropped outlier seeds: %d -> %d rows (using %s)",
-            before,
-            len(df),
-            drop_csv,
-        )
+        if flagged is not None:
+            logger.info(
+                "Dropped outlier seeds: %d -> %d rows (using %s)",
+                before,
+                len(df),
+                drop_path,
+            )
     elif not args.no_drop_outliers:
         logger.info(
             "No outlier CSV at %s — dataset kept unfiltered. "

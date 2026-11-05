@@ -1,0 +1,16 @@
+# CrowdNav-specific PPO budget (merged over configs/ppo.yaml by the pipeline).
+# 50k left mean success ~0.10 (timeout-dominated). 150k is the operating choice
+# in the 100k–200k band suggested by the CrowdNav analysis.
+
+total_timesteps: 150000
+
+early_behavioral:
+  enabled: true
+  timesteps: 12000
+  checkpoints: [5000, 12000, 25000]
+  n_episodes: 20
+  seed_offset: 50000
+  deterministic: false
+  stable_stats: true
+
+save_freq_timesteps: 50000

@@ -96,6 +96,37 @@ def test_reward_family_counts_match_pool_intent(config_dir: Path) -> None:
     assert family_total == 48
 
 
+def test_crowdnav_reward_pool_is_72(config_dir: Path) -> None:
+    config = load_named_config("reward_generation_crowdnav", config_dir=config_dir)
+    family_total = sum(fam["n"] for fam in config["families"].values())
+    assert family_total == config["n_candidates"] == 72
+    assert all(fam["n"] == 6 for fam in config["families"].values())
+    expected = {
+        "balanced",
+        "progress_heavy",
+        "progress_dense",
+        "time_pressure",
+        "human_clearance",
+        "crowded_progress",
+        "risk_sensitive",
+        "efficiency",
+        "energy_aware",
+        "nonlinear_progress",
+        "safety_moderate",
+        "weak_contrast",
+    }
+    assert set(config["families"]) == expected
+    for name in ("human_proximity", "human_intrusion", "crowded_progress"):
+        assert name in config["components"]
+        assert name in config["component_scales"]
+
+
+def test_ppo_crowdnav_budget(config_dir: Path) -> None:
+    cfg = load_named_config("ppo_crowdnav", config_dir=config_dir)
+    assert int(cfg["total_timesteps"]) == 150000
+    assert cfg["early_behavioral"]["checkpoints"] == [5000, 12000, 25000]
+
+
 def test_configs_are_valid_yaml(config_dir: Path) -> None:
     for filename in CONFIG_FILES.values():
         with (config_dir / filename).open("r", encoding="utf-8") as handle:

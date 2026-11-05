@@ -1,0 +1,82 @@
+# Phase 3.1 feature ablation (ExtraTrees only). Does not touch confirm dirs.
+
+random_seed: 123
+n_repeats: 1
+n_jobs: 4
+n_bootstrap: 200
+quick: false
+
+features_dir: experiments/phase2/features
+output_dir: experiments/benchmark_phase3_features
+results_dir: results/benchmark_phase3_features
+
+targets:
+  - success_rate
+
+feature_sets:
+  - early+math+behavioral
+  - early+math
+  - early+math+ratios
+  - early+math+ratios+early_deltas
+  - early+math+behavioral+ratios
+
+primary:
+  target: success_rate
+  feature_set: early+math+behavioral
+  models:
+    - extra_trees
+
+models:
+  - extra_trees
+
+baseline_model: extra_trees
+
+preprocessing:
+  impute: median
+  drop_constant: true
+  standardize_for: [ridge]
+  target_transform_options: [none]
+  feature_selection_options: [top_k_by_spearman]
+  top_k_values: [15, 30]
+  pca_components: [5]
+  default_target_transform: none
+  default_feature_selection: top_k_by_spearman
+  default_k: 15
+  min_within_family_std: 0.0
+
+inner_cv:
+  strategy: leave_one_family_out
+  optimize: within_family_spearman
+
+topk:
+  pooled_k: [5, 10, 20]
+  within_family_k: 3
+  min_family_size_for_within: 4
+
+within_family_identifiability:
+  enabled: true
+  min_range: 0.05
+  se_multiplier: 2.0
+  dataset_csv: experiments/phase1/dataset/reward_performance_dataset.csv
+
+higher_is_better:
+  success_rate: true
+
+ppo_cost_steps:
+  early: 12000
+  "early+math": 12000
+  "early+math+behavioral": 12000
+  "early+math+ratios": 12000
+  "early+math+ratios+early_deltas": 12000
+  "early+math+behavioral+ratios": 12000
+
+hyperparameters:
+  extra_trees:
+    n_estimators: [250]
+    max_depth: [null, 8]
+    min_samples_leaf: [2, 4]
+
+quick_overrides:
+  n_repeats: 1
+  n_bootstrap: 50
+  hyperparameter_max_combos: 2

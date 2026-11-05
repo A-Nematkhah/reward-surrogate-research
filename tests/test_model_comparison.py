@@ -13,7 +13,9 @@ from sklearn.model_selection import LeaveOneGroupOut
 from src.surrogate.evaluation import association_status
 from src.surrogate.model_comparison import (
     _topk_selection_metrics,
+    evaluate_oof_bundle,
     fit_preprocessor,
+    identifiable_families_from_labels,
     load_feature_matrix,
     within_family_top_hit,
 )
@@ -136,6 +138,41 @@ def test_within_family_top_hit():
     hit = within_family_top_hit(y_true, y_pred, groups, k=1, higher_is_better=True)
     # fam a: best idx1, pred top1 is idx1; fam b: best idx3, pred top1 idx3
     assert hit == pytest.approx(1.0)
+
+
+def test_identifiable_families_gate_and_oof_metrics():
+    # flat family range 0.01; wide family range 0.6
+    y_true = np.asarray([0.10, 0.11, 0.105, 0.11, 0.2, 0.5, 0.8, 0.7], dtype=float)
+    y_pred = np.asarray([0.1, 0.2, 0.15, 0.12, 0.1, 0.6, 0.9, 0.65], dtype=float)
+    groups = np.asarray(["flat", "flat", "flat", "flat", "wide", "wide", "wide", "wide"])
+    allow = identifiable_families_from_labels(
+        y_true, groups, min_range=0.05, se_multiplier=2.0, family_median_se={}, min_size=4
+    )
+    assert allow == {"wide"}
+
+    cfg = {
+        "higher_is_better": {"success_rate": True},
+        "topk": {"pooled_k": [2], "within_family_k": 3, "min_family_size_for_within": 4},
+        "n_bootstrap": 20,
+        "within_family_identifiability": {
+            "enabled": True,
+            "min_range": 0.05,
+            "se_multiplier": 2.0,
+            "dataset_csv": None,
+        },
+    }
+    m = evaluate_oof_bundle(
+        y_true, y_pred, groups, target="success_rate", model_name="ridge", config=cfg, seed=0
+    )
+    assert m["n_families_identifiable"] == 1.0
+    assert np.isfinite(m["within_family_spearman_identifiable_mean"])
+    # Disabled → no identifiable keys
+    cfg2 = dict(cfg)
+    cfg2["within_family_identifiability"] = {"enabled": False}
+    m2 = evaluate_oof_bundle(
+        y_true, y_pred, groups, target="success_rate", model_name="ridge", config=cfg2, seed=0
+    )
+    assert "within_family_spearman_identifiable_mean" not in m2
 
 
 def test_missing_optional_dependency_skips_not_crash(monkeypatch):

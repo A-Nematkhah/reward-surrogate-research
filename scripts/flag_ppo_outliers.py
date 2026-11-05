@@ -110,6 +110,20 @@ def main() -> int:
         min_seed_span=args.min_span,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    if flagged.empty:
+        flagged = pd.DataFrame(
+            columns=[
+                "candidate_id",
+                "family_id",
+                "training_seed",
+                "metric",
+                "metric_value",
+                "candidate_median",
+                "candidate_span",
+                "abs_dev_from_median",
+                "reason",
+            ]
+        )
     flagged.to_csv(args.output, index=False)
     summary = summarize_flags(flagged)
     summary["policy"] = "filter_by_default"

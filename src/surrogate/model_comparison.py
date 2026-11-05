@@ -43,6 +43,10 @@ COMBO_FEATURE_SETS = {
     "early+static": ("early", "static"),
     "math+behavioral": ("math", "behavioral"),
     "early+math+behavioral": ("early", "math", "behavioral"),
+    # Phase-3 extras (see scripts/build_phase3_feature_extras.py)
+    "early+math+ratios": ("early", "math", "ratios"),
+    "early+math+ratios+early_deltas": ("early", "math", "ratios", "early_deltas"),
+    "early+math+behavioral+ratios": ("early", "math", "behavioral", "ratios"),
 }
 
 
@@ -145,6 +149,32 @@ class FoldPreprocessor:
         return y_t
 
 
+def _within_family_std_mask(
+    X: np.ndarray,
+    groups: np.ndarray,
+    *,
+    min_within_std: float,
+) -> np.ndarray:
+    """Keep columns whose mean within-family std on *train* exceeds threshold."""
+    keep = np.ones(X.shape[1], dtype=bool)
+    if min_within_std <= 0 or groups is None or len(groups) != len(X):
+        return keep
+    for j in range(X.shape[1]):
+        stds: list[float] = []
+        col = X[:, j]
+        for g in np.unique(groups):
+            m = groups == g
+            if int(m.sum()) < 2:
+                continue
+            stds.append(float(np.std(col[m])))
+        mean_std = float(np.mean(stds)) if stds else 0.0
+        if mean_std < float(min_within_std):
+            keep[j] = False
+    if not np.any(keep):
+        return np.ones(X.shape[1], dtype=bool)
+    return keep
+
+
 def fit_preprocessor(
     X_train: np.ndarray,
     y_train: np.ndarray,
@@ -154,11 +184,18 @@ def fit_preprocessor(
     k: int,
     pca_components: int | None,
     standardize: bool,
+    groups_train: np.ndarray | None = None,
+    min_within_family_std: float = 0.0,
 ) -> FoldPreprocessor:
     imputer = SimpleImputer(strategy="median")
     X_imp = imputer.fit_transform(X_train)
     # Drop constant columns
     keep = np.std(X_imp, axis=0) > 1e-12
+    if groups_train is not None and float(min_within_family_std) > 0:
+        wf = _within_family_std_mask(
+            X_imp, groups_train, min_within_std=float(min_within_family_std)
+        )
+        keep = keep & wf
     if not np.any(keep):
         keep = np.ones(X_imp.shape[1], dtype=bool)
     X_k = X_imp[:, keep]
@@ -217,9 +254,13 @@ def _within_family_spearman(
     groups: np.ndarray,
     *,
     min_size: int = 4,
+    family_allowlist: set[str] | None = None,
+    prefix: str = "within_family_spearman",
 ) -> dict[str, float]:
     vals: list[float] = []
     for g in np.unique(groups):
+        if family_allowlist is not None and str(g) not in family_allowlist:
+            continue
         m = groups == g
         if int(m.sum()) < min_size:
             continue
@@ -229,20 +270,129 @@ def _within_family_spearman(
         sp = spearmanr(y_true[m], y_pred[m]).correlation
         if sp is not None and np.isfinite(sp):
             vals.append(float(sp))
+    n_key = (
+        "n_families_identifiable_scored"
+        if prefix.endswith("_identifiable")
+        else "n_families_scored"
+    )
     if not vals:
         return {
-            "within_family_spearman_mean": float("nan"),
-            "within_family_spearman_median": float("nan"),
-            "within_family_spearman_std": float("nan"),
-            "n_families_scored": 0.0,
+            f"{prefix}_mean": float("nan"),
+            f"{prefix}_median": float("nan"),
+            f"{prefix}_std": float("nan"),
+            n_key: 0.0,
         }
     arr = np.asarray(vals, dtype=np.float64)
     return {
-        "within_family_spearman_mean": float(np.mean(arr)),
-        "within_family_spearman_median": float(np.median(arr)),
-        "within_family_spearman_std": float(np.std(arr)),
-        "n_families_scored": float(len(arr)),
+        f"{prefix}_mean": float(np.mean(arr)),
+        f"{prefix}_median": float(np.median(arr)),
+        f"{prefix}_std": float(np.std(arr)),
+        n_key: float(len(arr)),
     }
+
+
+def _load_family_median_se(
+    dataset_csv: str | Path | None,
+    *,
+    target: str,
+) -> dict[str, float]:
+    """Median per-candidate SE of ``target`` within each family (seed-level CSV)."""
+    if not dataset_csv:
+        return {}
+    path = Path(dataset_csv)
+    if not path.is_file():
+        path = PROJECT_ROOT / path
+    if not path.is_file():
+        logger.warning("Identifiability dataset missing: %s", dataset_csv)
+        return {}
+    df = pd.read_csv(path)
+    if target not in df.columns or "family_id" not in df.columns:
+        return {}
+    cand = (
+        df.groupby(["family_id", "candidate_id"], as_index=False)
+        .agg(std_y=(target, "std"), n=(target, "count"))
+    )
+    cand["se"] = cand["std_y"] / np.sqrt(cand["n"].clip(lower=1))
+    return {
+        str(fam): float(g["se"].median())
+        for fam, g in cand.groupby("family_id")
+    }
+
+
+def identifiable_families_from_labels(
+    y_true: np.ndarray,
+    groups: np.ndarray,
+    *,
+    min_range: float = 0.05,
+    se_multiplier: float = 2.0,
+    family_median_se: Mapping[str, float] | None = None,
+    min_size: int = 4,
+) -> set[str]:
+    """Families with enough SR range relative to seed noise (METRIC_POLICY)."""
+    se_map = dict(family_median_se or {})
+    out: set[str] = set()
+    for g in np.unique(groups):
+        m = groups == g
+        if int(m.sum()) < min_size:
+            continue
+        yt = np.asarray(y_true[m], dtype=np.float64)
+        yt = yt[np.isfinite(yt)]
+        if yt.size < min_size:
+            continue
+        rng = float(np.max(yt) - np.min(yt))
+        med_se = float(se_map.get(str(g), 0.0))
+        thresh = max(float(min_range), float(se_multiplier) * med_se)
+        if rng >= thresh:
+            out.add(str(g))
+    return out
+
+
+def _identifiability_metrics(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    groups: np.ndarray,
+    *,
+    target: str,
+    config: Mapping[str, Any],
+    higher_is_better: bool,
+    min_size: int,
+) -> dict[str, float]:
+    cfg = dict(config.get("within_family_identifiability") or {})
+    if not bool(cfg.get("enabled", False)):
+        return {}
+    min_range = float(cfg.get("min_range", 0.05))
+    se_mult = float(cfg.get("se_multiplier", 2.0))
+    se_map = _load_family_median_se(cfg.get("dataset_csv"), target=target)
+    allow = identifiable_families_from_labels(
+        y_true,
+        groups,
+        min_range=min_range,
+        se_multiplier=se_mult,
+        family_median_se=se_map,
+        min_size=min_size,
+    )
+    metrics = _within_family_spearman(
+        y_true,
+        y_pred,
+        groups,
+        min_size=min_size,
+        family_allowlist=allow,
+        prefix="within_family_spearman_identifiable",
+    )
+    metrics["n_families_identifiable"] = float(len(allow))
+    # Restrict top-hit to identifiable families
+    if allow:
+        mask = np.isin(groups.astype(str), list(allow))
+        metrics["within_family_top3_hit_identifiable"] = within_family_top_hit(
+            y_true[mask],
+            y_pred[mask],
+            groups[mask],
+            k=int(config.get("topk", {}).get("within_family_k", 3)),
+            higher_is_better=higher_is_better,
+        )
+    else:
+        metrics["within_family_top3_hit_identifiable"] = float("nan")
+    return metrics
 
 
 def _topk_selection_metrics(
@@ -452,6 +602,7 @@ def _fit_predict(
     prep_cfg: Mapping[str, Any],
     standardize: bool,
     random_state: int,
+    min_within_family_std: float = 0.0,
 ) -> tuple[np.ndarray, float, float, dict[str, Any]]:
     t0 = time.perf_counter()
     pre = fit_preprocessor(
@@ -462,6 +613,8 @@ def _fit_predict(
         k=int(prep_cfg.get("k", 15)),
         pca_components=prep_cfg.get("pca_components"),
         standardize=standardize,
+        groups_train=groups_tr,
+        min_within_family_std=float(min_within_family_std),
     )
     Xtr = pre.transform_X(X_tr)
     Xte = pre.transform_X(X_te)
@@ -531,6 +684,9 @@ def _inner_select(
 
     standardize_for = set(config.get("preprocessing", {}).get("standardize_for", []))
     standardize = model_name in standardize_for or model_name.startswith("mlp")
+    min_wf_std = float(
+        config.get("preprocessing", {}).get("min_within_family_std", 0.0) or 0.0
+    )
 
     logo = LeaveOneGroupOut()
     unique = np.unique(groups)
@@ -557,6 +713,7 @@ def _inner_select(
                         prep_cfg=prep_cfg,
                         standardize=standardize,
                         random_state=random_state,
+                        min_within_family_std=min_wf_std,
                     )
                 except Exception:  # noqa: BLE001
                     fold_scores.append(-1.0)
@@ -614,6 +771,17 @@ def evaluate_oof_bundle(
             metrics["rmse"] = float("nan")
             metrics["r2"] = float("nan")
     metrics.update(_within_family_spearman(y_true, y_pred, groups, min_size=min_size))
+    metrics.update(
+        _identifiability_metrics(
+            y_true,
+            y_pred,
+            groups,
+            target=target,
+            config=config,
+            higher_is_better=hib,
+            min_size=min_size,
+        )
+    )
     metrics["pairwise_accuracy"] = pairwise_ranking_accuracy(
         y_true, y_pred, higher_is_better=hib
     )
@@ -697,6 +865,9 @@ def _run_single_model_lofo(
 
     standardize_for = set(config.get("preprocessing", {}).get("standardize_for", []))
     standardize = model_name in standardize_for or model_name.startswith("mlp")
+    min_wf_std = float(
+        config.get("preprocessing", {}).get("min_within_family_std", 0.0) or 0.0
+    )
 
     for fold_i, (tr, te) in enumerate(logo.split(X, y, groups)):
         params, prep_cfg = _inner_select(
@@ -719,6 +890,7 @@ def _run_single_model_lofo(
                 prep_cfg=prep_cfg,
                 standardize=standardize,
                 random_state=random_state + fold_i,
+                min_within_family_std=min_wf_std,
             )
         except ImportError as exc:
             logger.info("Skipping %s (missing dependency: %s)", model_name, exc)
@@ -989,6 +1161,21 @@ def run_model_comparison(
                         )
 
     paired_df = pd.DataFrame(paired_rows)
+    if paired_df.empty:
+        paired_df = pd.DataFrame(
+            columns=[
+                "repeat",
+                "feature_set",
+                "target",
+                "model",
+                "baseline",
+                "mean_spearman_diff",
+                "diff_ci_lo",
+                "diff_ci_hi",
+                "n_families",
+                "note",
+            ]
+        )
 
     # Selection-bias guard for exploratory grid
     bias_rows = []

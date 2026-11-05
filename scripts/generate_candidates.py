@@ -30,6 +30,12 @@ def parse_args() -> argparse.Namespace:
         help="Directory containing YAML configs",
     )
     parser.add_argument(
+        "--config-name",
+        type=str,
+        default="reward_generation",
+        help="Named config key or yaml filename (e.g. reward_generation_crowdnav)",
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=None,
@@ -61,7 +67,7 @@ def main() -> int:
     setup_logging("INFO")
     logger = get_logger("generate_candidates")
 
-    config = load_named_config("reward_generation", config_dir=args.config_dir)
+    config = load_named_config(args.config_name, config_dir=args.config_dir)
     if args.override:
         # apply_dot_overrides expects nested keys; reward_generation is flat at top
         config = apply_dot_overrides(config, args.override)

@@ -222,6 +222,8 @@ class RewardNavigation2D(gym.Env):
             "target": self._target,
             "robot_radius": self.robot_radius,
             "min_obstacle_clearance": self._current_min_clearance(),
+            "n_humans_close": self._count_obstacles_within(1.0),
+            "comfort_radius": 1.0,
             "nearest": nearest_obstacles(
                 self._robot_pos,
                 self._obstacles,
@@ -437,6 +439,18 @@ class RewardNavigation2D(gym.Env):
             clearance_to_circle(self._robot_pos, obs, point_radius=self.robot_radius)
             for obs in self._obstacles
         )
+
+    def _count_obstacles_within(self, comfort_radius: float) -> int:
+        if not self._obstacles:
+            return 0
+        count = 0
+        for obs in self._obstacles:
+            clearance = clearance_to_circle(
+                self._robot_pos, obs, point_radius=self.robot_radius
+            )
+            if clearance < float(comfort_radius):
+                count += 1
+        return int(count)
 
     def _update_min_clearance(self) -> None:
         clearance = self._current_min_clearance()

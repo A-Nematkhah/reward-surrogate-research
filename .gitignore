@@ -30,13 +30,21 @@ experiments/phase1/**
 !experiments/phase1/.gitkeep
 experiments/phase2/**
 !experiments/phase2/.gitkeep
+experiments/archives/
+experiments/benchmark_*/
+experiments/model_comparison*/
+experiments/crowdnav*/
 results/**
 !results/.gitkeep
+
+# Vendored / bulky local trees (clone separately if needed)
+third_party/
 
 # Large / generated artifacts
 *.pt
 *.pth
 *.zip
+*.rar
 *.ckpt
 *.parquet
 *.log
