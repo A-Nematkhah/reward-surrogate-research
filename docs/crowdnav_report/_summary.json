@@ -1,0 +1,428 @@
+{
+  "label_50k": {
+    "n_candidates": 72,
+    "n_families": 12,
+    "mean": 0.10014467592592594,
+    "median": 0.058333333333333334,
+    "std": 0.13197774358968026,
+    "min": 0.0,
+    "max": 0.5083333333333333,
+    "mean_seed_std": 0.02913548182525026,
+    "median_seed_std": 0.016535945694153696,
+    "frac_seed_std_gt_0_05": 0.2222222222222222,
+    "frac_seed_std_gt_0_10": 0.041666666666666664,
+    "frac_sr_lt_0_05": 0.4861111111111111,
+    "collision_mean": 0.001707175925925926,
+    "timeout_mean": 0.8981481481481483
+  },
+  "label_150k": {
+    "n_candidates": 72,
+    "n_families": 12,
+    "mean": 0.43492476851851847,
+    "median": 0.47187499999999993,
+    "std": 0.20653640931419964,
+    "min": 0.0,
+    "max": 0.8083333333333332,
+    "mean_seed_std": 0.06714348789648913,
+    "median_seed_std": 0.05884676642920945,
+    "frac_seed_std_gt_0_05": 0.5833333333333334,
+    "frac_seed_std_gt_0_10": 0.19444444444444445,
+    "frac_sr_lt_0_05": 0.041666666666666664,
+    "collision_mean": 0.0027777777777777775,
+    "timeout_mean": 0.5622974537037037
+  },
+  "primary_50k": {
+    "spearman": 0.8604643560361677,
+    "within_family_spearman_mean": 0.5328117678093274,
+    "within_family_spearman_std": 0.5775522214933946,
+    "within_family_top3_hit": 0.8333333333333334,
+    "within_pairwise_accuracy": 0.7694203944203944,
+    "mae": 0.0370909147757405,
+    "r2": 0.7951334077370795,
+    "top10_overlap": 0.9,
+    "top10_regret": 0.0089583333333334,
+    "boot_pooled_spearman_lo": 0.671546174429071,
+    "boot_pooled_spearman_hi": 0.9404156546618684,
+    "boot_within_spearman_lo": 0.2919582703233254,
+    "boot_within_spearman_hi": 0.8218414609994539,
+    "needs_ppo_steps": 12000.0,
+    "n": 72.0
+  },
+  "primary_150k": {
+    "spearman": 0.6534709729663816,
+    "within_family_spearman_mean": 0.746141862195682,
+    "within_family_spearman_std": 0.2338467178788641,
+    "within_family_top3_hit": 0.9166666666666666,
+    "within_pairwise_accuracy": 0.8231481481481482,
+    "mae": 0.1238234539045375,
+    "r2": 0.4022361131302445,
+    "top10_overlap": 0.3333333333333333,
+    "top10_regret": 0.0857638888888887,
+    "boot_pooled_spearman_lo": 0.3773094873789662,
+    "boot_pooled_spearman_hi": 0.8562599896625466,
+    "boot_within_spearman_lo": 0.65365243301125,
+    "boot_within_spearman_hi": 0.8511710305925585,
+    "needs_ppo_steps": 12000.0,
+    "n": 72.0
+  },
+  "integrity": {
+    "v1_dataset_families": [
+      "balanced",
+      "distance_dense",
+      "efficiency",
+      "energy_aware",
+      "near_zero",
+      "nonlinear_progress",
+      "potential_shaping",
+      "progress_heavy",
+      "risk_sensitive",
+      "safety_heavy",
+      "sparse_goal",
+      "weak_unbalanced"
+    ],
+    "v1_candidates_json_families": [
+      "balanced",
+      "crowded_progress",
+      "efficiency",
+      "energy_aware",
+      "human_clearance",
+      "nonlinear_progress",
+      "progress_dense",
+      "progress_heavy",
+      "risk_sensitive",
+      "safety_moderate",
+      "time_pressure",
+      "weak_contrast"
+    ],
+    "v1_candidates_json_matches_dataset": false,
+    "v4_dataset_families": [
+      "balanced",
+      "crowded_progress",
+      "efficiency",
+      "energy_aware",
+      "human_clearance",
+      "nonlinear_progress",
+      "progress_dense",
+      "progress_heavy",
+      "risk_sensitive",
+      "safety_moderate",
+      "time_pressure",
+      "weak_contrast"
+    ],
+    "v4_candidates_json_families": [
+      "balanced",
+      "crowded_progress",
+      "efficiency",
+      "energy_aware",
+      "human_clearance",
+      "nonlinear_progress",
+      "progress_dense",
+      "progress_heavy",
+      "risk_sensitive",
+      "safety_moderate",
+      "time_pressure",
+      "weak_contrast"
+    ],
+    "v4_candidates_json_matches_dataset": true,
+    "shared_candidate_ids": [
+      "balanced_00",
+      "balanced_01",
+      "balanced_02",
+      "balanced_03",
+      "balanced_04",
+      "balanced_05",
+      "efficiency_00",
+      "efficiency_01",
+      "efficiency_02",
+      "efficiency_03",
+      "efficiency_04",
+      "efficiency_05",
+      "energy_aware_00",
+      "energy_aware_01",
+      "energy_aware_02",
+      "energy_aware_03",
+      "energy_aware_04",
+      "energy_aware_05",
+      "nonlinear_progress_00",
+      "nonlinear_progress_01",
+      "nonlinear_progress_02",
+      "nonlinear_progress_03",
+      "nonlinear_progress_04",
+      "nonlinear_progress_05",
+      "progress_heavy_00",
+      "progress_heavy_01",
+      "progress_heavy_02",
+      "progress_heavy_03",
+      "progress_heavy_04",
+      "progress_heavy_05",
+      "risk_sensitive_00",
+      "risk_sensitive_01",
+      "risk_sensitive_02",
+      "risk_sensitive_03",
+      "risk_sensitive_04",
+      "risk_sensitive_05"
+    ],
+    "n_shared_candidate_ids": 36,
+    "shared_family_names": [
+      "balanced",
+      "efficiency",
+      "energy_aware",
+      "nonlinear_progress",
+      "progress_heavy",
+      "risk_sensitive"
+    ],
+    "v1_phase1_n_jobs": 324,
+    "v1_phase1_n_failed": 0,
+    "v1_phase1_duration_sec_logged": 1316.7665952999996,
+    "v1_manifest_timesteps": 50000,
+    "v1_manifest_n_candidates": 108,
+    "v1_dataset_n_rows": 216,
+    "v1_sum_train_duration_sec": 23720.87021249999,
+    "v1_sum_eval_duration_sec": 7788.555154600013,
+    "v4_phase1_n_jobs": 216,
+    "v4_phase1_n_failed": 0,
+    "v4_phase1_duration_sec": 22283.50119749998,
+    "v4_manifest_timesteps": 150000,
+    "v4_sum_train_duration_sec": 80601.71004779963,
+    "v4_sum_eval_duration_sec": 8299.247301499709,
+    "v1_outliers": {
+      "n_flagged_seeds": 0,
+      "n_candidates": 0,
+      "policy": "filter_by_default"
+    },
+    "v4_outliers": {
+      "n_flagged_seeds": 0,
+      "n_candidates": 0,
+      "policy": "filter_by_default"
+    },
+    "v1_n_eval_episodes": [
+      160
+    ],
+    "v4_n_eval_episodes": [
+      160
+    ],
+    "v1_env_id": [
+      "CrowdNavPlusPlus-v0"
+    ],
+    "v4_env_id": [
+      "CrowdNavPlusPlus-v0"
+    ],
+    "v1_device": [
+      "cpu"
+    ],
+    "v4_device": [
+      "cpu"
+    ],
+    "v1_early_feature_prefixes": [
+      "t12000",
+      "t2000",
+      "t5000",
+      "timeout",
+      "timesteps"
+    ],
+    "v4_early_feature_prefixes": [
+      "t12000",
+      "t25000",
+      "t5000",
+      "timeout",
+      "timesteps"
+    ]
+  },
+  "family_50k": [
+    {
+      "family_id": "balanced",
+      "mean": 0.176389,
+      "std": 0.11924,
+      "min": 0.029167,
+      "max": 0.31875,
+      "count": 6
+    },
+    {
+      "family_id": "distance_dense",
+      "mean": 0.06875,
+      "std": 0.024861,
+      "min": 0.033333,
+      "max": 0.104167,
+      "count": 6
+    },
+    {
+      "family_id": "efficiency",
+      "mean": 0.090278,
+      "std": 0.036791,
+      "min": 0.045833,
+      "max": 0.14375,
+      "count": 6
+    },
+    {
+      "family_id": "energy_aware",
+      "mean": 0.067708,
+      "std": 0.078702,
+      "min": 0.0,
+      "max": 0.20625,
+      "count": 6
+    },
+    {
+      "family_id": "near_zero",
+      "mean": 0.014931,
+      "std": 0.02692,
+      "min": 0.0,
+      "max": 0.06875,
+      "count": 6
+    },
+    {
+      "family_id": "nonlinear_progress",
+      "mean": 0.195833,
+      "std": 0.104541,
+      "min": 0.0875,
+      "max": 0.366667,
+      "count": 6
+    },
+    {
+      "family_id": "potential_shaping",
+      "mean": 0.001389,
+      "std": 0.001701,
+      "min": 0.0,
+      "max": 0.004167,
+      "count": 6
+    },
+    {
+      "family_id": "progress_heavy",
+      "mean": 0.439931,
+      "std": 0.058176,
+      "min": 0.358333,
+      "max": 0.508333,
+      "count": 6
+    },
+    {
+      "family_id": "risk_sensitive",
+      "mean": 0.105903,
+      "std": 0.050817,
+      "min": 0.066667,
+      "max": 0.19375,
+      "count": 6
+    },
+    {
+      "family_id": "safety_heavy",
+      "mean": 0.016319,
+      "std": 0.010242,
+      "min": 0.00625,
+      "max": 0.029167,
+      "count": 6
+    },
+    {
+      "family_id": "sparse_goal",
+      "mean": 0.023958,
+      "std": 0.018669,
+      "min": 0.0125,
+      "max": 0.060417,
+      "count": 6
+    },
+    {
+      "family_id": "weak_unbalanced",
+      "mean": 0.000347,
+      "std": 0.000851,
+      "min": 0.0,
+      "max": 0.002083,
+      "count": 6
+    }
+  ],
+  "family_150k": [
+    {
+      "family_id": "balanced",
+      "mean": 0.5,
+      "std": 0.119213,
+      "min": 0.31875,
+      "max": 0.6875,
+      "count": 6
+    },
+    {
+      "family_id": "crowded_progress",
+      "mean": 0.566667,
+      "std": 0.048269,
+      "min": 0.497917,
+      "max": 0.616667,
+      "count": 6
+    },
+    {
+      "family_id": "efficiency",
+      "mean": 0.3125,
+      "std": 0.124366,
+      "min": 0.133333,
+      "max": 0.4375,
+      "count": 6
+    },
+    {
+      "family_id": "energy_aware",
+      "mean": 0.201042,
+      "std": 0.184958,
+      "min": 0.0,
+      "max": 0.48125,
+      "count": 6
+    },
+    {
+      "family_id": "human_clearance",
+      "mean": 0.433681,
+      "std": 0.13394,
+      "min": 0.310417,
+      "max": 0.6625,
+      "count": 6
+    },
+    {
+      "family_id": "nonlinear_progress",
+      "mean": 0.379167,
+      "std": 0.108965,
+      "min": 0.225,
+      "max": 0.5125,
+      "count": 6
+    },
+    {
+      "family_id": "progress_dense",
+      "mean": 0.646528,
+      "std": 0.119524,
+      "min": 0.4625,
+      "max": 0.808333,
+      "count": 6
+    },
+    {
+      "family_id": "progress_heavy",
+      "mean": 0.702083,
+      "std": 0.073869,
+      "min": 0.597917,
+      "max": 0.764583,
+      "count": 6
+    },
+    {
+      "family_id": "risk_sensitive",
+      "mean": 0.297917,
+      "std": 0.149304,
+      "min": 0.125,
+      "max": 0.53125,
+      "count": 6
+    },
+    {
+      "family_id": "safety_moderate",
+      "mean": 0.375,
+      "std": 0.184424,
+      "min": 0.1875,
+      "max": 0.633333,
+      "count": 6
+    },
+    {
+      "family_id": "time_pressure",
+      "mean": 0.614583,
+      "std": 0.084523,
+      "min": 0.475,
+      "max": 0.691667,
+      "count": 6
+    },
+    {
+      "family_id": "weak_contrast",
+      "mean": 0.189931,
+      "std": 0.190446,
+      "min": 0.0,
+      "max": 0.504167,
+      "count": 6
+    }
+  ],
+  "cross_n_shared": 36
+}

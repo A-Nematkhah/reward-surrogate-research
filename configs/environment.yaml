@@ -48,4 +48,11 @@ randomization:
   randomize_target: true
   randomize_obstacles: true
 
+# Used when env_id is CrowdNavPlusPlus-v0 (overrides applied by CrowdNav pipeline).
+crowdnav:
+  human_num: 5
+  comfort_radius: 1.0
+  # False => humans do not see/react to the robot (ORCA ignores robot).
+  robot_visible: false
+
 seed: 0

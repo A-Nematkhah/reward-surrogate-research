@@ -1,0 +1,120 @@
+metric,run,model,features,value,source
+label_n_candidates,50k,,,72.0,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_n_families,50k,,,12.0,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_mean,50k,,,0.1001446759259259,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_median,50k,,,0.0583333333333333,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_std,50k,,,0.1319777435896802,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_min,50k,,,0.0,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_max,50k,,,0.5083333333333333,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_mean_seed_std,50k,,,0.0291354818252502,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_median_seed_std,50k,,,0.0165359456941536,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_seed_std_gt_0_05,50k,,,0.2222222222222222,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_seed_std_gt_0_10,50k,,,0.0416666666666666,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_sr_lt_0_05,50k,,,0.4861111111111111,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_collision_mean,50k,,,0.0017071759259259,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_timeout_mean,50k,,,0.8981481481481483,experiments/crowdnav_v1_50k/dataset/reward_performance_dataset.csv (seed-mean)
+label_n_candidates,150k,,,72.0,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_n_families,150k,,,12.0,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_mean,150k,,,0.4349247685185184,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_median,150k,,,0.4718749999999999,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_std,150k,,,0.2065364093141996,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_min,150k,,,0.0,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_max,150k,,,0.8083333333333332,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_mean_seed_std,150k,,,0.0671434878964891,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_median_seed_std,150k,,,0.0588467664292094,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_seed_std_gt_0_05,150k,,,0.5833333333333334,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_seed_std_gt_0_10,150k,,,0.1944444444444444,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_frac_sr_lt_0_05,150k,,,0.0416666666666666,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_collision_mean,150k,,,0.0027777777777777,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+label_timeout_mean,150k,,,0.5622974537037037,experiments/crowdnav_v4_full_150k/dataset/reward_performance_dataset.csv (seed-mean)
+v1_phase1_duration_sec_logged,meta,,,1316.7665952999996,docs/crowdnav_report/discovery_integrity.json
+v1_sum_train_duration_sec,meta,,,23720.87021249999,docs/crowdnav_report/discovery_integrity.json
+v4_phase1_duration_sec,meta,,,22283.50119749998,docs/crowdnav_report/discovery_integrity.json
+v4_sum_train_duration_sec,meta,,,80601.71004779963,docs/crowdnav_report/discovery_integrity.json
+n_shared_candidate_ids,meta,,,36.0,docs/crowdnav_report/discovery_integrity.json
+spearman,50k,extra_trees,early+math+behavioral,0.8604643560361677,results/crowdnav_v1_50k/leaderboard.csv:spearman
+within_family_spearman_mean,50k,extra_trees,early+math+behavioral,0.5328117678093274,results/crowdnav_v1_50k/leaderboard.csv:within_family_spearman_mean
+within_family_spearman_std,50k,extra_trees,early+math+behavioral,0.5775522214933946,results/crowdnav_v1_50k/leaderboard.csv:within_family_spearman_std
+within_family_top3_hit,50k,extra_trees,early+math+behavioral,0.8333333333333334,results/crowdnav_v1_50k/leaderboard.csv:within_family_top3_hit
+within_pairwise_accuracy,50k,extra_trees,early+math+behavioral,0.7694203944203944,results/crowdnav_v1_50k/leaderboard.csv:within_pairwise_accuracy
+mae,50k,extra_trees,early+math+behavioral,0.0370909147757405,results/crowdnav_v1_50k/leaderboard.csv:mae
+r2,50k,extra_trees,early+math+behavioral,0.7951334077370795,results/crowdnav_v1_50k/leaderboard.csv:r2
+top10_overlap,50k,extra_trees,early+math+behavioral,0.9,results/crowdnav_v1_50k/leaderboard.csv:top10_overlap
+top10_regret,50k,extra_trees,early+math+behavioral,0.0089583333333334,results/crowdnav_v1_50k/leaderboard.csv:top10_regret
+boot_pooled_spearman_lo,50k,extra_trees,early+math+behavioral,0.671546174429071,results/crowdnav_v1_50k/leaderboard.csv:boot_pooled_spearman_lo
+boot_pooled_spearman_hi,50k,extra_trees,early+math+behavioral,0.9404156546618684,results/crowdnav_v1_50k/leaderboard.csv:boot_pooled_spearman_hi
+boot_within_spearman_lo,50k,extra_trees,early+math+behavioral,0.2919582703233254,results/crowdnav_v1_50k/leaderboard.csv:boot_within_spearman_lo
+boot_within_spearman_hi,50k,extra_trees,early+math+behavioral,0.8218414609994539,results/crowdnav_v1_50k/leaderboard.csv:boot_within_spearman_hi
+needs_ppo_steps,50k,extra_trees,early+math+behavioral,12000.0,results/crowdnav_v1_50k/leaderboard.csv:needs_ppo_steps
+n,50k,extra_trees,early+math+behavioral,72.0,results/crowdnav_v1_50k/leaderboard.csv:n
+spearman,150k,extra_trees,early+math+behavioral,0.6534709729663816,results/crowdnav_v4_full_150k/leaderboard.csv:spearman
+within_family_spearman_mean,150k,extra_trees,early+math+behavioral,0.746141862195682,results/crowdnav_v4_full_150k/leaderboard.csv:within_family_spearman_mean
+within_family_spearman_std,150k,extra_trees,early+math+behavioral,0.2338467178788641,results/crowdnav_v4_full_150k/leaderboard.csv:within_family_spearman_std
+within_family_top3_hit,150k,extra_trees,early+math+behavioral,0.9166666666666666,results/crowdnav_v4_full_150k/leaderboard.csv:within_family_top3_hit
+within_pairwise_accuracy,150k,extra_trees,early+math+behavioral,0.8231481481481482,results/crowdnav_v4_full_150k/leaderboard.csv:within_pairwise_accuracy
+mae,150k,extra_trees,early+math+behavioral,0.1238234539045375,results/crowdnav_v4_full_150k/leaderboard.csv:mae
+r2,150k,extra_trees,early+math+behavioral,0.4022361131302445,results/crowdnav_v4_full_150k/leaderboard.csv:r2
+top10_overlap,150k,extra_trees,early+math+behavioral,0.3333333333333333,results/crowdnav_v4_full_150k/leaderboard.csv:top10_overlap
+top10_regret,150k,extra_trees,early+math+behavioral,0.0857638888888887,results/crowdnav_v4_full_150k/leaderboard.csv:top10_regret
+boot_pooled_spearman_lo,150k,extra_trees,early+math+behavioral,0.3773094873789662,results/crowdnav_v4_full_150k/leaderboard.csv:boot_pooled_spearman_lo
+boot_pooled_spearman_hi,150k,extra_trees,early+math+behavioral,0.8562599896625466,results/crowdnav_v4_full_150k/leaderboard.csv:boot_pooled_spearman_hi
+boot_within_spearman_lo,150k,extra_trees,early+math+behavioral,0.65365243301125,results/crowdnav_v4_full_150k/leaderboard.csv:boot_within_spearman_lo
+boot_within_spearman_hi,150k,extra_trees,early+math+behavioral,0.8511710305925585,results/crowdnav_v4_full_150k/leaderboard.csv:boot_within_spearman_hi
+needs_ppo_steps,150k,extra_trees,early+math+behavioral,12000.0,results/crowdnav_v4_full_150k/leaderboard.csv:needs_ppo_steps
+n,150k,extra_trees,early+math+behavioral,72.0,results/crowdnav_v4_full_150k/leaderboard.csv:n
+within_family_spearman_mean,50k,extra_trees,family:balanced,0.942857142857143,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:distance_dense,-0.1809523809523809,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:efficiency,0.8696565534786727,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:energy_aware,0.9710083124552246,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:near_zero,0.8503308522902576,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:nonlinear_progress,0.923809523809524,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:potential_shaping,-0.4629100498862757,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:progress_heavy,-0.6377481392176932,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:risk_sensitive,0.9276336570439176,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:safety_heavy,0.6280852886234859,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:sparse_goal,0.980952380952381,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,50k,extra_trees,family:weak_unbalanced,0.581018072257672,experiments/crowdnav_v1_50k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:balanced,0.4857142857142857,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:crowded_progress,0.7904761904761907,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:efficiency,0.9047619047619048,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:energy_aware,1.0,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:human_clearance,0.6571428571428573,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:nonlinear_progress,0.942857142857143,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:progress_dense,0.942857142857143,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:progress_heavy,0.8666666666666668,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:risk_sensitive,0.753702346348183,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:safety_moderate,0.7142857142857143,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:time_pressure,0.1238095238095238,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+within_family_spearman_mean,150k,extra_trees,family:weak_contrast,0.7714285714285715,experiments/crowdnav_v4_full_150k/model_comparison/metrics_by_fold.csv:within_family_spearman_mean mean over repeats
+cross_spearman_shared_ids,50k_vs_150k,,,0.5471759155344613,labels_50k_by_candidate.csv vs labels_150k_by_candidate.csv shared IDs
+cross_kendall_shared_ids,50k_vs_150k,,,0.3859118192341332,labels_50k_by_candidate.csv vs labels_150k_by_candidate.csv shared IDs
+cross_spearman_pvalue,50k_vs_150k,,,0.0005533893971975,scipy.stats.spearmanr
+cross_within_spearman_mean_shared_fams,50k_vs_150k,,,0.0001193964671735,cross_within_family_shared.csv
+cross_topk_overlap_k3,50k_vs_150k,,,0.6666666666666666,cross_shared_candidate_ids.csv
+cross_topk_regret_k3,50k_vs_150k,,,0.0,cross_shared_candidate_ids.csv
+cross_topk_overlap_k5,50k_vs_150k,,,0.6,cross_shared_candidate_ids.csv
+cross_topk_regret_k5,50k_vs_150k,,,0.0,cross_shared_candidate_ids.csv
+cross_topk_overlap_k10,50k_vs_150k,,,0.7,cross_shared_candidate_ids.csv
+cross_topk_regret_k10,50k_vs_150k,,,0.0,cross_shared_candidate_ids.csv
+selection_sur_best_k1,150k,extra_trees,early+math+behavioral,0.6062,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k3,150k,extra_trees,early+math+behavioral,0.6167,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k5,150k,extra_trees,early+math+behavioral,0.641,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k10,150k,extra_trees,early+math+behavioral,0.7646,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k15,150k,extra_trees,early+math+behavioral,0.7646,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k20,150k,extra_trees,early+math+behavioral,0.7937,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k30,150k,extra_trees,early+math+behavioral,0.8083,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k50,150k,extra_trees,early+math+behavioral,0.8083,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+selection_sur_best_k72,150k,extra_trees,early+math+behavioral,0.8083,results/crowdnav_v4_full_150k/selection_sim/regret_vs_budget_mean_over_repeats.csv
+spearman,2d_confirm,extra_trees,early+math+behavioral,0.935241443865872,experiments/model_comparison_confirm/metrics_summary.csv
+within_family_spearman_mean,2d_confirm,extra_trees,early+math+behavioral,0.6425367483789508,experiments/model_comparison_confirm/metrics_summary.csv
+within_family_top3_hit,2d_confirm,extra_trees,early+math+behavioral,0.8333333333333334,experiments/model_comparison_confirm/metrics_summary.csv
+mae,2d_confirm,extra_trees,early+math+behavioral,0.0685191297398589,experiments/model_comparison_confirm/metrics_summary.csv
+cross_identical_weight_shared_ids,50k_vs_150k,,,0.0,dataset weight_* columns vs shared candidate_id
+cross_spearman_shared_ids_different_weights,50k_vs_150k,,,0.5471759155344613,docs/crowdnav_report/cross_shared_candidate_ids.csv
+v1_phase1_all324_train_cpu_hours,50k,,,9.944068097194444,experiments/crowdnav_v1_50k/phase1_summary.json train_duration_sec sum
+v4_phase1_wall_hours,150k,,,6.189861443749995,experiments/crowdnav_v4_full_150k/phase1_summary.json:duration_sec
+v4_dataset_train_cpu_hours,150k,,,22.389363902166565,experiments/crowdnav_v4_full_150k/dataset train_duration_sec sum
+v1_dataset72_train_cpu_hours,50k,,,6.589130614583331,experiments/crowdnav_v1_50k/dataset train_duration_sec sum
+2d_pooled_spearman,2d_confirm,extra_trees,early+math+behavioral,0.935241443865872,experiments/model_comparison_confirm/metrics_summary.csv
+2d_within_spearman,2d_confirm,extra_trees,early+math+behavioral,0.6425367483789508,experiments/model_comparison_confirm/metrics_summary.csv
+2d_top3_hit,2d_confirm,extra_trees,early+math+behavioral,0.8333333333333334,experiments/model_comparison_confirm/metrics_summary.csv

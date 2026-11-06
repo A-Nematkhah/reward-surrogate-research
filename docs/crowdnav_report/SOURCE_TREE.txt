@@ -1,0 +1,17 @@
+docs/crowdnav_report/
+  crowdnav_report_fa.md
+  slide_ready_summary_fa.md
+  numbers.csv
+  discovery_integrity.json
+  figures/*.png
+experiments/
+  crowdnav_v1_50k/     # 50k PPO LABELS+SURROGATE (legacy 12 families); candidates.json OVERWRITTEN
+  crowdnav_v2_150k/    # candidates only (no full dataset)
+  crowdnav_v3_my_trial/# partial trial
+  crowdnav_v4_full_150k/ # 150k PPO full campaign (CrowdNav-aware 12 families)
+  crowdnav_smoke/
+results/
+  crowdnav_v1_50k/
+  crowdnav_v4_full_150k/
+configs/
+  crowdnav_run.yaml, ppo_crowdnav.yaml, reward_generation_crowdnav.yaml

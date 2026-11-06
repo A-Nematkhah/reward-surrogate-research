@@ -1,4 +1,4 @@
-# CrowdNav-aware reward pool — 12 families x 6 = 72
+# CrowdNav-aware reward pool — 12 families x 2 = 24
 #
 # Design vs the 2D pool:
 # - Drop / demote families that were ~dead under CrowdNav (potential_shaping,
@@ -10,10 +10,12 @@
 # PPO budget for this pool: configs/ppo_crowdnav.yaml (150k timesteps).
 # Active experiment root: configs/crowdnav_run.yaml → experiments/crowdnav_<run_id>/
 # The quality pipeline writes candidates into that root (not a shared path).
+#
+# Note: with n=2 per family, within Top-3 is degenerate; pipeline uses within_k=1.
 
 generation_seed: 42
 
-n_candidates: 72
+n_candidates: 24
 
 components:
   - progress
@@ -51,7 +53,7 @@ families:
   # --- Core progress spectrum (main CrowdNav signal) ---
   balanced:
     description: Progress/goal with mild linear personal-space cost (no intrusion stack)
-    n: 6
+    n: 2
     weight_ranges:
       progress: [0.8, 3.0]
       goal: [8.0, 25.0]
@@ -62,7 +64,7 @@ families:
 
   progress_heavy:
     description: Strong progress/goal; wide ranges for within-family diversity
-    n: 6
+    n: 2
     weight_ranges:
       progress: [1.5, 8.0]
       goal: [15.0, 50.0]
@@ -73,7 +75,7 @@ families:
 
   progress_dense:
     description: Dense shaping only (progress+distance); tiny/no sparse goal — distinct from progress_heavy
-    n: 6
+    n: 2
     weight_ranges:
       progress: [3.0, 12.0]
       distance: [-0.8, -0.1]
@@ -84,7 +86,7 @@ families:
 
   time_pressure:
     description: Progress under strong time pressure (CrowdNav timeouts)
-    n: 6
+    n: 2
     weight_ranges:
       progress: [1.0, 5.0]
       goal: [10.0, 35.0]
@@ -96,7 +98,7 @@ families:
   # --- Human / crowd structure ---
   human_clearance:
     description: Linear personal-space cost only (no intrusion/obstacle stack) + learnable progress
-    n: 6
+    n: 2
     weight_ranges:
       progress: [1.0, 4.0]
       goal: [8.0, 25.0]
@@ -106,7 +108,7 @@ families:
 
   crowded_progress:
     description: Clearance-gated progress (new component) + mild intrusion cost
-    n: 6
+    n: 2
     weight_ranges:
       crowded_progress: [2.0, 12.0]
       goal: [8.0, 30.0]
@@ -117,7 +119,7 @@ families:
 
   risk_sensitive:
     description: Quadratic near-agent risk with solid progress
-    n: 6
+    n: 2
     weight_ranges:
       progress: [0.8, 3.0]
       goal: [8.0, 25.0]
@@ -129,7 +131,7 @@ families:
   # --- Efficiency / structure ---
   efficiency:
     description: Time + smoothness with progress (less extreme than 2D dead zone)
-    n: 6
+    n: 2
     weight_ranges:
       progress: [1.0, 4.0]
       goal: [8.0, 25.0]
@@ -140,7 +142,7 @@ families:
 
   energy_aware:
     description: Action energy penalty with usable progress signal
-    n: 6
+    n: 2
     weight_ranges:
       progress: [1.0, 4.0]
       goal: [8.0, 25.0]
@@ -151,7 +153,7 @@ families:
 
   nonlinear_progress:
     description: Signed-squared progress shaping with mild human cost
-    n: 6
+    n: 2
     weight_ranges:
       nonlinear_progress: [2.0, 12.0]
       goal: [8.0, 28.0]
@@ -163,7 +165,7 @@ families:
   # --- Soft safety (quadratic intrusion only; no proximity/obstacle stack) ---
   safety_moderate:
     description: Stronger safety via human_intrusion only; keep progress learnable
-    n: 6
+    n: 2
     weight_ranges:
       progress: [0.8, 3.0]
       goal: [8.0, 22.0]
@@ -174,7 +176,7 @@ families:
   # --- Contrast / weak (kept small-signal for dataset diversity) ---
   weak_contrast:
     description: Weak or mis-scaled rewards — expected poor CrowdNav learning
-    n: 6
+    n: 2
     weight_ranges:
       progress: [-0.5, 0.8]
       goal: [-2.0, 8.0]
@@ -185,5 +187,5 @@ families:
 
 output:
   # Defaults only; pipeline overrides to experiments/crowdnav_<run_id>/...
-  candidates_json: experiments/crowdnav_v2_150k/candidates.json
-  candidates_dir: experiments/crowdnav_v2_150k/candidates
+  candidates_json: experiments/crowdnav_v5_invisible_24/candidates.json
+  candidates_dir: experiments/crowdnav_v5_invisible_24/candidates

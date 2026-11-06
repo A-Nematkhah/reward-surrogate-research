@@ -1,0 +1,163 @@
+{
+  "v1_dataset_families": [
+    "balanced",
+    "distance_dense",
+    "efficiency",
+    "energy_aware",
+    "near_zero",
+    "nonlinear_progress",
+    "potential_shaping",
+    "progress_heavy",
+    "risk_sensitive",
+    "safety_heavy",
+    "sparse_goal",
+    "weak_unbalanced"
+  ],
+  "v1_candidates_json_families": [
+    "balanced",
+    "crowded_progress",
+    "efficiency",
+    "energy_aware",
+    "human_clearance",
+    "nonlinear_progress",
+    "progress_dense",
+    "progress_heavy",
+    "risk_sensitive",
+    "safety_moderate",
+    "time_pressure",
+    "weak_contrast"
+  ],
+  "v1_candidates_json_matches_dataset": false,
+  "v4_dataset_families": [
+    "balanced",
+    "crowded_progress",
+    "efficiency",
+    "energy_aware",
+    "human_clearance",
+    "nonlinear_progress",
+    "progress_dense",
+    "progress_heavy",
+    "risk_sensitive",
+    "safety_moderate",
+    "time_pressure",
+    "weak_contrast"
+  ],
+  "v4_candidates_json_families": [
+    "balanced",
+    "crowded_progress",
+    "efficiency",
+    "energy_aware",
+    "human_clearance",
+    "nonlinear_progress",
+    "progress_dense",
+    "progress_heavy",
+    "risk_sensitive",
+    "safety_moderate",
+    "time_pressure",
+    "weak_contrast"
+  ],
+  "v4_candidates_json_matches_dataset": true,
+  "shared_candidate_ids": [
+    "balanced_00",
+    "balanced_01",
+    "balanced_02",
+    "balanced_03",
+    "balanced_04",
+    "balanced_05",
+    "efficiency_00",
+    "efficiency_01",
+    "efficiency_02",
+    "efficiency_03",
+    "efficiency_04",
+    "efficiency_05",
+    "energy_aware_00",
+    "energy_aware_01",
+    "energy_aware_02",
+    "energy_aware_03",
+    "energy_aware_04",
+    "energy_aware_05",
+    "nonlinear_progress_00",
+    "nonlinear_progress_01",
+    "nonlinear_progress_02",
+    "nonlinear_progress_03",
+    "nonlinear_progress_04",
+    "nonlinear_progress_05",
+    "progress_heavy_00",
+    "progress_heavy_01",
+    "progress_heavy_02",
+    "progress_heavy_03",
+    "progress_heavy_04",
+    "progress_heavy_05",
+    "risk_sensitive_00",
+    "risk_sensitive_01",
+    "risk_sensitive_02",
+    "risk_sensitive_03",
+    "risk_sensitive_04",
+    "risk_sensitive_05"
+  ],
+  "n_shared_candidate_ids": 36,
+  "shared_family_names": [
+    "balanced",
+    "efficiency",
+    "energy_aware",
+    "nonlinear_progress",
+    "progress_heavy",
+    "risk_sensitive"
+  ],
+  "v1_phase1_n_jobs": 324,
+  "v1_phase1_n_failed": 0,
+  "v1_phase1_duration_sec_logged": 1316.7665952999996,
+  "v1_manifest_timesteps": 50000,
+  "v1_manifest_n_candidates": 108,
+  "v1_dataset_n_rows": 216,
+  "v1_sum_train_duration_sec": 23720.87021249999,
+  "v1_sum_eval_duration_sec": 7788.555154600013,
+  "v4_phase1_n_jobs": 216,
+  "v4_phase1_n_failed": 0,
+  "v4_phase1_duration_sec": 22283.50119749998,
+  "v4_manifest_timesteps": 150000,
+  "v4_sum_train_duration_sec": 80601.71004779963,
+  "v4_sum_eval_duration_sec": 8299.247301499709,
+  "v1_outliers": {
+    "n_flagged_seeds": 0,
+    "n_candidates": 0,
+    "policy": "filter_by_default"
+  },
+  "v4_outliers": {
+    "n_flagged_seeds": 0,
+    "n_candidates": 0,
+    "policy": "filter_by_default"
+  },
+  "v1_n_eval_episodes": [
+    160
+  ],
+  "v4_n_eval_episodes": [
+    160
+  ],
+  "v1_env_id": [
+    "CrowdNavPlusPlus-v0"
+  ],
+  "v4_env_id": [
+    "CrowdNavPlusPlus-v0"
+  ],
+  "v1_device": [
+    "cpu"
+  ],
+  "v4_device": [
+    "cpu"
+  ],
+  "v1_early_feature_prefixes": [
+    "t12000",
+    "t2000",
+    "t5000",
+    "timeout",
+    "timesteps"
+  ],
+  "v4_early_feature_prefixes": [
+    "t12000",
+    "t25000",
+    "t5000",
+    "timeout",
+    "timesteps"
+  ]
+}

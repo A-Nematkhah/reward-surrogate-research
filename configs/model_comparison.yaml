@@ -53,7 +53,8 @@ inner_cv:
 topk:
   pooled_k: [5, 10, 20]
   within_family_k: 3
-  min_family_size_for_within: 4
+  # 2 allows CrowdNav 12x2=24 pool; larger families (2D) still score normally.
+  min_family_size_for_within: 2
 
 # Default OFF so historical confirm CSVs stay comparable. Enable in benchmark.yaml.
 within_family_identifiability:

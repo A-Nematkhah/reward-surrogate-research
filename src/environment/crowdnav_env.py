@@ -105,7 +105,8 @@ class CrowdNavPlusPlusEnv(gym.Env):
         cn_config.humans.random_goal_changing = False
         cn_config.humans.end_goal_changing = False
         cn_config.robot.policy = "srnn"
-        cn_config.robot.visible = True
+        # When False, ORCA humans ignore the robot (no reactive avoidance of the agent).
+        cn_config.robot.visible = bool(crowd_cfg.get("robot_visible", False))
         cn_config.action_space.kinematics = "holonomic"
 
         self._cn = CrowdSimVarNum()
