@@ -4,14 +4,18 @@ docs/crowdnav_report/
   numbers.csv
   discovery_integrity.json
   figures/*.png
-experiments/
-  crowdnav_v1_50k/     # 50k PPO LABELS+SURROGATE (legacy 12 families); candidates.json OVERWRITTEN
-  crowdnav_v2_150k/    # candidates only (no full dataset)
-  crowdnav_v3_my_trial/# partial trial
-  crowdnav_v4_full_150k/ # 150k PPO full campaign (CrowdNav-aware 12 families)
-  crowdnav_smoke/
+
+experiments/ (gitignored bulky trees; local only)
+  crowdnav_v1_50k/          # 50k PPO, legacy 12 families
+  crowdnav_v4_full_150k/    # 150k PPO, 72 pool, robot visible
+  crowdnav_v5_invisible_24/ # 150k PPO, 24 pool, robot_visible=false (active)
+
 results/
   crowdnav_v1_50k/
   crowdnav_v4_full_150k/
+  crowdnav_v5_invisible_24/
+
 configs/
-  crowdnav_run.yaml, ppo_crowdnav.yaml, reward_generation_crowdnav.yaml
+  crowdnav_run.yaml          # active run_id = v5_invisible_24
+  ppo_crowdnav.yaml
+  reward_generation_crowdnav.yaml  # 12 families x 2 = 24

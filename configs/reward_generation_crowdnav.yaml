@@ -11,7 +11,8 @@
 # Active experiment root: configs/crowdnav_run.yaml → experiments/crowdnav_<run_id>/
 # The quality pipeline writes candidates into that root (not a shared path).
 #
-# Note: with n=2 per family, within Top-3 is degenerate; pipeline uses within_k=1.
+# Note: with n=2 per family, within Top-3 is degenerate; quality pipeline
+# overrides model_comparison topk.within_family_k=1 for CrowdNav runs.
 
 generation_seed: 42
 

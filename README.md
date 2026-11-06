@@ -67,10 +67,10 @@ python scripts/run_quality_pipeline.py --env crowdnav
 
 Phase 1 on CrowdNav is the long step (ORCA humans). Operating setup:
 
-- **Pool:** 72 CrowdNav-aware candidates (`configs/reward_generation_crowdnav.yaml`) with human proximity / intrusion / crowded-progress terms and denser progress / time-pressure / clearance families
+- **Pool:** 24 CrowdNav-aware candidates = 12×2 (`configs/reward_generation_crowdnav.yaml`); humans ignore the robot (`robot_visible=false`)
 - **PPO budget:** 150k timesteps (`configs/ppo_crowdnav.yaml`; early checkpoints 5k/12k/25k)
-- **Versioned roots:** `configs/crowdnav_run.yaml` → `experiments/crowdnav_<run_id>/` and `results/crowdnav_<run_id>/` (bump `run_id` or pass `--run-id` so campaigns never collide)
-- Archive of the first CrowdNav campaign: `experiments/crowdnav_v1_50k/`, `results/crowdnav_v1_50k/`
+- **Versioned roots:** `configs/crowdnav_run.yaml` → `experiments/crowdnav_<run_id>/` and `results/crowdnav_<run_id>/` (active: `v5_invisible_24`)
+- Prior campaigns: `crowdnav_v1_50k` (50k legacy), `crowdnav_v4_full_150k` (72 pool, robot visible)
 
 Short pilot: `--env crowdnav --max-jobs 1 --min-completed 1`.
 
@@ -84,9 +84,9 @@ python scripts/run_phase1.py
 CrowdNav (versioned; does not overwrite 2D or older CrowdNav trees):
 
 ```bash
-python scripts/run_quality_pipeline.py --env crowdnav
+python scripts/run_quality_pipeline.py --env crowdnav --workers 4
 # or a fresh id:
-python scripts/run_quality_pipeline.py --env crowdnav --run-id v3_my_trial
+python scripts/run_quality_pipeline.py --env crowdnav --run-id my_trial --workers 4
 ```
 
 Primary Phase 2 protocol: **LOFO** (leave-one-family-out). Random holdout is secondary only.  

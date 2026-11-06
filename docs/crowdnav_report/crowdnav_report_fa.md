@@ -54,7 +54,7 @@
 | seeds آموزش | 0,1,2 | `phase1_manifest.json` | قطعی |
 | human_num | پیش‌فرض پایپلاین = 5 | `scripts/run_quality_pipeline.py --humans` | در status.json ران‌ها **یافت نشد** |
 | comfort_radius | پیش‌فرض آداپتر = 1.0 | `src/environment/crowdnav_env.py` | در خروجی ران **یافت نشد** |
-| robot.visible | True (انسان‌ها ORCA نسبت به ربات واکنش می‌دهند) | `crowdnav_env.py` | کد؛ نه در CSV |
+| robot.visible | پیش‌فرض فعلی **False** (انسان‌ها ربات را نادیده می‌گیرند؛ کمپین فعال v5) | `crowdnav_env.py` + `environment.yaml` | v4 با visible=True آموزش دیده بود |
 | episode max_steps | در آداپتر از config؛ پیش‌فرض YAML ۲D برابر 200 | `configs/environment.yaml` + آداپتر | مقدار دقیق per-run در CSV **یافت نشد** |
 
 ### ۲.۲ شناسایی دو ران

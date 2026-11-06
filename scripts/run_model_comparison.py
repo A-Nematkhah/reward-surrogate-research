@@ -17,6 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 
 from src.surrogate.model_comparison import load_yaml_config, run_model_comparison
+from src.utils.config import apply_dot_overrides
 from src.utils.logging import get_logger, setup_logging
 
 
@@ -35,6 +36,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--features-dir", type=Path, default=None)
     p.add_argument("--output-dir", type=Path, default=None)
     p.add_argument("--results-dir", type=Path, default=None)
+    p.add_argument(
+        "--override",
+        action="append",
+        default=[],
+        help="Dotted config override KEY=VALUE (repeatable)",
+    )
     return p.parse_args()
 
 
@@ -43,6 +50,8 @@ def main() -> int:
     setup_logging("INFO")
     logger = get_logger("run_model_comparison")
     cfg = load_yaml_config(args.config)
+    if args.override:
+        cfg = apply_dot_overrides(cfg, list(args.override))
     if args.n_jobs is not None:
         cfg["n_jobs"] = int(args.n_jobs)
     if args.features_dir is not None:

@@ -156,7 +156,7 @@ def run(cmd: list[str], *, dry_run: bool) -> None:
 def _load_crowdnav_run_cfg() -> dict[str, Any]:
     path = PROJECT_ROOT / "configs" / "crowdnav_run.yaml"
     if not path.is_file():
-        return {"run_id": "v2_150k", "force_new_run": False, "description": ""}
+        return {"run_id": "v5_invisible_24", "force_new_run": False, "description": ""}
     with path.open("r", encoding="utf-8") as handle:
         data = yaml.safe_load(handle) or {}
     if not isinstance(data, dict):
@@ -195,7 +195,7 @@ def resolve_crowdnav_roots(
 ) -> tuple[str, str, str, dict[str, Any]]:
     """Return (run_id, experiments_root, results_root, run_cfg)."""
     cfg = _load_crowdnav_run_cfg()
-    rid = _validate_run_id(run_id or cfg.get("run_id") or "v2_150k")
+    rid = _validate_run_id(run_id or cfg.get("run_id") or "v5_invisible_24")
     force = bool(force_new_run or cfg.get("force_new_run"))
 
     root = PROJECT_ROOT / f"experiments/crowdnav_{rid}"
@@ -456,6 +456,12 @@ def main() -> int:
                     comparison,
                     "--results-dir",
                     report,
+                    # 12x2 pool: Top-3 is degenerate; score Top-1 within family.
+                    "--override",
+                    "topk.within_family_k=1",
+                    # Early features include the 25k CrowdNav checkpoint.
+                    "--override",
+                    "ppo_cost_steps.early+math+behavioral=25000",
                 ]
             )
         run(cmp_cmd, dry_run=args.dry_run)

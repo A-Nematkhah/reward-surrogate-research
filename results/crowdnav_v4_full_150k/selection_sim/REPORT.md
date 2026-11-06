@@ -19,8 +19,7 @@
 | 50 | 0.808 | 0.808 | 0.794 | 0.000 | 1.00 |
 | 72 | 0.808 | 0.808 | 0.808 | 0.000 | 1.00 |
 
-CSVs: `regret_vs_budget_mean_over_repeats.csv`, `regret_vs_budget_all_repeats.csv`  
-(Per-repeat raw also in `../selection_sim_r1/` for repeat 1.)
+CSVs: `regret_vs_budget_mean_over_repeats.csv`, `regret_vs_budget_all_repeats.csv`
 
 ## Interpretation
 
