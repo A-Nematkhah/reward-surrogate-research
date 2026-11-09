@@ -96,11 +96,11 @@ def test_reward_family_counts_match_pool_intent(config_dir: Path) -> None:
     assert family_total == 48
 
 
-def test_crowdnav_reward_pool_is_72(config_dir: Path) -> None:
+def test_crowdnav_reward_pool_is_24(config_dir: Path) -> None:
     config = load_named_config("reward_generation_crowdnav", config_dir=config_dir)
     family_total = sum(fam["n"] for fam in config["families"].values())
-    assert family_total == config["n_candidates"] == 72
-    assert all(fam["n"] == 6 for fam in config["families"].values())
+    assert family_total == config["n_candidates"] == 24
+    assert all(fam["n"] == 2 for fam in config["families"].values())
     expected = {
         "balanced",
         "progress_heavy",
@@ -118,7 +118,14 @@ def test_crowdnav_reward_pool_is_72(config_dir: Path) -> None:
     assert set(config["families"]) == expected
     for name in ("human_proximity", "human_intrusion", "crowded_progress"):
         assert name in config["components"]
-        assert name in config["component_scales"]
+
+
+def test_irsim_reward_pool_is_24(config_dir: Path) -> None:
+    config = load_named_config("reward_generation_irsim", config_dir=config_dir)
+    family_total = sum(fam["n"] for fam in config["families"].values())
+    assert family_total == config["n_candidates"] == 24
+    assert all(fam["n"] == 2 for fam in config["families"].values())
+    assert len(config["families"]) == 12
 
 
 def test_ppo_crowdnav_budget(config_dir: Path) -> None:

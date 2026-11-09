@@ -26,9 +26,12 @@ CONFIG_FILES = {
     "environment": "environment.yaml",
     "ppo": "ppo.yaml",
     "ppo_crowdnav": "ppo_crowdnav.yaml",
+    "ppo_irsim": "ppo_irsim.yaml",
     "crowdnav_run": "crowdnav_run.yaml",
+    "irsim_run": "irsim_run.yaml",
     "reward_generation": "reward_generation.yaml",
     "reward_generation_crowdnav": "reward_generation_crowdnav.yaml",
+    "reward_generation_irsim": "reward_generation_irsim.yaml",
     "evaluation": "evaluation.yaml",
     "surrogate": "surrogate.yaml",
 }

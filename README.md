@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 Operating surrogate is **ExtraTrees** on `early+math+behavioral` → `success_rate`.
 
-CrowdNav++ (ICRA 2023) is vendored at `third_party/CrowdNavPlusPlus`. A short simulator run that does not need Python-RVO2:
+Simulator backends live under `env/` (one folder each): `navigation_2d/`, `crowdnav/` (CrowdNav++), `ir-sim/`. See `env/README.md`. A short CrowdNav smoke run that does not need Python-RVO2:
 
 ```bash
 python scripts/run_crowdnav.py --train --timesteps 256 --humans 5
@@ -59,11 +59,14 @@ python scripts/run_quality_pipeline.py
 
 That flags outlier seeds, refreshes early features, rebuilds the dataset, extracts features, fits ExtraTrees under LOFO, and writes `results/model_comparison_confirm/`.
 
-The same surrogate steps on CrowdNav++ (separate dirs; the 2D dataset stays put):
+The same pipeline on isolated backends (2D dataset stays put):
 
 ```bash
 python scripts/run_quality_pipeline.py --env crowdnav
+python scripts/run_quality_pipeline.py --env irsim
 ```
+
+IR-SIM needs `pip install -e env/ir-sim` once. Artifacts go to `experiments/irsim_<run_id>/` and `results/irsim_<run_id>/` (`configs/irsim_run.yaml`).
 
 Phase 1 on CrowdNav is the long step (ORCA humans). Operating setup:
 
@@ -104,8 +107,9 @@ python scripts/run_phase1.py --override ppo.total_timesteps=100000 --override pp
 
 ```text
 reward-surrogate-research/
+├── env/               # Simulator backends (navigation_2d, crowdnav, ir-sim)
 ├── configs/           # YAML experiment configuration
-├── src/               # Library code (environment, rewards, training, surrogate, …)
+├── src/               # Library code (Gym adapters, rewards, training, surrogate, …)
 ├── scripts/           # CLI entry points
 ├── tests/             # Pytest suite
 ├── experiments/       # Run artifacts (candidates, checkpoints, metrics)

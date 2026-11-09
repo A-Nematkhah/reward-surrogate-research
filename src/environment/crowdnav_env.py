@@ -27,7 +27,7 @@ from src.environment.navigation_2d import (
 )
 from src.utils.config import PROJECT_ROOT
 
-CROWDNAV_ROOT = PROJECT_ROOT / "third_party" / "CrowdNavPlusPlus"
+CROWDNAV_ROOT = PROJECT_ROOT / "env" / "crowdnav"
 ENV_ID = "CrowdNavPlusPlus-v0"
 
 RewardFn = Callable[[Any, dict[str, Any]], float]

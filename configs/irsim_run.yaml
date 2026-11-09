@@ -1,0 +1,13 @@
+# Active IR-SIM experiment identity.
+# Bump ``run_id`` (or pass --run-id) for every new campaign so artifacts never
+# overwrite a previous PPO / surrogate tree.
+#
+# Paths derived by the pipeline:
+#   experiments/irsim_<run_id>/
+#   results/irsim_<run_id>/
+
+run_id: v1_nav24
+
+description: "IR-SIM pipeline_nav world, 24-pool (12x2), PPO 50k, isolated from 2D/CrowdNav"
+
+force_new_run: false

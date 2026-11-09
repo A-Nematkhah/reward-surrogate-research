@@ -568,14 +568,21 @@ def make_env(
 ):
     """Factory for the configured navigation env.
 
-    ``env_id: CrowdNavPlusPlus-v0`` selects the CrowdNav++ adapter.
-    Any other id keeps RewardNavigation2D.
+    - ``CrowdNavPlusPlus-v0`` → CrowdNav++ adapter (``env/crowdnav``)
+    - ``IRSimNav-v0`` → IR-SIM adapter (``env/ir-sim``)
+    - anything else → RewardNavigation2D
     """
     env_id = str((config or {}).get("env_id", "RewardNavigation2D-v0"))
     if env_id == "CrowdNavPlusPlus-v0":
         from src.environment.crowdnav_env import CrowdNavPlusPlusEnv
 
         return CrowdNavPlusPlusEnv(
+            config=config, reward_fn=reward_fn, render_mode=render_mode
+        )
+    if env_id == "IRSimNav-v0":
+        from src.environment.irsim_env import IRSimNavEnv
+
+        return IRSimNavEnv(
             config=config, reward_fn=reward_fn, render_mode=render_mode
         )
     return RewardNavigation2D(config=config, reward_fn=reward_fn, render_mode=render_mode)

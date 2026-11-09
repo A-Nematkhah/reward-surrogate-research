@@ -21,7 +21,7 @@ from pathlib import Path
 import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-CROWDNAV_ROOT = PROJECT_ROOT / "third_party" / "CrowdNavPlusPlus"
+CROWDNAV_ROOT = PROJECT_ROOT / "env" / "crowdnav"
 
 
 def parse_args() -> argparse.Namespace:

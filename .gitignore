@@ -16,7 +16,6 @@ htmlcov/
 .tox/
 .venv/
 venv/
-env/
 
 # IDE / OS
 .idea/
@@ -32,12 +31,20 @@ experiments/phase2/**
 !experiments/phase2/.gitkeep
 experiments/crowdnav*/
 experiments/crowdnav_smoke/
+experiments/irsim*/
 
 # Tracked: lightweight confirm/benchmark metrics + archives + results reports
 # (experiments/model_comparison_confirm, experiments/benchmark_*, experiments/archives)
 
-# Vendored / bulky local trees (clone separately if needed)
+# Vendored / bulky local trees (clone separately if needed; see env/README.md)
 third_party/
+env/crowdnav/**
+!env/crowdnav/README.md
+env/ir-sim/**
+!env/ir-sim/README.PROJECT.md
+!env/ir-sim/worlds/
+!env/ir-sim/worlds/**
+
 
 # Large / generated artifacts
 *.pt

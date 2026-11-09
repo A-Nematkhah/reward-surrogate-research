@@ -207,6 +207,6 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 
 ## Deferred (by design)
 
-- CrowdNav++ is vendored at `third_party/CrowdNavPlusPlus`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into versioned roots `experiments/crowdnav_<run_id>/` / `results/crowdnav_<run_id>/` (`configs/crowdnav_run.yaml`). The first campaign is archived at `experiments/crowdnav_v1_50k/` and `results/crowdnav_v1_50k/`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
+- Simulator backends live under `env/` (`navigation_2d/`, `crowdnav/`, `ir-sim/`). CrowdNav++ is at `env/crowdnav/`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into versioned roots `experiments/crowdnav_<run_id>/` / `results/crowdnav_<run_id>/` (`configs/crowdnav_run.yaml`). The first campaign is archived at `experiments/crowdnav_v1_50k/` and `results/crowdnav_v1_50k/`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
 - LLM reward generation remains future work.
 - Full Active Learning loop is next once this push is accepted.

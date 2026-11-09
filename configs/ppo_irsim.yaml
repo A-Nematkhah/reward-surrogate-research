@@ -1,0 +1,16 @@
+# IR-SIM PPO budget (overrides applied by the quality pipeline).
+# Static-obstacle IR-SIM is closer to 2D than CrowdNav ORCA, so keep 50k
+# as the first operating budget; bump with a new run_id if labels collapse.
+
+total_timesteps: 50000
+
+early_behavioral:
+  enabled: true
+  timesteps: 5000
+  checkpoints: [2000, 5000, 12000]
+  n_episodes: 20
+  seed_offset: 50000
+  deterministic: false
+  stable_stats: true
+
+save_freq_timesteps: 25000
