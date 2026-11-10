@@ -1,0 +1,57 @@
+{
+  "design": {
+    "n_prompts": 6,
+    "temperatures": [
+      0.3,
+      0.7,
+      1.0
+    ],
+    "n_per_prompt_temp_gen0": 16,
+    "gen0_candidates": 288,
+    "generations": 3,
+    "candidates_per_env_target": 864,
+    "seeds": 3,
+    "held_out_prompts": 2
+  },
+  "lineages_gate2": {
+    "min_held_out_lineages": 20,
+    "held_out_fraction": 0.2,
+    "total_lineages_needed": 100,
+    "held_out_lineages": 20,
+    "train_lineages": 80,
+    "planned_lineages": 100
+  },
+  "costs": [
+    {
+      "env": "2d",
+      "n_candidates": 864,
+      "n_seeds": 3,
+      "n_jobs": 2592,
+      "min_per_job": 2.0,
+      "n_workers": 4,
+      "wall_hours_serial": 86.4,
+      "wall_hours_parallel": 21.6
+    },
+    {
+      "env": "irsim",
+      "n_candidates": 864,
+      "n_seeds": 3,
+      "n_jobs": 2592,
+      "min_per_job": 3.5,
+      "n_workers": 4,
+      "wall_hours_serial": 151.2,
+      "wall_hours_parallel": 37.8
+    },
+    {
+      "env": "crowdnav",
+      "n_candidates": 864,
+      "n_seeds": 3,
+      "n_jobs": 2592,
+      "min_per_job": 6.73,
+      "n_workers": 4,
+      "wall_hours_serial": 290.74,
+      "wall_hours_parallel": 72.68
+    }
+  ],
+  "total_wall_hours_parallel_all_envs": 132.08
+}

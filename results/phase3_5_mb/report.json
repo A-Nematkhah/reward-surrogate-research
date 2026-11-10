@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "n_candidates": 108,
+  "feature_match": {
+    "pass": true,
+    "max_abs_diff": 2.842170943040401e-14,
+    "worst_column": "math_pos_mass",
+    "n_column_failures": 0,
+    "n_common_columns": 214
+  },
+  "lofo_within_family": {
+    "pass": true,
+    "pipeline": 0.5861368025850012,
+    "gate1_table": 0.5861368025850012,
+    "gate1_reported_approx": 0.57,
+    "abs_delta_vs_table": 0.0,
+    "abs_delta_vs_reported": 0.016136802585001275,
+    "tolerance": 0.01
+  }
+}

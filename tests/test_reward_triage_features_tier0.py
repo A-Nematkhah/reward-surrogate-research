@@ -26,9 +26,14 @@ def compute_reward(transition):
     return float(transition.get("progress", 0.0)) * 2.0 + float(transition.get("clearance", 0.0))
 """
 
-CONSTANT_CODE = """
+CONSTANT_NONEZERO_CODE = """
 def compute_reward(transition):
     return 1.0
+"""
+
+CONSTANT_ZERO_CODE = """
+def compute_reward(transition):
+    return 0.0
 """
 
 NAN_CODE = """
@@ -61,10 +66,16 @@ def test_fixture_and_frozen_probe_hashes():
 def test_tier0_constant_and_non_finite():
     batch = _fixture_2d()
     tr = batch.transitions[:8]
-    const_exec = run_candidate_on_probes(CONSTANT_CODE, tr, timeout_s=10.0)
-    const_rep = apply_tier0(const_exec)
-    assert const_rep.status == "constant"
-    assert is_hard_reject(const_rep)
+    # Non-zero constant (e.g. pure time cost) is a warning, not a hard reject.
+    nz_exec = run_candidate_on_probes(CONSTANT_NONEZERO_CODE, tr, timeout_s=10.0)
+    nz_rep = apply_tier0(nz_exec)
+    assert nz_rep.status == "warn"
+    assert not is_hard_reject(nz_rep)
+
+    z_exec = run_candidate_on_probes(CONSTANT_ZERO_CODE, tr, timeout_s=10.0)
+    z_rep = apply_tier0(z_exec)
+    assert z_rep.status == "constant"
+    assert is_hard_reject(z_rep)
 
     nan_exec = run_candidate_on_probes(NAN_CODE, tr, timeout_s=10.0)
     nan_rep = apply_tier0(nan_exec)
@@ -75,8 +86,9 @@ def test_tier0_constant_and_non_finite():
 def test_feature_determinism():
     batch = _fixture_2d()
     tr = batch.transitions
-    r1, f1, h1, _ = triage_candidate(VARYING_CODE, tr)
-    _r2, f2, h2, _ = triage_candidate(VARYING_CODE, tr)
+    groups = ("bb_stats", "bb_corr", "bb_policy", "bb_shape")
+    r1, f1, h1, _ = triage_candidate(VARYING_CODE, tr, feature_groups=groups)
+    _r2, f2, h2, _ = triage_candidate(VARYING_CODE, tr, feature_groups=groups)
     assert r1.status in ("ok", "warn")
     assert f1 is not None and f2 is not None
     assert h1 == h2 == feature_hash(f1)
@@ -88,25 +100,30 @@ def test_feature_determinism():
 
 
 def test_spec_to_code_runs():
+    weights = {
+        "progress": 1.0,
+        "goal": 1.0,
+        "collision": 1.0,
+        "obstacle": 0.5,
+        "smoothness": 0.1,
+        "time": 0.01,
+    }
     code = spec_to_code(
         {
             "candidate_id": "demo",
             "family_id": "balanced",
-            "weights": {
-                "progress": 1.0,
-                "goal": 1.0,
-                "collision": 1.0,
-                "obstacle": 0.5,
-                "smoothness": 0.1,
-                "time": 0.01,
-            },
+            "weights": weights,
             "scales": {},
         }
     )
     batch = _fixture_2d()
-    report, feats, _, _ = triage_candidate(code, batch.transitions[:10])
+    report, feats, _, _ = triage_candidate(
+        code, batch.transitions[:10], weights=weights, feature_groups=("mb",)
+    )
     assert report.status in ("ok", "warn")
     assert feats is not None
+    assert "math_variance" in feats
+    assert "total_mean" in feats
     feats2 = extract_blackbox_features(
         [0.1, 0.2, 0.3],
         batch.transitions[:3],

@@ -1,0 +1,62 @@
+# Isolated workers for candidate execution / PPO labeling.
+# Usage:
+#   docker compose -f docker-compose.triage.yml run --rm triage-sandbox
+# Secrets (LLM API keys) stay on the host generator process only — never here.
+services:
+  triage-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.triage
+    network_mode: none
+    read_only: true
+    user: "10001:10001"
+    working_dir: /work
+    volumes:
+      - type: bind
+        source: .
+        target: /work
+        read_only: true
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 268435456
+    environment:
+      # Explicitly empty — do not forward host secrets.
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      HF_TOKEN: ""
+    mem_limit: 2g
+    cpus: 2.0
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    command: ["python", "-m", "reward_triage.container_selftest"]
+
+  triage-labeler:
+    build:
+      context: .
+      dockerfile: Dockerfile.triage
+    network_mode: none
+    read_only: true
+    user: "10001:10001"
+    working_dir: /work
+    volumes:
+      - type: bind
+        source: .
+        target: /work
+        read_only: true
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 536870912
+    environment:
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+    mem_limit: 4g
+    cpus: 2.0
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    command: ["python", "scripts/label_candidates.py", "--help"]

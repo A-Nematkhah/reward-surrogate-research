@@ -1,0 +1,26 @@
+# Reward-triage worker image: no network, non-root, limited resources.
+# LLM API keys must NOT be passed into this image; only the generator host holds them.
+FROM python:3.12-slim
+
+RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin triage \
+    && mkdir -p /work /data \
+    && chown -R triage:triage /work /data
+
+WORKDIR /work
+
+# Install only runtime deps needed for sandbox + optional PPO labeling.
+COPY pyproject.toml README.md LICENSE ./
+COPY reward_triage ./reward_triage
+COPY rsr ./rsr
+COPY configs ./configs
+RUN pip install --no-cache-dir -e ".[dev]" \
+    && pip install --no-cache-dir gymnasium stable-baselines3 torch --index-url https://download.pytorch.org/whl/cpu \
+    || pip install --no-cache-dir -e ".[dev]"
+
+USER triage
+ENV HOME=/home/triage \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Default: run unit tests that do not need docker-in-docker.
+CMD ["pytest", "-m", "not slow", "-q"]

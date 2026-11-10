@@ -189,13 +189,26 @@ def extract_blackbox_features(
     *,
     code: str | None = None,
     groups: Sequence[str] | None = None,
+    score_fn: Any | None = None,
+    weights: Mapping[str, float] | None = None,
+    scales: Mapping[str, float] | None = None,
+    episodes: Sequence[tuple[str, Sequence[Mapping[str, Any]]]] | None = None,
 ) -> dict[str, float]:
-    """Extract selected black-box feature groups."""
-    wanted = set(
-        groups
-        or ("bb_stats", "bb_corr", "bb_policy", "bb_shape", "bb_comp", "code")
-    )
+    """Extract selected feature groups.
+
+    Default group is ``mb`` (Gate-1 math+behavioral). Optional: bb_*, code.
+    """
+    from reward_triage.mb_features import extract_mb_features, group_transitions_into_episodes
+
+    wanted = set(groups or ("mb",))
     feats: dict[str, float] = {}
+    if "mb" in wanted:
+        if score_fn is None:
+            raise ValueError("score_fn is required for feature group 'mb'")
+        eps = list(episodes) if episodes is not None else group_transitions_into_episodes(transitions)
+        feats.update(
+            extract_mb_features(score_fn, eps, weights=weights, scales=scales)
+        )
     if "bb_stats" in wanted:
         feats.update(extract_bb_stats(rewards))
     if "bb_corr" in wanted:
