@@ -28,10 +28,26 @@ def test_draw_pool_adds_groups_when_too_small() -> None:
     cand = _toy_candidates()
     # Request 1 group but pool_size=10 > family size 6 -> must realize >1 groups
     rng = np.random.default_rng(0)
-    pool = draw_pool(cand, pool_size=10, n_groups=1, rng=rng)
+    pool = draw_pool(cand, pool_size=10, n_groups=1, rng=rng, expand_groups=True)
     assert pool is not None
     assert pool.n_groups >= 2
     assert len(pool.candidate_ids) == 10
+    assert len(set(pool.candidate_ids)) == 10  # no duplicates
+
+
+def test_draw_pool_strict_within_family_no_expand() -> None:
+    import numpy as np
+
+    cand = _toy_candidates()
+    rng = np.random.default_rng(0)
+    # Family size is 6; N=10 cannot be filled without expand -> None
+    assert (
+        draw_pool(cand, pool_size=10, n_groups=1, rng=rng, expand_groups=False) is None
+    )
+    pool = draw_pool(cand, pool_size=6, n_groups=1, rng=rng, expand_groups=False)
+    assert pool is not None
+    assert pool.n_groups == 1
+    assert len(set(pool.candidate_ids)) == 6
 
 
 def test_simulate_pools_smoke() -> None:

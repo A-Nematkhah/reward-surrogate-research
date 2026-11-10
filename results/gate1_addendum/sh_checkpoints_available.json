@@ -1,0 +1,18 @@
+{
+  "requested_original_gate1": [
+    5000,
+    12000,
+    25000
+  ],
+  "available": [
+    2000,
+    5000,
+    12000
+  ],
+  "early_t2000_success_frac": true,
+  "used_for_n16_k5": [
+    2000,
+    5000,
+    12000
+  ]
+}

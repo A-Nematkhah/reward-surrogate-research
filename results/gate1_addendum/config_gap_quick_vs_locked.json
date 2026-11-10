@@ -1,0 +1,68 @@
+{
+  "locked_confirm": {
+    "n_repeats": 3,
+    "quick": false,
+    "extra_trees": {
+      "n_estimators": [
+        250
+      ],
+      "max_depth": [
+        null,
+        8
+      ],
+      "min_samples_leaf": [
+        2,
+        4
+      ]
+    },
+    "inner_cv": {
+      "strategy": "leave_one_family_out",
+      "optimize": "within_family_spearman"
+    },
+    "default_feature_selection": "top_k_by_spearman",
+    "default_k": 15
+  },
+  "gate1_zero_cost_primary": {
+    "n_repeats": 3,
+    "quick": false,
+    "extra_trees": {
+      "n_estimators": [
+        250
+      ],
+      "max_depth": [
+        null,
+        8
+      ],
+      "min_samples_leaf": [
+        2,
+        4
+      ]
+    },
+    "inner_cv": {
+      "strategy": "leave_one_family_out",
+      "optimize": "within_family_spearman"
+    },
+    "default_feature_selection": "top_k_by_spearman",
+    "default_k": 15,
+    "identical_et_settings_to_confirm": true
+  },
+  "gate1_secondary_exploratory_quick": {
+    "n_repeats": 1,
+    "quick": true,
+    "extra_trees": {
+      "n_estimators": [
+        250
+      ],
+      "max_depth": [
+        null,
+        8
+      ],
+      "min_samples_leaf": [
+        2,
+        4
+      ]
+    },
+    "note": "quick=True forces n_repeats=1 and hyperparameter_max_combos=2 (see quick_overrides). That \u2014 not a different n_estimators grid \u2014 explains exploratory early+math+behavioral recall~0.67 vs locked confirm pool-sim ~0.89."
+  },
+  "gap_explanation": "The 0.667 figure came from experiments/gate1_secondary_exploratory (--quick, n_repeats=1, truncated inner search). The 0.892 figure is pool-sim on locked confirm OOF (n_repeats=3, full inner LOFO). Primary gate1_zero_cost (math+behavioral) used n_repeats=3, quick=false, and the same ExtraTrees hyperparameter grid as the locked confirm."
+}

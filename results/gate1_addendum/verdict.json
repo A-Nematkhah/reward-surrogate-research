@@ -1,0 +1,149 @@
+{
+  "run_id": "gate1_addendum",
+  "n_families": 12,
+  "held_out_groups_threshold_20_met": false,
+  "primary_family_bootstrap": [
+    {
+      "N": 16,
+      "k": 5,
+      "n_groups_requested": 1,
+      "selector": "surrogate",
+      "n_pools": 800.0,
+      "ci_mode": "family",
+      "n_families_total": 12,
+      "n_boot": 250,
+      "held_out_groups_threshold_met": false,
+      "recall_at_k_mean": 0.8475,
+      "regret_at_k_mean": 0.005268229166666666,
+      "regret_at_k_median": 0.0,
+      "savings_frac": 0.6875,
+      "recall_at_k_mean_lo": 0.7,
+      "recall_at_k_mean_hi": 0.975,
+      "regret_at_k_median_lo": 0.0,
+      "regret_at_k_median_hi": 0.0,
+      "recall_minus_random_mean": 0.5276,
+      "recall_minus_random_lo": 0.330625,
+      "recall_minus_random_hi": 0.7193750000000001,
+      "feature_set": "math+behavioral",
+      "pool_regime": "multi_family",
+      "oof_source": "gate1_zero_cost"
+    }
+  ],
+  "pool_audit": {
+    "sampling": "without_replacement",
+    "duplicates_in_500_draws": 0,
+    "n16_n_groups_1_realized_mean": 2.0,
+    "n16_n_groups_1_realized_min": 2,
+    "n16_n_groups_1_realized_max": 2,
+    "note": "When N=16 and n_groups=1, families have size 8-10 so expand_groups adds a second family; candidates are still unique (replace=False).",
+    "random_recall_at_5_empirical": 0.3176,
+    "random_recall_at_5_theory_k_over_N": 0.3125,
+    "random_recall_explanation": "For a unique true best and uniform without-replacement keep-k, E[recall@k]=k/N=0.3125. Reported ~0.28 was a finite-sample Monte Carlo estimate (n_pools=2000, seed=123) under the same protocol \u2014 not a different sampling model. Re-estimates sit near 0.30\u20130.31; residual gap to 0.3125 is sampling noise, not duplicates."
+  },
+  "config_gap": {
+    "locked_confirm": {
+      "n_repeats": 3,
+      "quick": false,
+      "extra_trees": {
+        "n_estimators": [
+          250
+        ],
+        "max_depth": [
+          null,
+          8
+        ],
+        "min_samples_leaf": [
+          2,
+          4
+        ]
+      },
+      "inner_cv": {
+        "strategy": "leave_one_family_out",
+        "optimize": "within_family_spearman"
+      },
+      "default_feature_selection": "top_k_by_spearman",
+      "default_k": 15
+    },
+    "gate1_zero_cost_primary": {
+      "n_repeats": 3,
+      "quick": false,
+      "extra_trees": {
+        "n_estimators": [
+          250
+        ],
+        "max_depth": [
+          null,
+          8
+        ],
+        "min_samples_leaf": [
+          2,
+          4
+        ]
+      },
+      "inner_cv": {
+        "strategy": "leave_one_family_out",
+        "optimize": "within_family_spearman"
+      },
+      "default_feature_selection": "top_k_by_spearman",
+      "default_k": 15,
+      "identical_et_settings_to_confirm": true
+    },
+    "gate1_secondary_exploratory_quick": {
+      "n_repeats": 1,
+      "quick": true,
+      "extra_trees": {
+        "n_estimators": [
+          250
+        ],
+        "max_depth": [
+          null,
+          8
+        ],
+        "min_samples_leaf": [
+          2,
+          4
+        ]
+      },
+      "note": "quick=True forces n_repeats=1 and hyperparameter_max_combos=2 (see quick_overrides). That \u2014 not a different n_estimators grid \u2014 explains exploratory early+math+behavioral recall~0.67 vs locked confirm pool-sim ~0.89."
+    },
+    "gap_explanation": "The 0.667 figure came from experiments/gate1_secondary_exploratory (--quick, n_repeats=1, truncated inner search). The 0.892 figure is pool-sim on locked confirm OOF (n_repeats=3, full inner LOFO). Primary gate1_zero_cost (math+behavioral) used n_repeats=3, quick=false, and the same ExtraTrees hyperparameter grid as the locked confirm."
+  },
+  "sh": [
+    {
+      "checkpoints": [
+        2000,
+        5000,
+        12000
+      ],
+      "keep_frac": 0.5,
+      "n_pools": 800,
+      "recall_at_5_mean": 0.3,
+      "regret_at_5_median": 0.014583333333333393,
+      "mean_steps_per_candidate": 10000.0,
+      "zero_cost_triage_steps_per_cand": 15625.0,
+      "sh_cheaper_than_zero_cost_triage": true
+    },
+    {
+      "checkpoints": [
+        2000,
+        5000,
+        12000
+      ],
+      "keep_frac": 0.3333333333333333,
+      "n_pools": 800,
+      "recall_at_5_mean": 0.16,
+      "regret_at_5_median": 0.033333333333333326,
+      "mean_steps_per_candidate": 6375.0,
+      "zero_cost_triage_steps_per_cand": 15625.0,
+      "sh_cheaper_than_zero_cost_triage": true
+    }
+  ],
+  "checks": {
+    "recall_ge_0_80": true,
+    "median_regret_le_0_03": true,
+    "beats_random_family_ci": true,
+    "savings_ge_0_50": true
+  },
+  "viable_under_family_bootstrap": true,
+  "caveat": "Only 12 families exist, so the pre-registered '>= 20 held-out groups' condition is NOT met; CIs are family-cluster bootstraps over 12 families."
+}
