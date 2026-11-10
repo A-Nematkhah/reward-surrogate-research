@@ -23,6 +23,6 @@ jobs:
       - name: Verify locked confirm checksums
         run: sha256sum -c CHECKSUMS.sha256
       - name: Ruff
-        run: ruff check rsr tests scripts
+        run: ruff check rsr reward_triage tests scripts
       - name: Pytest (not slow)
         run: pytest -m "not slow"

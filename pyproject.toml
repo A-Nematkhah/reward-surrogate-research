@@ -39,7 +39,7 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["rsr*"]
+include = ["rsr*", "reward_triage*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
