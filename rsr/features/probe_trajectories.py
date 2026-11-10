@@ -9,9 +9,10 @@ Leakage restrictions:
 from __future__ import annotations
 
 import json
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -87,10 +88,54 @@ def policy_obstacle_avoiding(
     return normalize_action(action)
 
 
+def policy_partial_expert(
+    env: Any, obs: np.ndarray, info: dict[str, Any], rng: np.random.Generator
+) -> np.ndarray:
+    """Mostly goal-seeking with occasional random jitter (partial expert)."""
+    base = policy_goal_seeking(env, obs, info, rng)
+    if float(rng.random()) < 0.25:
+        noise = rng.normal(0.0, 0.35, size=2)
+        return normalize_action(base + noise)
+    return base
+
+
+def policy_edge_states(
+    env: Any, obs: np.ndarray, info: dict[str, Any], rng: np.random.Generator
+) -> np.ndarray:
+    """Bias actions toward near-goal, near-collision, or boundary regimes."""
+    robot = np.asarray(info["robot_position"], dtype=np.float64)
+    mode = int(rng.integers(0, 3))
+    if mode == 0:
+        # Drive straight toward goal (near-goal approach).
+        return policy_goal_seeking(env, obs, info, rng)
+    if mode == 1:
+        # Push toward nearest obstacle (near-collision).
+        obstacles = getattr(env, "obstacles", [])
+        if obstacles:
+            nearest = min(obstacles, key=lambda c: distance(robot, c.center))
+            toward = nearest.center - robot
+            n = float(np.linalg.norm(toward))
+            if n > 1e-8:
+                return normalize_action(toward / n)
+        return policy_random(env, obs, info, rng)
+    # Push outward toward workspace boundary.
+    center = np.asarray(getattr(env, "workspace_center", np.zeros(2)), dtype=np.float64)
+    if center.shape != (2,):
+        center = np.zeros(2, dtype=np.float64)
+    away = robot - center
+    n = float(np.linalg.norm(away))
+    if n < 1e-8:
+        away = rng.normal(0.0, 1.0, size=2)
+        n = float(np.linalg.norm(away))
+    return normalize_action(away / max(n, 1e-8))
+
+
 POLICY_REGISTRY: dict[str, PolicyFn] = {
     "random": policy_random,
     "goal_seeking": policy_goal_seeking,
     "obstacle_avoiding": policy_obstacle_avoiding,
+    "partial_expert": policy_partial_expert,
+    "edge_states": policy_edge_states,
 }
 
 
@@ -141,7 +186,7 @@ def rollout_probe_episode(
     rng = make_rng(seed)
 
     # Zero reward during probe collection — we only need transitions.
-    def _zero_reward(env, transition):  # noqa: ANN001
+    def _zero_reward(env, transition):
         del env, transition
         return 0.0
 

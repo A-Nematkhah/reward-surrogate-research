@@ -1,0 +1,15 @@
+{
+  "synthetic": false,
+  "seed": 9739,
+  "base_seed": 7,
+  "n_per_policy": 2,
+  "max_steps": 40,
+  "source": "from-env:irsim",
+  "policies": [
+    "edge_states",
+    "goal_seeking",
+    "obstacle_avoiding",
+    "partial_expert",
+    "random"
+  ]
+}

@@ -2,12 +2,24 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from reward_triage.executor import run_candidate_on_probes
 from reward_triage.features import extract_blackbox_features, feature_hash
 from reward_triage.pipeline import triage_candidate
-from reward_triage.probes import ensure_default_synthetic_probes, load_probe_npz, verify_probe_hash
+from reward_triage.probes import (
+    REQUIRED_POLICIES,
+    assert_required_policies,
+    fixture_probe_dir,
+    load_probe_npz,
+    verify_probe_hash,
+)
 from reward_triage.spec_to_code import spec_to_code
 from reward_triage.tier0 import apply_tier0, is_hard_reject
+
+ROOT = Path(__file__).resolve().parents[1]
+FROZEN = ROOT / "data" / "probes"
+
 
 VARYING_CODE = """
 def compute_reward(transition):
@@ -25,17 +37,29 @@ def compute_reward(transition):
 """
 
 
-def test_probe_npz_hash():
-    paths = ensure_default_synthetic_probes()
-    for path in paths.values():
-        assert path.exists()
+def _fixture_2d():
+    return load_probe_npz(fixture_probe_dir() / "navigation_2d.npz")
+
+
+def test_fixture_and_frozen_probe_hashes():
+    for path in fixture_probe_dir().glob("*.npz"):
         assert verify_probe_hash(path)
         batch = load_probe_npz(path)
-        assert len(batch.transitions) > 0
+        assert_required_policies(batch)
+        assert batch.meta.get("synthetic") is True
+    for name in ("navigation_2d.npz", "crowdnav.npz", "irsim.npz"):
+        path = FROZEN / name
+        assert path.exists(), f"missing frozen real probe set {path}"
+        assert verify_probe_hash(path)
+        batch = load_probe_npz(path)
+        assert_required_policies(batch)
+        assert batch.meta.get("synthetic") is False
+        for p in REQUIRED_POLICIES:
+            assert p in set(batch.meta.get("policies") or [])
 
 
 def test_tier0_constant_and_non_finite():
-    batch = load_probe_npz(ensure_default_synthetic_probes()["navigation_2d"])
+    batch = _fixture_2d()
     tr = batch.transitions[:8]
     const_exec = run_candidate_on_probes(CONSTANT_CODE, tr, timeout_s=10.0)
     const_rep = apply_tier0(const_exec)
@@ -49,7 +73,7 @@ def test_tier0_constant_and_non_finite():
 
 
 def test_feature_determinism():
-    batch = load_probe_npz(ensure_default_synthetic_probes()["navigation_2d"])
+    batch = _fixture_2d()
     tr = batch.transitions
     r1, f1, h1, _ = triage_candidate(VARYING_CODE, tr)
     _r2, f2, h2, _ = triage_candidate(VARYING_CODE, tr)
@@ -79,11 +103,10 @@ def test_spec_to_code_runs():
             "scales": {},
         }
     )
-    batch = load_probe_npz(ensure_default_synthetic_probes()["navigation_2d"])
+    batch = _fixture_2d()
     report, feats, _, _ = triage_candidate(code, batch.transitions[:10])
     assert report.status in ("ok", "warn")
     assert feats is not None
-    # Diagnostic extract on same rewards
     feats2 = extract_blackbox_features(
         [0.1, 0.2, 0.3],
         batch.transitions[:3],
