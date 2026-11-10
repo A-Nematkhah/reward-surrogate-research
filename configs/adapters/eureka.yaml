@@ -1,0 +1,9 @@
+# EUREKA-style signature template (verified when a host is chosen).
+# No host code is imported by reward_triage.
+host: eureka
+entry: compute_reward
+args:
+  - transition
+kwargs_from_transition: {}
+returns: [reward, components_dict]
+notes: "Fields to verify against the chosen EUREKA fork before wiring."

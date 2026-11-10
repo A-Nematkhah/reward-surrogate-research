@@ -1,0 +1,8 @@
+# CARD-style signature template (verified when a host is chosen).
+host: card
+entry: compute_reward
+args:
+  - transition
+kwargs_from_transition: {}
+returns: [reward, components_dict]
+notes: "Placeholder; confirm CARD reward entrypoint when host is selected."

@@ -1,0 +1,8 @@
+# EvoNav-style signature template (verified when a host is chosen).
+host: evonav
+entry: compute_reward
+args:
+  - transition
+kwargs_from_transition: {}
+returns: [reward, components_dict]
+notes: "Placeholder; confirm EvoNav reward entrypoint when host is selected."
