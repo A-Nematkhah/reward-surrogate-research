@@ -36,14 +36,17 @@ experiments/irsim*/
 # Tracked: lightweight confirm/benchmark metrics + archives + results reports
 # (experiments/model_comparison_confirm, experiments/benchmark_*, experiments/archives)
 
-# Vendored / bulky local trees (clone separately if needed; see env/README.md)
+# External simulator clones (not vendored; pin via scripts/setup_third_party.sh)
 third_party/
 env/crowdnav/**
 !env/crowdnav/README.md
 env/ir-sim/**
 !env/ir-sim/README.PROJECT.md
 !env/ir-sim/worlds/
-!env/ir-sim/worlds/**
+!env/ir-sim/worlds/
+
+# Tracked lightweight exports (see scripts/export_datasets.py). Keep under 20 MiB.
+# (data/ is not ignored; listed here for documentation only)
 
 
 # Large / generated artifacts
