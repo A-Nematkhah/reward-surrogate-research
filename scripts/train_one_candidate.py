@@ -12,10 +12,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.rewards.candidate_generator import load_candidates
-from src.training.ppo_trainer import load_trained_model, run_dir_for, train_candidate_seed
-from src.utils.config import apply_dot_overrides, load_named_config
-from src.utils.logging import get_logger, setup_logging
+from rsr.rewards.candidate_generator import load_candidates
+from rsr.training.ppo_trainer import load_trained_model, run_dir_for, train_candidate_seed
+from rsr.utils.config import apply_dot_overrides, load_named_config
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def parse_args() -> argparse.Namespace:

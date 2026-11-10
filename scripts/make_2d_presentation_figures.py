@@ -37,8 +37,8 @@ def _save(fig: plt.Figure, name: str) -> Path:
 
 
 def fig_env_sketch() -> None:
-    from src.environment.navigation_2d import RewardNavigation2D
-    from src.environment.visualization import render_env
+    from rsr.environment.navigation_2d import RewardNavigation2D
+    from rsr.environment.visualization import render_env
 
     env = RewardNavigation2D()
     env.reset(seed=7)

@@ -7,7 +7,7 @@ import random
 import numpy as np
 import pytest
 
-from src.utils.reproducibility import make_rng, seed_everything, seed_worker
+from rsr.utils.reproducibility import make_rng, seed_everything, seed_worker
 
 
 def test_seed_everything_repeatable_numpy() -> None:

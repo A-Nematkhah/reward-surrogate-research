@@ -20,8 +20,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.surrogate.model_comparison import load_yaml_config, run_model_comparison
-from src.utils.logging import get_logger, setup_logging
+from rsr.surrogate.model_comparison import load_yaml_config, run_model_comparison
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def parse_args() -> argparse.Namespace:

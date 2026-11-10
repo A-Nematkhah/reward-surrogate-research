@@ -14,10 +14,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.dataset.builder import build_and_save_phase1_dataset
-from src.dataset.outlier_filter import drop_flagged_seeds
-from src.dataset.validator import DatasetValidationError, validate_dataset
-from src.utils.logging import get_logger, setup_logging
+from rsr.dataset.builder import build_and_save_phase1_dataset
+from rsr.dataset.outlier_filter import drop_flagged_seeds
+from rsr.dataset.validator import DatasetValidationError, validate_dataset
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def parse_args() -> argparse.Namespace:

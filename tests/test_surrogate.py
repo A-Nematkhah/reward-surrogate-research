@@ -10,19 +10,19 @@ import pytest
 
 pytest.importorskip("sklearn")
 
-from src.surrogate.baselines import MeanPredictor, MedianPredictor, make_ridge_baseline
-from src.surrogate.evaluation import (
+from rsr.surrogate.baselines import MeanPredictor, MedianPredictor, make_ridge_baseline
+from rsr.surrogate.evaluation import (
     evaluate_predictions,
     pairwise_ranking_accuracy,
     regression_metrics,
     top_k_accuracy,
 )
-from src.surrogate.models import (
+from rsr.surrogate.models import (
     make_hist_gradient_boosting,
     make_random_forest,
     predict_with_uncertainty,
 )
-from src.surrogate.training import run_grouped_cv, run_phase2_experiments
+from rsr.surrogate.training import run_grouped_cv, run_phase2_experiments
 
 
 def test_mean_median_predictors() -> None:
@@ -84,7 +84,7 @@ def test_constant_prediction_ranking_is_nan() -> None:
     m = regression_metrics(y, p)
     assert np.isnan(m["spearman"])
     assert m["ranking_status"] == "constant_prediction"
-    from src.surrogate.evaluation import evaluate_predictions
+    from rsr.surrogate.evaluation import evaluate_predictions
 
     em = evaluate_predictions(y, p, target_name="success_rate", model_name="mean")
     assert np.isnan(em["spearman"])

@@ -16,7 +16,9 @@ results_dir: results/model_comparison_confirm
 targets:
   - success_rate
 
-# Operating feature set after the 3-repeat confirm (within-family Spearman ≈ 0.65, top-3 ≈ 0.83).
+# Pre-registered confirm primary was early+math (ExtraTrees pooled≈0.933, within≈0.616, top3≈0.722).
+# Operating feature set below was chosen post hoc after the exploratory grid (≈0.935 / 0.648 / 0.833).
+# Comments only — values unchanged; see docs/PROVENANCE.md.
 feature_sets:
   - early+math+behavioral
 

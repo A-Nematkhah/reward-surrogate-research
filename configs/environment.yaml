@@ -55,4 +55,16 @@ crowdnav:
   # False => humans do not see/react to the robot (ORCA ignores robot).
   robot_visible: false
 
+# Used when env_id is IRSimNav-v0 (overrides applied by IR-SIM pipeline).
+irsim:
+  world_yaml: env/worlds/irsim_pipeline_nav.yaml
+  max_speed: 1.0
+  robot_radius: 0.2
+  goal_radius: 0.25
+  goal_tolerance: 0.45
+  n_nearest: 3
+  max_steps: 200
+  min_clearance: 0.5
+  comfort_radius: 1.0
+
 seed: 0

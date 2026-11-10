@@ -1,0 +1,67 @@
+{
+  "primary_rows": [
+    {
+      "N": 16,
+      "k": 5,
+      "n_groups_requested": 1,
+      "selector": "surrogate",
+      "n_pools": 2000.0,
+      "recall_at_k_mean": 0.829,
+      "recall_at_k_mean_lo": 0.8129875,
+      "recall_at_k_mean_hi": 0.8455,
+      "recall_at_k_median": 1.0,
+      "recall_at_k_median_lo": 1.0,
+      "recall_at_k_median_hi": 1.0,
+      "regret_at_k_mean": 0.005861458333333331,
+      "regret_at_k_mean_lo": 0.005096848958333331,
+      "regret_at_k_mean_hi": 0.006671927083333332,
+      "regret_at_k_median": 0.0,
+      "regret_at_k_median_lo": 0.0,
+      "regret_at_k_median_hi": 0.0,
+      "top1_hit_mean": 0.4655,
+      "top1_hit_mean_lo": 0.444,
+      "top1_hit_mean_hi": 0.48751249999999996,
+      "top1_hit_median": 0.0,
+      "top1_hit_median_lo": 0.0,
+      "top1_hit_median_hi": 0.0,
+      "pairwise_accuracy_mean": 0.7722171544099762,
+      "pairwise_accuracy_mean_lo": 0.7670911630329215,
+      "pairwise_accuracy_mean_hi": 0.7771122299755189,
+      "pairwise_accuracy_median": 0.7916666666666666,
+      "pairwise_accuracy_median_lo": 0.7833333333333333,
+      "pairwise_accuracy_median_hi": 0.8,
+      "savings_frac": 0.6875,
+      "recall_minus_random_mean": 0.5165,
+      "recall_minus_random_lo": 0.488,
+      "recall_minus_random_hi": 0.542,
+      "regret_improvement_vs_random_mean": 0.06724791666666668,
+      "regret_improvement_vs_random_lo": 0.061053919270833354,
+      "regret_improvement_vs_random_hi": 0.07343746093750002,
+      "feature_set": "math+behavioral",
+      "model": "extra_trees",
+      "feature_steps": 0.0
+    }
+  ],
+  "sh_checkpoints": {
+    "requested": [
+      5000,
+      12000,
+      25000
+    ],
+    "available": [
+      5000,
+      12000
+    ]
+  },
+  "checks": {
+    "recall_ge_0_80": true,
+    "median_regret_le_0_03": true,
+    "beats_random_ci": true,
+    "savings_ge_0_50": true,
+    "recall_at_k_mean": 0.829,
+    "regret_at_k_median": 0.0,
+    "recall_minus_random_lo": 0.488,
+    "savings_frac": 0.6875
+  },
+  "viable": true
+}

@@ -14,10 +14,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.dataset.builder import attach_run_configs, build_dataset_from_runs
-from src.dataset.phase1_analysis import generate_phase1_figures, write_phase1_report
-from src.dataset.validator import validate_dataset
-from src.surrogate.phase2_analysis import (
+from rsr.dataset.builder import attach_run_configs, build_dataset_from_runs
+from rsr.dataset.phase1_analysis import generate_phase1_figures, write_phase1_report
+from rsr.dataset.validator import validate_dataset
+from rsr.surrogate.phase2_analysis import (
     build_phase2_report,
     data_sensitivity_from_folds,
     generate_phase2_figures,
@@ -26,7 +26,7 @@ from src.surrogate.phase2_analysis import (
     write_model_comparison_table,
     write_phase2_report,
 )
-from src.utils.logging import get_logger, setup_logging
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def _rel(path: Path) -> str:

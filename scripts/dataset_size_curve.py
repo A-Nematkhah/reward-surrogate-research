@@ -18,7 +18,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.surrogate.model_comparison import (  # noqa: E402
+from rsr.surrogate.model_comparison import (  # noqa: E402
     _fit_predict,
     evaluate_oof_bundle,
     load_feature_matrix,

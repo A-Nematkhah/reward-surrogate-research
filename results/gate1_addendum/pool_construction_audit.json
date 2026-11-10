@@ -1,0 +1,11 @@
+{
+  "sampling": "without_replacement",
+  "duplicates_in_500_draws": 0,
+  "n16_n_groups_1_realized_mean": 2.0,
+  "n16_n_groups_1_realized_min": 2,
+  "n16_n_groups_1_realized_max": 2,
+  "note": "When N=16 and n_groups=1, families have size 8-10 so expand_groups adds a second family; candidates are still unique (replace=False).",
+  "random_recall_at_5_empirical": 0.3176,
+  "random_recall_at_5_theory_k_over_N": 0.3125,
+  "random_recall_explanation": "For a unique true best and uniform without-replacement keep-k, E[recall@k]=k/N=0.3125. Reported ~0.28 was a finite-sample Monte Carlo estimate (n_pools=2000, seed=123) under the same protocol \u2014 not a different sampling model. Re-estimates sit near 0.30\u20130.31; residual gap to 0.3125 is sampling noise, not duplicates."
+}

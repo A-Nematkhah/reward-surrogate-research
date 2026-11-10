@@ -6,7 +6,7 @@ import math
 
 import pytest
 
-from src.evaluation.metrics import aggregate_episode_metrics, metrics_to_serializable
+from rsr.evaluation.metrics import aggregate_episode_metrics, metrics_to_serializable
 
 
 def _ep(**kwargs):

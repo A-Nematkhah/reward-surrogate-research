@@ -15,11 +15,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.environment.navigation_2d import make_env
-from src.environment.visualization import plot_trajectory
-from src.utils.config import load_named_config
-from src.utils.logging import get_logger, setup_logging
-from src.utils.reproducibility import seed_everything
+from rsr.environment.navigation_2d import make_env
+from rsr.environment.visualization import plot_trajectory
+from rsr.utils.config import load_named_config
+from rsr.utils.logging import get_logger, setup_logging
+from rsr.utils.reproducibility import seed_everything
 
 
 def parse_args() -> argparse.Namespace:

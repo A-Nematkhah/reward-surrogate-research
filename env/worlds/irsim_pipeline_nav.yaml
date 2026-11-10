@@ -1,0 +1,42 @@
+# IR-SIM world used by IRSimNav-v0 (Gym adapter).
+# Robot is externally controlled (no behavior). Obstacles are static circles;
+# the adapter randomizes poses on each Gym reset.
+
+world:
+  height: 10
+  width: 10
+  step_time: 0.1
+  sample_time: 0.1
+  offset: [0, 0]
+  collision_mode: stop
+  control_mode: auto
+
+robot:
+  kinematics: {name: omni}
+  shape: {name: circle, radius: 0.2}
+  state: [1.0, 1.0, 0]
+  goal: [8.0, 8.0, 0]
+  goal_threshold: 0.45
+  arrive_mode: position
+  vel_min: [-1.0, -1.0]
+  vel_max: [1.0, 1.0]
+  plot:
+    show_trajectory: false
+    show_goal: true
+    show_trail: false
+
+obstacle:
+  - number: 5
+    distribution: {name: manual}
+    shape:
+      - {name: circle, radius: 0.55}
+      - {name: circle, radius: 0.45}
+      - {name: circle, radius: 0.50}
+      - {name: circle, radius: 0.40}
+      - {name: circle, radius: 0.60}
+    state:
+      - [4.0, 4.0, 0]
+      - [6.5, 3.0, 0]
+      - [3.0, 6.5, 0]
+      - [7.0, 7.0, 0]
+      - [5.0, 7.5, 0]

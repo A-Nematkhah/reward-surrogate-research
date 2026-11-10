@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "reward-surrogate-research"
+authors:
+  - family-names: Nematkhah
+    given-names: A.
+license: MIT
+repository-code: "https://github.com/A-Nematkhah/reward-surrogate-research"
+abstract: >-
+  Research code for predicting RL reward-candidate performance and building a
+  host-agnostic reward triage component.
+keywords:
+  - reinforcement-learning
+  - reward-design
+  - surrogate-models
+version: 0.1.0
+date-released: "2026-11-09"

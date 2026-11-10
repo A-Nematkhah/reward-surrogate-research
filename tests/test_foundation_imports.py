@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 
-def test_import_src_package() -> None:
-    import src
+def test_import_rsr_package() -> None:
+    import rsr
 
-    assert hasattr(src, "__version__")
-    assert isinstance(src.__version__, str)
+    assert hasattr(rsr, "__version__")
+    assert isinstance(rsr.__version__, str)
 
 
 def test_import_utils_package() -> None:
-    from src import utils
-    from src.utils import (
+    from rsr import utils
+    from rsr.utils import (
         deep_update,
         get_logger,
         load_config,
@@ -36,20 +36,20 @@ def test_import_utils_package() -> None:
 
 def test_import_subpackages() -> None:
     """Package namespaces exist even before domain modules are implemented."""
-    import src.dataset
-    import src.environment
-    import src.evaluation
-    import src.features
-    import src.rewards
-    import src.surrogate
-    import src.training
-    import src.utils
+    import rsr.dataset
+    import rsr.environment
+    import rsr.evaluation
+    import rsr.features
+    import rsr.rewards
+    import rsr.surrogate
+    import rsr.training
+    import rsr.utils
 
-    assert src.environment.__doc__
-    assert src.rewards.__doc__
-    assert src.training.__doc__
-    assert src.evaluation.__doc__
-    assert src.dataset.__doc__
-    assert src.features.__doc__
-    assert src.surrogate.__doc__
-    assert src.utils.__doc__
+    assert rsr.environment.__doc__
+    assert rsr.rewards.__doc__
+    assert rsr.training.__doc__
+    assert rsr.evaluation.__doc__
+    assert rsr.dataset.__doc__
+    assert rsr.features.__doc__
+    assert rsr.surrogate.__doc__
+    assert rsr.utils.__doc__

@@ -8,12 +8,12 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.dataset.builder import (
+from rsr.dataset.builder import (
     build_and_save_phase1_dataset,
     build_dataset_from_runs,
     status_to_record,
 )
-from src.dataset.validator import DatasetValidationError, validate_dataset
+from rsr.dataset.validator import DatasetValidationError, validate_dataset
 
 
 def _write_run(
