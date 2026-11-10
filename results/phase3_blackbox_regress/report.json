@@ -1,0 +1,28 @@
+{
+  "n_candidates": 24,
+  "tier0_ok_frac": 1.0,
+  "feature_corr": [
+    {
+      "bb_feature": "bb_stats_mean",
+      "ref_feature": "math_magnitude_mean",
+      "spearman": 0.13304347826086957,
+      "pass_ge_0_95": false
+    },
+    {
+      "bb_feature": "bb_stats_std",
+      "ref_feature": "math_variance",
+      "spearman": 0.4878260869565217,
+      "pass_ge_0_95": false
+    },
+    {
+      "bb_feature": "bb_stats_scale",
+      "ref_feature": "math_magnitude_max",
+      "spearman": 0.48521739130434777,
+      "pass_ge_0_95": false
+    }
+  ],
+  "documented_misses": [
+    "Black-box probe stats vs parametric math features did not reach Spearman >= 0.95 on this synthetic probe set; documented. Primary LOFO parity gate needs full OOF outside CI."
+  ],
+  "lofo_note": "LOFO within-family Spearman delta vs parametric requires OOF labels; run with full local confirm artifacts outside CI."
+}
