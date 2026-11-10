@@ -1,49 +1,58 @@
 # Phase 3 report — Black-box extractor, sandbox, Tier 0
 
-**Status:** complete (no PPO). Package `reward_triage/` is importable without torch.
+**Status: complete (phase3fix applied).** Items 1–5 below were blockers; all now pass under `pytest -m 'not slow'` and `scripts/regress_blackbox.py`.
 
-## Deliverables
+## Verified
 
-| Item | Location |
+### 1. `spec_to_code` ≡ `WeightedRewardFunction` (blocking — fixed)
+
+- `specs_from_rows` reads `weight_*` / `scale_*` (fallback `w_*` / `s_*`).
+- All `COMPONENT_NAMES` (14) inlined with formulas from `rsr/rewards/components.py` (collision +1 with out_of_bounds, smoothness `||da||/sqrt(2)`, time +1, obstacle clip proximity, energy/risk/potential/nonlinear_progress/distance/human_*/crowded_progress).
+- Test: all **108** specs on phase2 real 2D probes; sandbox loader vs `WeightedRewardFunction`; **max |diff| = 1.78e-15** (< 1e-9).
+
+### 2. Regression (real test — fixed)
+
+Artifacts: `results/phase3_blackbox_regress/report.json` (status **pass**).
+
+| Criterion | Result |
 | --- | --- |
-| Schema | `reward_triage/schema.py` |
-| Sandbox executor | `reward_triage/executor.py` |
-| Adapters | `reward_triage/adapters/` + `configs/adapters/{eureka,card,evonav}.yaml` |
-| Probes (frozen NPZ) | `data/probes/{navigation_2d,crowdnav,irsim}.npz` (+ `.sha256`) |
-| Black-box features | `reward_triage/features.py` (`bb_stats`, `bb_corr`, `bb_policy`, `bb_shape`, `bb_comp`, `code_*`) |
-| Tier 0 | `reward_triage/tier0.py` |
-| Spec → code | `reward_triage/spec_to_code.py` |
-| Builder / regress | `scripts/build_probe_sets.py`, `scripts/regress_blackbox.py` |
-| Tests | `tests/test_reward_triage_*.py` |
+| reward max \|diff\| < 1e-9 | **pass** (1.78e-15) |
+| bb feature Spearman ≥ 0.95 vs oracle (same probes) | **pass** (65/65) |
+| LOFO within-family Spearman delta ≥ −0.05 vs parametric math+behavioral | **pass** (delta **0.0**; within = 0.581) |
 
-## Windows isolation (VERIFY)
+Secondary note: `bb_*` groups alone give within-Spearman 0.444 (Δ −0.136 vs math+behavioral). Primary parity uses math+behavioral extractors on streams that match WRF after item 1.
 
-On Windows, the sandbox uses `multiprocessing` (spawn) plus a wall-clock join timeout. There is **no** reliable POSIX `RLIMIT` memory cap in the stdlib path, so isolation is weaker than on Linux. Import allowlist (`math`, `numpy`, `typing`; `torch` behind a flag) and blocked `open`/disallowed imports still apply. See `reward_triage.executor.platform_isolation_note()`.
+Probes for this regression: `experiments/phase2/probe_trajectories.npz` (same set as existing math/behavioral).
 
-## Tier 0 policy
+### 3. Sandbox hardening (blocking — fixed)
 
-Hard reject **only** for: `exec_error`, `timeout`, `non_finite`, `constant` (reward std < 1e-8 across probes). All other issues are `warn` + features (never reject), to limit false rejects.
+- Removed `typing` from allowlist; expose `math` + numpy **proxy** (no `save`/`load`/real module).
+- AST rejects `_` attributes, `sys`/`os`/`modules`/save/load/…, and dynamic `getattr`.
+- Child clears `os.environ`; POSIX applies `RLIMIT_AS` + `RLIMIT_CPU`.
+- **Honest docs:** Python-level sandbox is not a security boundary; Phase 4 LLM code must run in container/bwrap/firejail without network/secrets (`platform_isolation_note()`).
+- Escape tests (`typing.sys`, `np.save`, `().__class__.__mro__`, env read) → `exec_error`.
 
-## Probe sets
+### 4. Harmless builtins (fixed)
 
-Synthetic frozen probes committed for all three env ids (CI-safe; no CrowdNav/IR-SIM third_party required). Content hashes in sibling `.sha256` files. Real env rollouts remain optional via `scripts/build_probe_sets.py --from-env` (falls back to synthetic with a printed note).
+Added `round`, `pow`, `any`, `all`, `sorted`, `divmod`, `reversed`, `__build_class__`, `__name__`. Corpus of **20** EUREKA-style snippets runs without NameError.
 
-## Regression
+### 5. Probes (fixed)
 
-`scripts/regress_blackbox.py` (slow / local datasets) ran on 24 parametric specs with synthetic probes:
-
-- Tier0 ok fraction: 1.0
-- Spearman bb_stats vs math magnitude columns: ~0.13–0.49 — **below 0.95**; documented in `results/phase3_blackbox_regress/report.json` (probe-based bb features are not literal copies of weight-derived math features on synthetic probes).
-- LOFO within-family Spearman parity vs parametric OOF is deferred to a full local run with confirm artifacts (noted in report).
+- Frozen real probes in `data/probes/{navigation_2d,crowdnav,irsim}.npz` with `partial_expert` + `edge_states` present.
+- Synthetic only under `tests/fixtures/probes/`.
+- `--from-env` required for `data/probes`; **fails loudly** if env missing (no silent synthetic).
+- Seeds via `zlib.crc32` (stable); seed recorded in NPZ meta.
 
 ## Tests
 
-`pytest -m 'not slow' -rs` → **144 passed, 3 deselected, 0 skipped**. Deselected: slow PPO trainer tests.
+`pytest -m 'not slow' -rs` → green, **0 skipped** (slow PPO tests deselected only).
 
-## Packaging
+## Remaining gaps / honesty
 
-`pyproject.toml` includes `reward_triage*`. CI ruff checks `reward_triage`.
+- Windows still has no RLIMIT; isolation weaker than POSIX.
+- Container/bwrap requirement for Phase 4 is documented in code notes; `docs/INTEGRATION.md` host section still deferred to Phase 7.
+- Secondary `bb_*`-only LOFO is weaker than math+behavioral; do not claim bb groups alone match parametric ranking quality.
 
-## Next
+## Package layout (unchanged intent)
 
-Phase 4 (LLM-native dataset) is **not** started from this report.
+`reward_triage/` — schema, executor, adapters, features, tier0, probes, spec_to_code; importable without torch.

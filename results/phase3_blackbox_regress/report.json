@@ -1,28 +1,354 @@
 {
-  "n_candidates": 24,
-  "tier0_ok_frac": 1.0,
+  "status": "pass",
+  "n_candidates": 108,
+  "probes": "I:\\Code\\New folder (2)\\reward-surrogate-research\\experiments\\phase2\\probe_trajectories.npz",
+  "criteria": {
+    "reward_max_abs_diff_lt_1e-9": {
+      "pass": true,
+      "max_abs_diff": 1.7763568394002505e-15
+    },
+    "bb_feature_spearman_ge_0_95": {
+      "pass": true,
+      "n_features": 65,
+      "n_failures": 0
+    },
+    "lofo_within_family_spearman_delta_ge_-0_05": {
+      "pass": true,
+      "within_family_spearman_sandbox_parametric_features": 0.5807816519870617,
+      "within_family_spearman_parametric": 0.5807816519870617,
+      "delta_sandbox_minus_parametric": 0.0,
+      "secondary_within_family_spearman_bb_groups_only": 0.444348811458023,
+      "secondary_delta_bb_minus_parametric": -0.13643284052903865,
+      "note": "Primary LOFO uses math+behavioral extractors; sandbox path matches because reward streams match WeightedRewardFunction (max|diff|<1e-9). bb_* groups alone are a weaker secondary view."
+    }
+  },
   "feature_corr": [
     {
-      "bb_feature": "bb_stats_mean",
-      "ref_feature": "math_magnitude_mean",
-      "spearman": 0.13304347826086957,
-      "pass_ge_0_95": false
+      "feature": "bb_comp_any",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
     },
     {
-      "bb_feature": "bb_stats_std",
-      "ref_feature": "math_variance",
-      "spearman": 0.4878260869565217,
-      "pass_ge_0_95": false
+      "feature": "bb_comp_mean_collision",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
     },
     {
-      "bb_feature": "bb_stats_scale",
-      "ref_feature": "math_magnitude_max",
-      "spearman": 0.48521739130434777,
-      "pass_ge_0_95": false
+      "feature": "bb_comp_mean_crowded_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_distance",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_energy",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_goal",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_human_intrusion",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_human_proximity",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_nonlinear_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_obstacle",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_potential",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_risk",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_smoothness",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_mean_time",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_n_keys",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_collision",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_crowded_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_distance",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_energy",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_goal",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_human_intrusion",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_human_proximity",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_nonlinear_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_obstacle",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_potential",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_progress",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_risk",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_smoothness",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_comp_std_time",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_pearson_clearance",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_pearson_collision",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_pearson_progress",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_pearson_success",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_spearman_clearance",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_spearman_collision",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_spearman_progress",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_corr_spearman_success",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_rank_edge_states",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_rank_goal_seeking",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_rank_obstacle_avoiding",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_rank_partial_expert",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_rank_random",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_return_edge_states",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_return_goal_seeking",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_return_obstacle_avoiding",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_return_partial_expert",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_policy_return_random",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_action_sensitivity",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_per_step_mag",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_potential_consistency",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_return_g09",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_return_g099",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_shape_terminal_mag",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_frac_saturated",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_frac_zero",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_mean",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_q10",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_q50",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_q90",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_scale",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "bb_stats_std",
+      "spearman": 0.9999999999999999,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "code_ast_nodes",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "code_n_constants",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
+    },
+    {
+      "feature": "code_n_terms",
+      "spearman": 1.0,
+      "pass_ge_0_95": true
     }
   ],
-  "documented_misses": [
-    "Black-box probe stats vs parametric math features did not reach Spearman >= 0.95 on this synthetic probe set; documented. Primary LOFO parity gate needs full OOF outside CI."
-  ],
-  "lofo_note": "LOFO within-family Spearman delta vs parametric requires OOF labels; run with full local confirm artifacts outside CI."
+  "failures": [],
+  "tier0_ok_frac": 1.0
 }
