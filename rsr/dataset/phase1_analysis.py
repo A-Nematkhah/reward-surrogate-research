@@ -13,9 +13,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.dataset.builder import WEIGHT_COLUMNS
-from src.rewards.components import COMPONENT_NAMES
-from src.utils.logging import get_logger
+from rsr.dataset.builder import WEIGHT_COLUMNS
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.utils.logging import get_logger
 
 logger = get_logger("phase1_analysis")
 

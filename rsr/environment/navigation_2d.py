@@ -8,7 +8,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
-from src.environment.dynamics import (
+from rsr.environment.dynamics import (
     Circle,
     Workspace,
     clearance_to_circle,
@@ -574,13 +574,13 @@ def make_env(
     """
     env_id = str((config or {}).get("env_id", "RewardNavigation2D-v0"))
     if env_id == "CrowdNavPlusPlus-v0":
-        from src.environment.crowdnav_env import CrowdNavPlusPlusEnv
+        from rsr.environment.crowdnav_env import CrowdNavPlusPlusEnv
 
         return CrowdNavPlusPlusEnv(
             config=config, reward_fn=reward_fn, render_mode=render_mode
         )
     if env_id == "IRSimNav-v0":
-        from src.environment.irsim_env import IRSimNavEnv
+        from rsr.environment.irsim_env import IRSimNavEnv
 
         return IRSimNavEnv(
             config=config, reward_fn=reward_fn, render_mode=render_mode
@@ -595,7 +595,7 @@ def register_env() -> None:
     if env_id not in registry:
         gym.register(
             id=env_id,
-            entry_point="src.environment.navigation_2d:RewardNavigation2D",
+            entry_point="rsr.environment.navigation_2d:RewardNavigation2D",
         )
 
 

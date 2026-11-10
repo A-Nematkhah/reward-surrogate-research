@@ -10,8 +10,8 @@ import pytest
 from scipy.stats import spearmanr
 from sklearn.model_selection import LeaveOneGroupOut
 
-from src.surrogate.evaluation import association_status
-from src.surrogate.model_comparison import (
+from rsr.surrogate.evaluation import association_status
+from rsr.surrogate.model_comparison import (
     _topk_selection_metrics,
     evaluate_oof_bundle,
     fit_preprocessor,
@@ -19,7 +19,7 @@ from src.surrogate.model_comparison import (
     load_feature_matrix,
     within_family_top_hit,
 )
-from src.surrogate.model_zoo import make_model
+from rsr.surrogate.model_zoo import make_model
 
 
 def _synthetic(n_families: int = 6, n_per: int = 10, seed: int = 0):
@@ -112,7 +112,7 @@ def test_constant_models_nan_ranking():
     model.fit(X, y)
     pred = model.predict(X)
     assert association_status(y, pred) == "constant_prediction"
-    from src.surrogate.evaluation import evaluate_predictions
+    from rsr.surrogate.evaluation import evaluate_predictions
 
     m = evaluate_predictions(y, pred, target_name="success_rate", model_name="mean")
     assert np.isnan(m["spearman"])
@@ -176,7 +176,7 @@ def test_identifiable_families_gate_and_oof_metrics():
 
 
 def test_missing_optional_dependency_skips_not_crash(monkeypatch):
-    import src.surrogate.model_zoo as mz
+    import rsr.surrogate.model_zoo as mz
 
     def _boom(name: str):
         return None

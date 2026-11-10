@@ -11,19 +11,21 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Sequence, Union
 
 import numpy as np
 import pandas as pd
-from stable_baselines3.common.base_class import BaseAlgorithm
 
-from src.environment.navigation_2d import make_env
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
-from src.utils.logging import get_logger
+from rsr.environment.navigation_2d import make_env
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.utils.logging import get_logger
+
+if TYPE_CHECKING:  # pragma: no cover
+    from stable_baselines3.common.base_class import BaseAlgorithm
 
 logger = get_logger("early_behavioral")
 
-PolicyLike = Union[BaseAlgorithm, Any]
+PolicyLike = Any
 
 EARLY_SCHEMA_VERSION = 2
 EARLY_FEATURES_FILENAME = "early_behavioral_features.json"

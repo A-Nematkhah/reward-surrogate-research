@@ -7,8 +7,8 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 import pandas as pd
 
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec
 
 # Family one-hot is optional static info; kept as features when family_id is known.
 # This does not use evaluation outcomes.

@@ -2,7 +2,7 @@
 
 Primary research environment: toy 2D navigation.
 
-- **Implementation:** `src/environment/navigation_2d.py`, `dynamics.py`, `visualization.py`
+- **Implementation:** `rsr/environment/navigation_2d.py`, `dynamics.py`, `visualization.py`
 - **Config:** `configs/environment.yaml`
 - **Env id:** `RewardNavigation2D-v0`
 

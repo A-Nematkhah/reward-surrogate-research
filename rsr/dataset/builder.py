@@ -8,9 +8,9 @@ from typing import Any, Mapping, Optional, Sequence
 
 import pandas as pd
 
-from src.rewards.components import COMPONENT_NAMES
-from src.utils.config import relpath_to_project
-from src.utils.logging import get_logger
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.utils.config import relpath_to_project
+from rsr.utils.logging import get_logger
 
 logger = get_logger("dataset.builder")
 

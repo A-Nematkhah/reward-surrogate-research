@@ -7,7 +7,7 @@ from typing import Any, Mapping, Optional
 
 import numpy as np
 
-from src.rewards.components import (
+from rsr.rewards.components import (
     COMPONENT_NAMES,
     RewardComponent,
     build_default_components,

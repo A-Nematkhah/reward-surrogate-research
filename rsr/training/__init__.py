@@ -1,7 +1,7 @@
 """PPO training and Phase 1 experiment orchestration."""
 
-from src.training.experiment_runner import load_phase1_candidates, run_phase1
-from src.training.ppo_trainer import (
+from rsr.training.experiment_runner import load_phase1_candidates, run_phase1
+from rsr.training.ppo_trainer import (
     is_run_complete,
     load_trained_model,
     train_candidate_seed,

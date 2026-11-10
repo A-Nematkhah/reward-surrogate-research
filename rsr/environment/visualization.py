@@ -12,8 +12,8 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Circle as MplCircle
 from matplotlib.patches import Rectangle
 
-from src.environment.dynamics import Circle, Workspace
-from src.environment.navigation_2d import RewardNavigation2D
+from rsr.environment.dynamics import Circle, Workspace
+from rsr.environment.navigation_2d import RewardNavigation2D
 
 
 def draw_scene(

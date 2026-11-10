@@ -6,8 +6,8 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from src.features.probe_trajectories import ProbeEpisode
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.features.probe_trajectories import ProbeEpisode
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
 
 EPS = 1e-8
 DIST_DELTA = 1e-2

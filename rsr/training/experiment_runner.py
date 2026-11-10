@@ -7,17 +7,17 @@ import time
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
-from src.features.early_behavioral import resolve_early_checkpoints
-from src.rewards.candidate_generator import load_candidates
-from src.rewards.reward_function import RewardSpec
-from src.training.parallel_run_jobs import phase1_train_job
-from src.training.ppo_trainer import (
+from rsr.features.early_behavioral import resolve_early_checkpoints
+from rsr.rewards.candidate_generator import load_candidates
+from rsr.rewards.reward_function import RewardSpec
+from rsr.training.parallel_run_jobs import phase1_train_job
+from rsr.training.ppo_trainer import (
     is_run_complete,
     run_dir_for,
     train_candidate_seed,
 )
-from src.utils.logging import get_logger
-from src.utils.parallel_jobs import map_maybe_parallel
+from rsr.utils.logging import get_logger
+from rsr.utils.parallel_jobs import map_maybe_parallel
 
 logger = get_logger("experiment_runner")
 

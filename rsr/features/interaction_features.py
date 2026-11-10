@@ -6,9 +6,9 @@ from typing import Sequence
 
 import numpy as np
 
-from src.features.probe_trajectories import ProbeEpisode
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.features.probe_trajectories import ProbeEpisode
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
 
 KEY_PAIRS = (
     ("progress", "collision"),

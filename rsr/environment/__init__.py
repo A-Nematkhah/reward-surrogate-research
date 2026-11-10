@@ -1,7 +1,7 @@
 """2D navigation environment package."""
 
-from src.environment.dynamics import Circle, Workspace
-from src.environment.navigation_2d import (
+from rsr.environment.dynamics import Circle, Workspace
+from rsr.environment.navigation_2d import (
     REASON_COLLISION,
     REASON_OUT_OF_BOUNDS,
     REASON_SUCCESS,
@@ -11,7 +11,7 @@ from src.environment.navigation_2d import (
     make_env,
     register_env,
 )
-from src.environment.visualization import plot_trajectory, render_env
+from rsr.environment.visualization import plot_trajectory, render_env
 
 register_env()
 

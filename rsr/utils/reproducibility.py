@@ -14,7 +14,7 @@ try:
     import torch
 
     _HAS_TORCH = True
-except ImportError:  # pragma: no cover - exercised when torch is absent
+except (ImportError, OSError):  # pragma: no cover - absent or broken native wheel
     torch = None  # type: ignore[assignment]
     _HAS_TORCH = False
 

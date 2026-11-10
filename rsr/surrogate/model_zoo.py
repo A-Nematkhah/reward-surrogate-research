@@ -22,7 +22,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
-from src.surrogate.baselines import MeanPredictor, MedianPredictor
+from rsr.surrogate.baselines import MeanPredictor, MedianPredictor
 
 logger = logging.getLogger("reward_surrogate.model_zoo")
 

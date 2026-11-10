@@ -10,9 +10,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.utils.config import CONFIG_FILES, load_merged_configs, save_config
-from src.utils.logging import get_logger, setup_logging
-from src.utils.reproducibility import seed_everything
+from rsr.utils.config import CONFIG_FILES, load_merged_configs, save_config
+from rsr.utils.logging import get_logger, setup_logging
+from rsr.utils.reproducibility import seed_everything
 
 
 def main() -> int:

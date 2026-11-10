@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from src.environment.dynamics import (
+from rsr.environment.dynamics import (
     Circle,
     Workspace,
     circles_collide,

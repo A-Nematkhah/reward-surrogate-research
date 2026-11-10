@@ -7,12 +7,13 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.environment.navigation_2d import make_env
-from src.utils.config import PROJECT_ROOT, load_merged_configs
+pytest.importorskip("gymnasium")
+pytest.importorskip("irsim")
+
+from rsr.environment.navigation_2d import make_env
+from rsr.utils.config import PROJECT_ROOT, load_merged_configs
 
 IRSIM_WORLD = PROJECT_ROOT / "env" / "worlds" / "irsim_pipeline_nav.yaml"
-
-pytest.importorskip("irsim")
 
 
 @pytest.fixture()

@@ -9,7 +9,7 @@ import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-# Ensure `import src...` works when pytest is launched from any cwd.
+# Ensure `import rsr...` works when pytest is launched from any cwd.
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 

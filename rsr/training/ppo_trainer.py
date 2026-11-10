@@ -14,9 +14,9 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv
 
-from src.environment.navigation_2d import make_env
-from src.evaluation.evaluator import evaluate_policy
-from src.features.early_behavioral import (
+from rsr.environment.navigation_2d import make_env
+from rsr.evaluation.evaluator import evaluate_policy
+from rsr.features.early_behavioral import (
     EARLY_FEATURES_FILENAME,
     build_multi_checkpoint_payload,
     checkpoint_prefix,
@@ -26,10 +26,10 @@ from src.features.early_behavioral import (
     resolve_early_checkpoints,
     save_early_features,
 )
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
-from src.utils.config import relpath_to_project
-from src.utils.logging import get_logger
-from src.utils.reproducibility import seed_everything
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.utils.config import relpath_to_project
+from rsr.utils.logging import get_logger
+from rsr.utils.reproducibility import seed_everything
 
 logger = get_logger("ppo_trainer")
 

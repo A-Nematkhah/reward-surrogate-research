@@ -8,20 +8,20 @@ from typing import Any, Literal, Mapping, Sequence
 
 import pandas as pd
 
-from src.features.behavioral_features import extract_behavioral_features
-from src.features.early_behavioral import load_aggregated_early_features
-from src.features.interaction_features import extract_interaction_features
-from src.features.math_features import extract_math_features
-from src.features.probe_trajectories import (
+from rsr.features.behavioral_features import extract_behavioral_features
+from rsr.features.early_behavioral import load_aggregated_early_features
+from rsr.features.interaction_features import extract_interaction_features
+from rsr.features.math_features import extract_math_features
+from rsr.features.probe_trajectories import (
     ProbeEpisode,
     generate_probe_set,
     load_probe_set,
     save_probe_set,
 )
-from src.features.static_features import static_feature_matrix_from_dataframe
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec
-from src.utils.logging import get_logger
+from rsr.features.static_features import static_feature_matrix_from_dataframe
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec
+from rsr.utils.logging import get_logger
 
 logger = get_logger("feature_builder")
 

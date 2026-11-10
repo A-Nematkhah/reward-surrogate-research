@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from src.features.ratio_features import extract_ratio_features_from_weights
-from src.surrogate.model_comparison import _within_family_std_mask
+from rsr.features.ratio_features import extract_ratio_features_from_weights
+from rsr.surrogate.model_comparison import _within_family_std_mask
 
 
 def test_ratio_features_finite_and_scale_invariant_shares():

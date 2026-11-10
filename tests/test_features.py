@@ -8,26 +8,28 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.features.behavioral_features import extract_behavioral_features
-from src.features.early_behavioral import collect_early_rollout_features
-from src.features.feature_builder import (
+pytest.importorskip("gymnasium")
+
+from rsr.features.behavioral_features import extract_behavioral_features
+from rsr.features.early_behavioral import collect_early_rollout_features
+from rsr.features.feature_builder import (
     aggregate_phase1_dataset,
     build_feature_tables,
     ensure_probe_set,
 )
-from src.features.interaction_features import extract_interaction_features
-from src.features.math_features import extract_math_features
-from src.features.probe_trajectories import (
+from rsr.features.interaction_features import extract_interaction_features
+from rsr.features.math_features import extract_math_features
+from rsr.features.probe_trajectories import (
     generate_probe_set,
     load_probe_set,
     save_probe_set,
 )
-from src.features.static_features import (
+from rsr.features.static_features import (
     extract_static_features_from_spec,
     static_feature_matrix_from_dataframe,
 )
-from src.rewards.reward_function import RewardSpec
-from src.utils.config import load_named_config
+from rsr.rewards.reward_function import RewardSpec
+from rsr.utils.config import load_named_config
 
 
 @pytest.fixture
@@ -255,7 +257,7 @@ def test_early_rollout_features_finite(env_config: dict, sample_spec: RewardSpec
 
 
 def test_multi_checkpoint_payload_and_dynamics() -> None:
-    from src.features.early_behavioral import (
+    from rsr.features.early_behavioral import (
         build_multi_checkpoint_payload,
         flatten_early_payload,
     )
@@ -283,7 +285,7 @@ def test_multi_checkpoint_payload_and_dynamics() -> None:
 
 
 def test_flag_seed_outliers() -> None:
-    from src.dataset.outlier_filter import drop_flagged_seeds, flag_seed_outliers
+    from rsr.dataset.outlier_filter import drop_flagged_seeds, flag_seed_outliers
 
     df = pd.DataFrame(
         [

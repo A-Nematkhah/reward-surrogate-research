@@ -7,9 +7,9 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 import pandas as pd
 
-from src.features.probe_trajectories import ProbeEpisode
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.features.probe_trajectories import ProbeEpisode
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
 
 QUANTILES = (0.1, 0.5, 0.9)
 

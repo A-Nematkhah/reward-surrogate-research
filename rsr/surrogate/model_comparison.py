@@ -19,21 +19,21 @@ from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-from src.surrogate.evaluation import (
+from rsr.surrogate.evaluation import (
     HIGHER_IS_BETTER,
     association_status,
     pairwise_ranking_accuracy,
     regression_metrics,
 )
-from src.surrogate.model_zoo import (
+from rsr.surrogate.model_zoo import (
     available_models,
     is_constant_ranker,
     is_ranking_model,
     make_model,
     needs_groups,
 )
-from src.utils.config import PROJECT_ROOT, relpath_to_project
-from src.utils.logging import get_logger
+from rsr.utils.config import PROJECT_ROOT, relpath_to_project
+from rsr.utils.logging import get_logger
 
 logger = get_logger("model_comparison")
 

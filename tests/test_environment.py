@@ -7,8 +7,10 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.environment.dynamics import Circle, distance
-from src.environment.navigation_2d import (
+pytest.importorskip("gymnasium")
+
+from rsr.environment.dynamics import Circle, distance
+from rsr.environment.navigation_2d import (
     REASON_COLLISION,
     REASON_OUT_OF_BOUNDS,
     REASON_SUCCESS,
@@ -17,8 +19,8 @@ from src.environment.navigation_2d import (
     default_reward_fn,
     make_env,
 )
-from src.environment.visualization import plot_trajectory
-from src.utils.config import load_named_config
+from rsr.environment.visualization import plot_trajectory
+from rsr.utils.config import load_named_config
 
 
 @pytest.fixture
@@ -226,7 +228,7 @@ def test_observation_pads_missing_obstacles(env_config: dict) -> None:
 def test_gymnasium_registry(env_config: dict) -> None:
     import gymnasium as gym
 
-    from src.environment.navigation_2d import register_env
+    from rsr.environment.navigation_2d import register_env
 
     register_env()
     # entry_point construction may need config; use make_env for configured env

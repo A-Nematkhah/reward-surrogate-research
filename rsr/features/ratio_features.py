@@ -11,8 +11,8 @@ from typing import Mapping
 import numpy as np
 import pandas as pd
 
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec
 
 
 def _safe_ratio(num: float, den: float) -> float:

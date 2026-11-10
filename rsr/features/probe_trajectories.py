@@ -15,11 +15,11 @@ from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
-from src.environment.dynamics import Circle, clearance_to_circle, distance, normalize_action
-from src.environment.navigation_2d import make_env
-from src.utils.config import relpath_to_project
-from src.utils.logging import get_logger
-from src.utils.reproducibility import make_rng
+from rsr.environment.dynamics import Circle, clearance_to_circle, distance, normalize_action
+from rsr.environment.navigation_2d import make_env
+from rsr.utils.config import relpath_to_project
+from rsr.utils.logging import get_logger
+from rsr.utils.reproducibility import make_rng
 
 logger = get_logger("probe_trajectories")
 

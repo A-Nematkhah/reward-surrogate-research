@@ -9,15 +9,16 @@ import pytest
 
 pytest.importorskip("torch")
 pytest.importorskip("stable_baselines3")
+pytestmark = pytest.mark.slow
 
-from src.rewards.reward_function import RewardSpec
-from src.training.experiment_runner import run_phase1
-from src.training.ppo_trainer import (
+from rsr.rewards.reward_function import RewardSpec
+from rsr.training.experiment_runner import run_phase1
+from rsr.training.ppo_trainer import (
     is_run_complete,
     load_trained_model,
     train_candidate_seed,
 )
-from src.utils.config import load_named_config
+from rsr.utils.config import load_named_config
 
 
 @pytest.fixture

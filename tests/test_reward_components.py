@@ -5,9 +5,11 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from src.environment.dynamics import Circle
-from src.environment.navigation_2d import make_env
-from src.rewards.components import (
+pytest.importorskip("gymnasium")
+
+from rsr.environment.dynamics import Circle
+from rsr.environment.navigation_2d import make_env
+from rsr.rewards.components import (
     COMPONENT_NAMES,
     CollisionComponent,
     CrowdedProgressComponent,
@@ -20,8 +22,8 @@ from src.rewards.components import (
     TimeComponent,
     compute_all_components,
 )
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
-from src.utils.config import load_named_config
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.utils.config import load_named_config
 
 
 def _transition(**overrides):

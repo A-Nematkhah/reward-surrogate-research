@@ -8,9 +8,9 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from src.rewards.components import COMPONENT_NAMES
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
-from src.utils.reproducibility import make_rng
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.utils.reproducibility import make_rng
 
 
 def _sample_weight(

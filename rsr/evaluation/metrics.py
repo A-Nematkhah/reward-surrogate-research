@@ -7,12 +7,11 @@ from typing import Any, Iterable, Mapping, Sequence
 import numpy as np
 import pandas as pd
 
-from src.environment.navigation_2d import (
-    REASON_COLLISION,
-    REASON_OUT_OF_BOUNDS,
-    REASON_SUCCESS,
-    REASON_TIMEOUT,
-)
+# Keep string constants here so this module imports without gymnasium / SB3.
+REASON_SUCCESS = "success"
+REASON_COLLISION = "collision"
+REASON_OUT_OF_BOUNDS = "out_of_bounds"
+REASON_TIMEOUT = "timeout"
 
 METRIC_NAMES = (
     "success_rate",

@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-from src.utils.logging import get_logger
+from rsr.utils.logging import get_logger
 
 logger = get_logger("phase2_analysis")
 

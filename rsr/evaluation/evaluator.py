@@ -5,23 +5,25 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Sequence, Union
 
 import numpy as np
-from stable_baselines3.common.base_class import BaseAlgorithm
 
-from src.environment.navigation_2d import RewardNavigation2D, make_env
-from src.evaluation.metrics import (
+from rsr.environment.navigation_2d import RewardNavigation2D, make_env
+from rsr.evaluation.metrics import (
     aggregate_episode_metrics,
     episodes_to_dataframe,
     metrics_to_serializable,
 )
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
-from src.utils.logging import get_logger
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.utils.logging import get_logger
+
+if TYPE_CHECKING:  # pragma: no cover
+    from stable_baselines3.common.base_class import BaseAlgorithm
 
 logger = get_logger("evaluator")
 
-PolicyLike = Union[BaseAlgorithm, Any]
+PolicyLike = Any
 
 
 def resolve_eval_seeds(eval_config: Mapping[str, Any]) -> list[int]:

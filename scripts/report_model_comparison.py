@@ -16,8 +16,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.surrogate.model_comparison import load_yaml_config, resolve_path
-from src.utils.logging import get_logger, setup_logging
+from rsr.surrogate.model_comparison import load_yaml_config, resolve_path
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def _df_to_md(df: pd.DataFrame) -> str:
@@ -401,11 +401,17 @@ def main() -> int:
             "or fall back to ExtraTrees from the exploratory grid with explicit caveats."
         )
     lines.append("")
+    def _rel(path: Path) -> str:
+        try:
+            return path.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+        except ValueError:
+            return path.as_posix()
+
     lines.append("## Artifacts")
     lines.append("")
-    lines.append(f"- Experiments: `{exp_dir}`")
-    lines.append(f"- Leaderboard: `{leaderboard_path}`")
-    lines.append(f"- Figures: `{fig_dir}`")
+    lines.append(f"- Experiments: `{_rel(exp_dir)}`")
+    lines.append(f"- Leaderboard: `{_rel(leaderboard_path)}`")
+    lines.append(f"- Figures: `{_rel(fig_dir)}`")
     if run_cfg.get("skipped"):
         lines.append(f"- Skipped: `{run_cfg.get('skipped')}`")
     lines.append("")

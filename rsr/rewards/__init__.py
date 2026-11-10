@@ -1,13 +1,13 @@
 """Reward components, weighted reward functions, and candidate generation."""
 
-from src.rewards.candidate_generator import (
+from rsr.rewards.candidate_generator import (
     generate_candidates,
     load_candidates,
     make_reward_fn,
     save_candidates,
     summarize_candidates,
 )
-from src.rewards.components import (
+from rsr.rewards.components import (
     COMPONENT_NAMES,
     CollisionComponent,
     GoalComponent,
@@ -18,7 +18,7 @@ from src.rewards.components import (
     build_default_components,
     compute_all_components,
 )
-from src.rewards.reward_function import RewardSpec, WeightedRewardFunction
+from rsr.rewards.reward_function import RewardSpec, WeightedRewardFunction
 
 __all__ = [
     "COMPONENT_NAMES",

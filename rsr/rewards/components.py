@@ -13,7 +13,7 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from src.environment.dynamics import Circle, clearance_to_circle
+from rsr.environment.dynamics import Circle, clearance_to_circle
 
 # Linear baseline set + structurally distinct extensions for family diversity.
 # CrowdNav-oriented terms (human_*) also apply to static obstacles in 2D.

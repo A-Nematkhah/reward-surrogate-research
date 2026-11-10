@@ -16,9 +16,9 @@ if str(PROJECT_ROOT) not in sys.path:
 # Prevent TabPFN from spawning browser login windows during batch runs.
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 
-from src.surrogate.model_comparison import load_yaml_config, run_model_comparison
-from src.utils.config import apply_dot_overrides
-from src.utils.logging import get_logger, setup_logging
+from rsr.surrogate.model_comparison import load_yaml_config, run_model_comparison
+from rsr.utils.config import apply_dot_overrides
+from rsr.utils.logging import get_logger, setup_logging
 
 
 def parse_args() -> argparse.Namespace:
@@ -27,6 +27,12 @@ def parse_args() -> argparse.Namespace:
         "--config",
         type=Path,
         default=PROJECT_ROOT / "configs" / "model_comparison.yaml",
+    )
+    p.add_argument(
+        "--run-id",
+        required=True,
+        help="New experiment id; writes experiments/model_comparison_<id>/ "
+        "unless --output-dir / --results-dir override.",
     )
     p.add_argument("--targets", nargs="+", default=None)
     p.add_argument("--feature-sets", nargs="+", default=None)
@@ -37,12 +43,24 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--output-dir", type=Path, default=None)
     p.add_argument("--results-dir", type=Path, default=None)
     p.add_argument(
+        "--force",
+        action="store_true",
+        help="Allow writing into a non-empty output directory.",
+    )
+    p.add_argument(
         "--override",
         action="append",
         default=[],
         help="Dotted config override KEY=VALUE (repeatable)",
     )
     return p.parse_args()
+
+
+def _refuse_nonempty(path: Path, *, force: bool) -> None:
+    if path.exists() and any(path.iterdir()) and not force:
+        raise SystemExit(
+            f"Refusing non-empty output dir {path} (pass --force to overwrite)"
+        )
 
 
 def main() -> int:
@@ -56,10 +74,32 @@ def main() -> int:
         cfg["n_jobs"] = int(args.n_jobs)
     if args.features_dir is not None:
         cfg["features_dir"] = str(args.features_dir)
+    run_id = str(args.run_id).strip()
+    if not run_id:
+        raise SystemExit("--run-id must be non-empty")
     if args.output_dir is not None:
         cfg["output_dir"] = str(args.output_dir)
+    else:
+        cfg["output_dir"] = f"experiments/model_comparison_{run_id}"
     if args.results_dir is not None:
         cfg["results_dir"] = str(args.results_dir)
+    else:
+        cfg["results_dir"] = f"results/model_comparison_{run_id}"
+    cfg["run_id"] = run_id
+    out = Path(cfg["output_dir"])
+    if not out.is_absolute():
+        out = PROJECT_ROOT / out
+    res = Path(cfg["results_dir"])
+    if not res.is_absolute():
+        res = PROJECT_ROOT / res
+    locked = {
+        (PROJECT_ROOT / "experiments/model_comparison_confirm").resolve(),
+        (PROJECT_ROOT / "results/model_comparison_confirm").resolve(),
+    }
+    if out.resolve() in locked or res.resolve() in locked:
+        raise SystemExit("Refusing to write locked model_comparison_confirm artifacts")
+    _refuse_nonempty(out, force=bool(args.force))
+    _refuse_nonempty(res, force=bool(args.force))
 
     t0 = time.perf_counter()
     result = run_model_comparison(

@@ -6,14 +6,14 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.evaluation.evaluator import evaluate_policy
-from src.rewards.reward_function import RewardSpec
-from src.training.ppo_trainer import (
+from rsr.evaluation.evaluator import evaluate_policy
+from rsr.rewards.reward_function import RewardSpec
+from rsr.training.ppo_trainer import (
     collect_early_features_only,
     load_trained_model,
     train_candidate_seed,
 )
-from src.utils.config import relpath_to_project
+from rsr.utils.config import relpath_to_project
 
 
 def phase1_train_job(job: dict[str, Any]) -> dict[str, Any]:

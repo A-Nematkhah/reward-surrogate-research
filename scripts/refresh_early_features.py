@@ -24,17 +24,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.features.early_behavioral import (
+from rsr.features.early_behavioral import (
     EARLY_FEATURES_FILENAME,
     early_payload_matches,
     load_early_payload,
     resolve_early_checkpoints,
 )
-from src.rewards.reward_function import RewardSpec
-from src.training.parallel_run_jobs import refresh_early_job
-from src.utils.config import apply_dot_overrides, load_merged_configs
-from src.utils.logging import get_logger, setup_logging
-from src.utils.parallel_jobs import map_maybe_parallel
+from rsr.rewards.reward_function import RewardSpec
+from rsr.training.parallel_run_jobs import refresh_early_job
+from rsr.utils.config import apply_dot_overrides, load_merged_configs
+from rsr.utils.logging import get_logger, setup_logging
+from rsr.utils.parallel_jobs import map_maybe_parallel
 
 
 def parse_args() -> argparse.Namespace:

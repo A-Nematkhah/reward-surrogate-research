@@ -16,8 +16,8 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
-from src.environment.dynamics import Circle
-from src.environment.navigation_2d import (
+from rsr.environment.dynamics import Circle
+from rsr.environment.navigation_2d import (
     REASON_COLLISION,
     REASON_NONE,
     REASON_OUT_OF_BOUNDS,
@@ -25,7 +25,7 @@ from src.environment.navigation_2d import (
     REASON_TIMEOUT,
     default_reward_fn,
 )
-from src.utils.config import PROJECT_ROOT
+from rsr.utils.config import PROJECT_ROOT
 
 CROWDNAV_ROOT = PROJECT_ROOT / "env" / "crowdnav"
 ENV_ID = "CrowdNavPlusPlus-v0"

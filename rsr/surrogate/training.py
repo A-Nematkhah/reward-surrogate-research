@@ -15,13 +15,13 @@ from sklearn.model_selection import (
     train_test_split,
 )
 
-from src.surrogate.baselines import MeanPredictor, MedianPredictor, make_ridge_baseline
-from src.surrogate.evaluation import (
+from rsr.surrogate.baselines import MeanPredictor, MedianPredictor, make_ridge_baseline
+from rsr.surrogate.evaluation import (
     evaluate_predictions,
     metrics_to_row,
     summarize_fold_rankings,
 )
-from src.surrogate.models import (
+from rsr.surrogate.models import (
     make_ensemble_trees,
     make_extra_trees,
     make_gaussian_process,
@@ -32,8 +32,8 @@ from src.surrogate.models import (
     select_feature_indices,
     tree_feature_importances,
 )
-from src.utils.config import relpath_to_project
-from src.utils.logging import get_logger
+from rsr.utils.config import relpath_to_project
+from rsr.utils.logging import get_logger
 
 logger = get_logger("surrogate.training")
 

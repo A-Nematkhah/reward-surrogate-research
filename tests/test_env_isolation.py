@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from scripts import run_quality_pipeline as qp
-from src.environment.navigation_2d import make_env
-from src.utils.config import PROJECT_ROOT, load_merged_configs
-
+pytest.importorskip("gymnasium")
 pytest.importorskip("irsim")
+
+from scripts import run_quality_pipeline as qp
+from rsr.environment.navigation_2d import make_env
+from rsr.utils.config import PROJECT_ROOT, load_merged_configs
 
 
 def test_versioned_profiles_use_distinct_prefixes() -> None:
@@ -92,7 +93,7 @@ def test_make_env_routes_without_cross_import_side_effects() -> None:
 def test_irsim_boot_does_not_shadow_project_tests_module() -> None:
     # Ensure importing IR-SIM adapter does not make ``import tests`` resolve to
     # env/ir-sim/tests.
-    from src.environment import irsim_env as _irsim_env
+    from rsr.environment import irsim_env as _irsim_env
 
     _irsim_env._boot_irsim()
     # Project tests package may not be a regular importable package; the

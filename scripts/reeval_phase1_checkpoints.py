@@ -22,10 +22,10 @@ if str(ROOT) not in sys.path:
 
 import pandas as pd
 
-from src.training.parallel_run_jobs import reeval_run_job
-from src.utils.config import apply_dot_overrides, load_merged_configs
-from src.utils.logging import get_logger, setup_logging
-from src.utils.parallel_jobs import map_maybe_parallel
+from rsr.training.parallel_run_jobs import reeval_run_job
+from rsr.utils.config import apply_dot_overrides, load_merged_configs
+from rsr.utils.logging import get_logger, setup_logging
+from rsr.utils.parallel_jobs import map_maybe_parallel
 
 logger = get_logger("reeval_phase1")
 

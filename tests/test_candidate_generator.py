@@ -8,15 +8,15 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.rewards.candidate_generator import (
+from rsr.rewards.candidate_generator import (
     generate_candidates,
     load_candidates,
     make_reward_fn,
     save_candidates,
     summarize_candidates,
 )
-from src.rewards.components import COMPONENT_NAMES
-from src.utils.config import load_named_config
+from rsr.rewards.components import COMPONENT_NAMES
+from rsr.utils.config import load_named_config
 
 
 @pytest.fixture

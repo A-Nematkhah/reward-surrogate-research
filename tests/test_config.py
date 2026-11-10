@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from src.utils.config import (
+from rsr.utils.config import (
     CONFIG_FILES,
     ConfigError,
     apply_dot_overrides,
@@ -89,11 +89,18 @@ def test_load_missing_file(tmp_path: Path) -> None:
 
 
 def test_reward_family_counts_match_pool_intent(config_dir: Path) -> None:
-    """Families should sum near the configured candidate pool size."""
+    """Config pool is 48 for regeneration; historical Phase 1 archive is 108.
+
+    ``configs/reward_generation.yaml`` intentionally keeps n_candidates=48.
+    Locked labels live at experiments/phase1 (108 candidates). Do not regenerate
+    candidates.json against this config without an explicit migration.
+    """
     config = load_named_config("reward_generation", config_dir=config_dir)
     family_total = sum(fam["n"] for fam in config["families"].values())
     assert family_total == config["n_candidates"]
     assert family_total == 48
+    # Documented mismatch vs historical confirm dataset size (108).
+    assert config["n_candidates"] != 108
 
 
 def test_crowdnav_reward_pool_is_24(config_dir: Path) -> None:

@@ -7,8 +7,8 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 import pandas as pd
 
-from src.dataset.builder import METRIC_COLUMNS, WEIGHT_COLUMNS
-from src.utils.logging import get_logger
+from rsr.dataset.builder import METRIC_COLUMNS, WEIGHT_COLUMNS
+from rsr.utils.logging import get_logger
 
 logger = get_logger("dataset.validator")
 

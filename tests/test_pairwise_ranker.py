@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from src.surrogate.model_zoo import PairwiseLogisticRanker
+from rsr.surrogate.model_zoo import PairwiseLogisticRanker
 
 
 def test_pairwise_logistic_within_family_only_ranks():
