@@ -1,0 +1,3 @@
+model,median_spearman_across_feature_sets,frac_spearman_gt_0_5,n_configs
+mean,,0.0,3
+ridge,0.6713280942177495,1.0,3
