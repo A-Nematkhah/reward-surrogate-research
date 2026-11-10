@@ -38,7 +38,7 @@ Builder semantics unchanged.
 ## Metrics (from Phase 1 module)
 
 Pool simulator on OOF predictions: recall@k, regret@k vs random/oracle; cost savings.
-Primary pool setting for the verdict: **N=16, k=5**, single-group and multi-group noted.
+Primary pool setting for the verdict: **N=16, k=5**, **2-family pool (n_groups=1 expanded to 2 families)** and multi-group noted.
 
 Also: offline successive halving (SH) if `early_t{5k,12k,25k}_success_frac` columns exist.
 

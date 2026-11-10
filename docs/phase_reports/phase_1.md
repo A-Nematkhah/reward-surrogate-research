@@ -20,7 +20,7 @@ pytest -m "not slow"
 
 ## Numbers (locked OOF: ExtraTrees / early+math+behavioral / success_rate, repeat=0)
 
-Primary focus **N=16, single-group pools, 2000 draws**:
+Primary focus **N=16, 2-family pool (n_groups=1 expanded to 2 families), 2000 draws**:
 
 | k | recall@k (sur) | med regret | Δrecall vs random (mean [CI]) |
 | --- | --- | --- | --- |
@@ -29,7 +29,7 @@ Primary focus **N=16, single-group pools, 2000 draws**:
 | 5 | **0.896** | **0.000** | **0.613 [0.589, 0.635]** |
 | 6 | 0.910 | 0.000 | 0.532 [0.507, 0.556] |
 
-N=16, k=5, single-group baselines: random recall≈0.283; oracle=1.0.
+N=16, k=5, 2-family pool (n_groups=1 expanded to 2 families) baselines: random recall≈0.283; oracle=1.0.
 
 Cost at N=16, k=5 with feature_steps=12 000, full=50 000: **savings_frac=0.4475** (< 0.50).
 
@@ -44,7 +44,7 @@ Cost at N=16, k=5 with feature_steps=12 000, full=50 000: **savings_frac=0.4
 
 ## Caveats
 
-- Multi-group pools mix OOF scores from different LOFO fold models; `summary_single_group.csv` is the matched-model view.
+- Multi-group pools mix OOF scores from different LOFO fold models; `summary_single_group.csv` (filename kept) is the 2-family-pool matched-model view.
 - Thresholds remain **proposed** until user edits / Gate 1 freeze.
 
 ## Open issues / Phase 0 gaps from revised pack
