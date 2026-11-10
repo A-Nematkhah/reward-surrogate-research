@@ -4,7 +4,7 @@
 
 | Path | Role |
 |------|------|
-| `src/` | Library: environment, rewards, training, evaluation, dataset, features, surrogate, utils |
+| `rsr/` | Library: environment, rewards, training, evaluation, dataset, features, surrogate, utils |
 | `configs/` | YAML by concern (env, PPO, rewards, eval, surrogate, model_comparison, CrowdNav) |
 | `scripts/` | CLI entry points |
 | `experiments/` | Heavy artifacts (candidates, runs, datasets, features, LOFO outputs) |
@@ -41,7 +41,7 @@ Active learning / selection
 ### Stage details
 
 #### Reward generation
-- **Code:** `scripts/generate_candidates.py`, `src/rewards/candidate_generator.py`
+- **Code:** `scripts/generate_candidates.py`, `rsr/rewards/candidate_generator.py`
 - **Config:** `configs/reward_generation.yaml` (currently **48** intended; archive is **108**)
 - **Outputs:** `experiments/phase1/candidates.json`
 - **Assumptions:** Family ranges create LOFO-relevant diversity
@@ -50,20 +50,20 @@ Active learning / selection
 - **Risk:** Regenerating overwrites the locked 108 archive
 
 #### PPO training
-- **Code:** `scripts/run_phase1.py`, `src/training/ppo_trainer.py`, `experiment_runner.py`
+- **Code:** `scripts/run_phase1.py`, `rsr/training/ppo_trainer.py`, `experiment_runner.py`
 - **Config:** `configs/ppo.yaml`, `environment.yaml`
 - **Outputs:** `experiments/phase1/runs/...`
 - **Cost:** Dominant (108×3×50k)
 - **Assumption:** Shared PPO HPs across rewards (reward is the experimental factor)
 
 #### Evaluation
-- **Code:** `src/evaluation/evaluator.py`, `metrics.py`
+- **Code:** `rsr/evaluation/evaluator.py`, `metrics.py`
 - **Config:** `evaluation.yaml` — 160 episodes, deterministic
 - **Outputs:** metrics in status / evaluation_metrics.json
 - **Assumption:** Eval seeds independent of train seeds
 
 #### Dataset
-- **Code:** `src/dataset/builder.py`, `validator.py`, `outlier_filter.py`
+- **Code:** `rsr/dataset/builder.py`, `validator.py`, `outlier_filter.py`
 - **Outputs:** `experiments/phase1/dataset/`
 - **Verified:** 324 completed seeds historically; current CSV may show 322 after outlier drop (2 candidates with 2 seeds)
 
@@ -81,7 +81,7 @@ Leakage assert: `_assert_no_target_leakage` in feature builder.
 
 #### Surrogate / confirm
 - **Phase 2:** `scripts/run_phase2.py` + `configs/surrogate.yaml` (now ExtraTrees-focused)
-- **Confirm:** `scripts/run_model_comparison.py` → `src/surrogate/model_comparison.py`
+- **Confirm:** `scripts/run_model_comparison.py` → `rsr/surrogate/model_comparison.py`
 - **Locked artifacts:** `experiments/model_comparison_confirm/`, `results/model_comparison_confirm/`
 - **Missing:** `experiments/model_comparison/` (exploratory grid), `results/phase2_report.md`
 
@@ -93,7 +93,7 @@ Leakage assert: `_assert_no_target_leakage` in feature builder.
 ## 3. Dependency map (logical)
 
 ```
-configs/* ──► scripts/* ──► src/*
+configs/* ──► scripts/* ──► rsr/*
                 │
                 ▼
          experiments/phase1 (labels)

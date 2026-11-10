@@ -28,7 +28,7 @@
 
 ## Task T2 — Metric policy helper
 
-- **Modify:** `src/surrogate/model_comparison.py` `_within_family_spearman` **or** wrapper that filters families by range/SE without changing default confirm path  
+- **Modify:** `rsr/surrogate/model_comparison.py` `_within_family_spearman` **or** wrapper that filters families by range/SE without changing default confirm path  
 - **Create:** config flag `within_family_identifiability: {enabled, min_range, min_range_over_se}`  
 - **Outputs:** additional metrics columns `within_family_spearman_identifiable_mean`  
 - **Tests:** constant family excluded; diverse family kept  
@@ -39,7 +39,7 @@
 ## Task T3 — Fair benchmark runner
 
 - **Create:** `scripts/run_fair_benchmark.py` + `configs/benchmark.yaml`  
-- **Reuse:** `src/surrogate/model_comparison.py` LOFO loop  
+- **Reuse:** `rsr/surrogate/model_comparison.py` LOFO loop  
 - **Outputs:** `experiments/benchmark_<id>/` (metrics_summary, oof, paired_vs_baseline)  
 - **Tests:** dry-run on 2 families smoke  
 - **Acceptance:** includes mean, ridge, extra_trees; writes paired Δ CI  
@@ -58,7 +58,7 @@
 
 ## Task T5 — Feature deltas / ratios
 
-- **Create:** `src/features/ratio_features.py` or extend static/math extractors  
+- **Create:** `rsr/features/ratio_features.py` or extend static/math extractors  
 - **Modify:** `feature_builder.py` to optional `ratios` set  
 - **Outputs:** new feature CSV; ablation via benchmark config  
 - **Tests:** ratios finite; no target columns  
@@ -87,7 +87,7 @@
 
 ## Task T8 — AL prototype (only after T3–T7)
 
-- **Create:** `src/surrogate/active_learning.py`, `scripts/run_active_learning.py`  
+- **Create:** `rsr/surrogate/active_learning.py`, `scripts/run_active_learning.py`  
 - **Hard requirement:** new experiment run_id; never write into phase1 archive  
 - **Acceptance:** documented acquisition; logging; stop rule  
 

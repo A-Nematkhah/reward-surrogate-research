@@ -20,7 +20,7 @@ CrowdNav v1: 72 candidates × 12 families × 3 seeds — same logic.
 
 ## 5.2 LOFO implementation verdict: **PASS with caveats**
 
-Evidence: `src/surrogate/model_comparison.py`.
+Evidence: `rsr/surrogate/model_comparison.py`.
 
 | Check | Status |
 |-------|--------|
