@@ -205,8 +205,22 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 | **Phase 4 adaptive seeds (plan only)** | Cap 36 extra seed-runs focused on `risk_sensitive` + `nonlinear_progress`. Plan at `results/adaptive_seed_plan/`. **No PPO launched** until explicit authorization; never overwrite phase1 archive. |
 | **Phase 5 selection sim** | Offline ET top-k on confirm OOF beats random; finds global best by k=5 (k=3 within ~0.015). Supports triage claim; online AL still deferred. |
 
+## Phase 1 — Triage metrics (2026-11-10)
+
+| Decision | Rationale |
+|----------|-----------|
+| Single metric module `rsr.evaluation.triage_metrics` | Host use case is generation pools (~16), not pooled LOFO Spearman alone. |
+| Primary pool metrics: recall@k, regret@k (+ top1 / pairwise for n=2) | Directly measure “did we keep the best?” and quality loss. |
+| Spearman only if n≥4 and non-constant | Avoid NaNs / nonsense on CrowdNav v5 and IR-SIM 12×2 pools. |
+| Seeded random tie-breaking | Reproducible top-k when scores or labels tie. |
+| Cost = feature_steps×N + full_steps×k | Honest accounting for early PPO features. |
+| Proposed viability bar (N=16,k=5): recall≥0.80, med regret≤0.03, beat random CI, ≥50% step savings | Editable before Gate 1 freeze; see `docs/METRIC_SPEC_TRIAGE.md`. |
+| OOF pool sim caveat for multi-family draws | Different LOFO fold models; always report single-group pools too. |
+| No HighwayEnv; hosts deferred | Revised prompt pack: only 2D / CrowdNav++ / IR-SIM; in-repo mini host later. |
+
 ## Deferred (by design)
 
 - Simulator backends live under `env/` (`navigation_2d/`, `crowdnav/`, `ir-sim/`). CrowdNav++ is at `env/crowdnav/`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into versioned roots `experiments/crowdnav_<run_id>/` / `results/crowdnav_<run_id>/` (`configs/crowdnav_run.yaml`). The first campaign is archived at `experiments/crowdnav_v1_50k/` and `results/crowdnav_v1_50k/`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
 - LLM reward generation remains future work.
 - Full Active Learning loop is next once this push is accepted.
+- External host wiring (EvoNav / CARD / EUREKA) deferred until after Gate 3; in-repo mini host covers shadow/active tests.

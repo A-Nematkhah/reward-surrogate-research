@@ -1,0 +1,19 @@
+{
+  "model": "extra_trees",
+  "feature_set": "early+math+behavioral",
+  "target": "success_rate",
+  "repeat": 0,
+  "n_pools": 2000,
+  "seed": 123,
+  "n_boot": 2000,
+  "feature_steps_per_candidate": 12000,
+  "full_run_steps": 50000,
+  "n_candidates": 108,
+  "n_families": 12,
+  "caveat": "Multi-group pools mix OOF scores from different LOFO fold models; see summary_single_group.csv for matched-model pools.",
+  "paths": {
+    "per_pool": "results/triage_phase1/per_pool_metrics.csv",
+    "summary": "results/triage_phase1/summary_by_config.csv",
+    "primary_N16": "results/triage_phase1/primary_N16.csv"
+  }
+}
