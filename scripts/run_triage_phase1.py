@@ -82,6 +82,7 @@ def main() -> int:
     primary_path = out / "primary_N16.csv"
     primary.to_csv(primary_path, index=False)
 
+    # Filename kept for compatibility; header clarifies N=16 expansion.
     single = summary[summary["n_groups_requested"] == 1].copy()
     single.to_csv(out / "summary_single_group.csv", index=False)
 
@@ -98,8 +99,10 @@ def main() -> int:
         "n_candidates": int(len(cand)),
         "n_families": int(cand["family_id"].nunique()),
         "caveat": (
-            "Multi-group pools mix OOF scores from different LOFO fold models; "
-            "see summary_single_group.csv for matched-model pools."
+            "Multi-group pools mix OOF scores from different LOFO fold models. "
+            "For N=16 with n_groups_requested=1 on 2D, pools are "
+            "2-family pools (n_groups=1 expanded to 2 families). "
+            "File summary_single_group.csv keeps its name for compatibility."
         ),
         "paths": {
             "per_pool": str(per_path.relative_to(PROJECT_ROOT)).replace("\\", "/"),

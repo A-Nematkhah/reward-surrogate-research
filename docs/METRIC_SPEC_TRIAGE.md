@@ -41,8 +41,10 @@ Default 2D confirm costs: feature early = 12 000, full run = 50 000.
 
 From locked OOF predictions, sample pools of size N ∈ {8,16,32} from 1–3
 families (add families if one is too small). **Caveat:** multi-family pools mix
-OOF scores from different LOFO fold models; always also report **single-group**
-pools.
+OOF scores from different LOFO fold models. On 2D, families have size 8–10, so
+N=16 with `n_groups_requested=1` is a **2-family pool (n_groups=1 expanded to 2
+families)** — not a within-family pool. Always also report strict within-family
+pools (`expand_groups=False`) separately.
 
 Baselines: `surrogate` (top-k by y_pred), `random-k`, `oracle-k`.
 

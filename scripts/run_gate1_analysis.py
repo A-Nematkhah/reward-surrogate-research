@@ -269,7 +269,7 @@ def main() -> int:
                 fontsize=8,
             )
     ax.set_xlabel("PPO steps per candidate (features + kept full runs, N=16 k=5)")
-    ax.set_ylabel("recall@5 (single-group pools)")
+    ax.set_ylabel("recall@5 (2-family pools when N=16 expands)")
     ax.set_title("Gate 1 cost–accuracy frontier")
     ax.axhline(0.80, color="gray", ls="--", lw=1, label="recall threshold 0.80")
     ax.grid(True, alpha=0.3)

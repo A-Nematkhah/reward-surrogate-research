@@ -251,7 +251,8 @@ def simulate_pools(
     Sample pools and return (per_pool_rows, summary_rows).
 
     Caveat: when n_groups > 1 (or expand_groups fills N>family size), OOF y_pred
-    for different families come from different LOFO fold models.
+    for different families come from different LOFO fold models. On 2D, N=16 with
+    n_groups_requested=1 yields a 2-family pool (n_groups=1 expanded to 2 families).
 
     ``ci_mode``:
       - ``pool``: bootstrap over pool draws (legacy Phase 1).
