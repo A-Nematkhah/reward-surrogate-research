@@ -1,0 +1,34 @@
+---
+description: Master context for Reward Triage Phases 0-9
+alwaysApply: true
+---
+
+# Reward Triage — Master Context
+
+**Goal.** Build a host-agnostic Reward Triage component. Given N LLM-written reward functions for an RL task, it drops weak candidates before expensive PPO training so only the top-k get full runs. Hosts (EvoNav on CrowdNav++, HighwayEureka on HighwayEnv, EUREKA or CARD style loops) call it; it never depends on a host.
+
+**Established facts.**
+
+- 2D env `RewardNavigation2D-v0`; 108 parametric rewards (12 families x 3 seeds, 50k PPO steps); six fixed components (progress, goal, collision, obstacle, smoothness, time) with weights.
+- Primary protocol: leave-one-family-out (LOFO), inner LOFO for hyperparameters, family one-hot disabled.
+- Pre-registered confirm result (ExtraTrees, `early+math`, success_rate): pooled Spearman 0.933, within-family Spearman 0.616 (std 0.453), within-family top-3 hit 0.722. The operating feature set `early+math+behavioral` (0.935 / 0.648 / 0.833) was chosen after seeing the exploratory grid. Report both. The confirm `run_config.json` records git_commit 2fb024c, not HEAD.
+- Both feature sets use `early_*` features, recorded in config as 12,000 PPO steps per candidate. Zero-PPO-cost sets (`math`, `behavioral`, `math+behavioral`) have no results in tracked artifacts (`oof_predictions.csv` holds only 4 model x feature_set combos).
+- About 64% of label variance is between families, so pooled Spearman is inflated. The host use case is ranking inside one generation (about 16 similar candidates), so within-group and pool-level metrics are primary.
+- Label noise: median seed std about 0.023; about 25% of within-family pairs differ by less than 1 standard error (3 seeds).
+- CrowdNav++ campaigns: v1_50k, v4_full_150k (72 pool, robot visible), v5_invisible_24 (24 pool, robot_visible=false, only 2 per family: within-family Spearman and top-3 are degenerate, use top-1 and pairwise).
+- Known issues: `third_party/CrowdNavPlusPlus` is gitignored and missing; `experiments/phase1/**`, `experiments/phase2/**`, `experiments/crowdnav*/` are gitignored, so datasets and features are not in the repo; `tests/test_config.py::test_crowdnav_reward_pool_is_72` is stale (config now has 24) and the 2D config says 48 candidates while the archive has 108; `src/features` and `src/evaluation` import stable_baselines3 at module level; `src/utils/reproducibility.py` catches only ImportError for torch; generated reports contain absolute Windows paths; the package is named `src`; requirements are unpinned; no LICENSE, pyproject.toml or CI.
+
+**Global rules (every phase).**
+
+1. Follow `.cursor/rules/token-efficiency.mdc`: read only files named in the phase, no repo-wide scans, localized edits.
+2. Never modify locked artifacts: `experiments/model_comparison_confirm/`, `results/model_comparison_confirm/`, `experiments/archives/`, `docs/archive/`. Every new experiment gets a new run_id and its own directories. Writer scripts refuse a non-empty output dir without `--force`.
+3. English only for code comments, logs, prints, docstrings and commit messages.
+4. No new PPO runs unless a phase says so. Never launch jobs longer than 10 minutes; print the command and provide `--dry-run` and `--max-jobs 1` pilots.
+5. Evaluation discipline: group-held-out CV only; preprocessing and hyperparameter search fit on train folds only; keep the existing leakage asserts; success, collision and timeout stay separate (no scalar fitness); report negative results.
+6. Pre-register: before any confirmatory run, commit `docs/prereg/<phase>.md` (target, feature set, models, metrics, thresholds). Anything chosen after seeing results is labeled exploratory.
+7. Each phase ends with `pytest -m 'not slow'` green, `docs/phase_reports/phase_N.md` (changes, commands, numbers, open issues), and one commit per logical step prefixed `phaseN:`.
+8. Keep existing CLI scripts working (thin wrappers) and existing results reproducible.
+
+**Gates.** Stop after Phase 2, 6 and 7; write the gate report and wait for the user.
+
+**Phases 4/7/9.** Write code, tests and dry runs; the user launches long LLM/compute/host runs.

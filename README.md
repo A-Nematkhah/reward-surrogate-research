@@ -38,14 +38,18 @@ python -m venv .venv
 # Linux / macOS
 # source .venv/bin/activate
 
-pip install -r requirements.txt
+# Core + tests (no torch / SB3 / gymnasium)
+pip install -e ".[dev]"
+# Full RL stack for PPO / env tests
+pip install -e ".[rl,dev]"
+# Locked pins: requirements.lock (pip-compile from pyproject.toml)
 ```
 
 ## Intended workflow
 
 Operating surrogate is **ExtraTrees** on `early+math+behavioral` → `success_rate`.
 
-Simulator backends live under `env/` (one folder each): `navigation_2d/`, `crowdnav/` (CrowdNav++), `ir-sim/`. See `env/README.md`. A short CrowdNav smoke run that does not need Python-RVO2:
+Simulator backends live under `env/` (one folder each): `navigation_2d/`, `crowdnav/` (CrowdNav++ clone, not vendored), `ir-sim/`. Pin CrowdNav++ with `scripts/setup_third_party.sh` (commit `3907731`). See `env/README.md`. A short CrowdNav smoke run that does not need Python-RVO2:
 
 ```bash
 python scripts/run_crowdnav.py --train --timesteps 256 --humans 5
@@ -109,7 +113,7 @@ python scripts/run_phase1.py --override ppo.total_timesteps=100000 --override pp
 reward-surrogate-research/
 ├── env/               # Simulator backends (navigation_2d, crowdnav, ir-sim)
 ├── configs/           # YAML experiment configuration
-├── src/               # Library code (Gym adapters, rewards, training, surrogate, …)
+├── rsr/               # Library code (Gym adapters, rewards, training, surrogate, …)
 ├── scripts/           # CLI entry points
 ├── tests/             # Pytest suite
 ├── experiments/       # Run artifacts (candidates, checkpoints, metrics)
@@ -127,8 +131,11 @@ reward-surrogate-research/
 
 ## Key results
 
+Provenance: see `docs/PROVENANCE.md`. Confirm artifacts: `experiments/model_comparison_confirm/` (`git_commit` 2fb024c).
+
 - Phase 1: **108** rewards × **3** seeds across **12** families.
-- Operating LOFO surrogate: **ExtraTrees / early+math+behavioral / success_rate** — within-family Spearman ≈ **0.65**, pooled Spearman ≈ **0.94**, within-family top-3 hit ≈ **0.83**.
+- **Pre-registered** (ExtraTrees / `early+math` / success_rate): pooled Spearman **0.933**, within-family Spearman **0.616** (std 0.453), within-family top-3 hit **0.722**.
+- **Operating** (ExtraTrees / `early+math+behavioral` / success_rate): pooled **0.935**, within-family **0.648**, top-3 hit **0.833** — chosen **after** seeing the exploratory grid; report both.
 - Reliable for within-family triage. Not a replacement for full PPO.
 
 ## Reports
@@ -137,4 +144,4 @@ reward-surrogate-research/
 
 ## License
 
-Research prototype — no license asserted yet.
+MIT — see `LICENSE`.
