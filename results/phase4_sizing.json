@@ -1,10 +1,10 @@
 {
   "design": {
     "n_per_generation": 16,
-    "generations": 5,
+    "generations": 3,
     "seeds": 3,
-    "jobs_per_run": 240,
-    "candidates_per_run": 80,
+    "jobs_per_run": 144,
+    "candidates_per_run": 48,
     "mode": "train-all / off warm-up (labels produced by the run)",
     "no_cross_env_transfer": true,
     "one_env_at_a_time": true,
@@ -13,48 +13,48 @@
       "provider": "xai",
       "model": "grok-4.3"
     },
-    "isolation": "docker",
+    "isolation": "local_docker_deferred",
     "workers": 4,
-    "runs_2d_for_gate2_ci": 5,
+    "runs_2d_for_gate2_ci": 3,
     "policy": "Run 2D to completion and review results before starting another env. Do not auto-chain CrowdNav++ or IR-SIM."
   },
   "active_now": {
     "env": "2d",
-    "n_jobs": 1200,
+    "n_jobs": 432,
     "min_per_job": 2.0,
     "n_workers": 4,
-    "wall_hours_serial": 40.0,
-    "wall_hours_parallel": 10.0,
-    "n_runs": 5,
-    "jobs_per_run": 240,
-    "candidates_per_run": 80,
+    "wall_hours_serial": 14.4,
+    "wall_hours_parallel": 3.6,
+    "n_runs": 3,
+    "jobs_per_run": 144,
+    "candidates_per_run": 48,
     "status": "active_now"
   },
   "deferred_reference": [
     {
       "env": "irsim",
-      "n_jobs": 240,
+      "n_jobs": 144,
       "min_per_job": 3.5,
       "n_workers": 4,
-      "wall_hours_serial": 14.0,
-      "wall_hours_parallel": 3.5,
+      "wall_hours_serial": 8.4,
+      "wall_hours_parallel": 2.1,
       "n_runs": 1,
-      "jobs_per_run": 240,
-      "candidates_per_run": 80,
+      "jobs_per_run": 144,
+      "candidates_per_run": 48,
       "status": "deferred_until_user_go_ahead_after_2d_review"
     },
     {
       "env": "crowdnav",
-      "n_jobs": 240,
+      "n_jobs": 144,
       "min_per_job": 6.73,
       "n_workers": 4,
-      "wall_hours_serial": 26.92,
-      "wall_hours_parallel": 6.73,
+      "wall_hours_serial": 16.15,
+      "wall_hours_parallel": 4.04,
       "n_runs": 1,
-      "jobs_per_run": 240,
-      "candidates_per_run": 80,
+      "jobs_per_run": 144,
+      "candidates_per_run": 48,
       "status": "deferred_until_user_go_ahead_after_2d_review"
     }
   ],
-  "active_wall_hours_parallel": 10.0
+  "active_wall_hours_parallel": 3.6
 }

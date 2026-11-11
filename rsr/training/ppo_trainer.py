@@ -58,10 +58,26 @@ def make_vec_env(
 ) -> VecEnv:
     """Create a DummyVecEnv with one WeightedRewardFunction copy per env."""
 
+    def _factory() -> Any:
+        return WeightedRewardFunction.from_spec(reward_spec)
+
+    return make_vec_env_with_reward_factory(
+        env_config, _factory, n_envs=n_envs, seed=seed
+    )
+
+
+def make_vec_env_with_reward_factory(
+    env_config: Mapping[str, Any],
+    reward_factory: Callable[[], Any],
+    *,
+    n_envs: int,
+    seed: int,
+) -> VecEnv:
+    """Create a DummyVecEnv; ``reward_factory()`` builds a fresh reward_fn per env."""
+
     def _make_thunk(rank: int) -> Callable[[], Any]:
         def _init() -> Any:
-            reward_fn = WeightedRewardFunction.from_spec(reward_spec)
-            env = make_env(dict(env_config), reward_fn=reward_fn)
+            env = make_env(dict(env_config), reward_fn=reward_factory())
             env.reset(seed=seed + rank)
             return Monitor(env)
 
@@ -328,11 +344,13 @@ def collect_and_save_early_during_training(
     model: PPO,
     *,
     env_config: Mapping[str, Any],
-    reward_spec: RewardSpec,
+    reward_spec: RewardSpec | None = None,
     ppo_config: Mapping[str, Any],
     seed: int,
     run_path: Path,
     total_timesteps: int,
+    reward_fn: Any | None = None,
+    reward_factory: Callable[[], Any] | None = None,
 ) -> dict[str, Any]:
     """
     Train in segments, collect multi-checkpoint early features, then finish budget.
@@ -349,6 +367,15 @@ def collect_and_save_early_during_training(
     deterministic = bool(early_cfg.get("deterministic", False))
     stable = bool(early_cfg.get("stable_stats", True))
     log_interval = int(ppo_config.get("log_interval", 10))
+
+    def _rollout_fn() -> Any:
+        if reward_fn is not None:
+            return reward_fn
+        if reward_factory is not None:
+            return reward_factory()
+        if reward_spec is None:
+            raise ValueError("early collection needs reward_spec, reward_fn, or reward_factory")
+        return WeightedRewardFunction.from_spec(reward_spec)
 
     by_ckpt: dict[int, dict[str, float]] = {}
     trained = 0
@@ -370,6 +397,7 @@ def collect_and_save_early_during_training(
             model,
             env_config=env_config,
             reward_spec=reward_spec,
+            reward_fn=_rollout_fn(),
             n_episodes=n_episodes,
             seed_start=seed_start + int(step),
             deterministic=deterministic,
@@ -451,6 +479,149 @@ def collect_early_features_only(
             },
         )
         return payload
+    finally:
+        if vec_env is not None:
+            vec_env.close()
+
+
+def train_reward_fn_candidate_seed(
+    *,
+    candidate_id: str,
+    family_id: str,
+    reward_factory: Callable[[], Any],
+    env_config: Mapping[str, Any],
+    ppo_config: Mapping[str, Any],
+    eval_config: Mapping[str, Any],
+    seed: int,
+    run_dir: str | Path,
+    resume_if_complete: bool = True,
+) -> dict[str, Any]:
+    """Train/eval one seed using an arbitrary ``reward_factory() -> reward_fn``."""
+    run_path = Path(run_dir)
+    run_path.mkdir(parents=True, exist_ok=True)
+
+    expected_timesteps = int(ppo_config["total_timesteps"])
+    early_cfg = dict(ppo_config.get("early_behavioral") or {})
+    early_enabled = bool(early_cfg.get("enabled", False))
+    early_checkpoints = resolve_early_checkpoints(early_cfg) if early_enabled else []
+    if resume_if_complete and is_run_complete(
+        run_path,
+        expected_timesteps=expected_timesteps,
+        require_early_features=early_enabled,
+        expected_early_checkpoints=early_checkpoints if early_enabled else None,
+    ):
+        with (run_path / "status.json").open("r", encoding="utf-8") as handle:
+            return json.load(handle)
+
+    status: dict[str, Any] = {
+        "candidate_id": candidate_id,
+        "family_id": family_id,
+        "training_seed": int(seed),
+        "training_status": "running",
+        "failure": None,
+        "reward_weights": {},
+        "total_timesteps": expected_timesteps,
+        "early_behavioral_enabled": early_enabled,
+        "reward_kind": "code",
+    }
+    _write_json(run_path / "status.json", status)
+    _write_json(
+        run_path / "run_config.json",
+        {
+            "environment": dict(env_config),
+            "ppo": dict(ppo_config),
+            "evaluation": dict(eval_config),
+        },
+    )
+
+    vec_env: Optional[VecEnv] = None
+    try:
+        seed_meta = seed_everything(
+            int(seed),
+            deterministic_torch=bool(ppo_config.get("seed_torch_deterministic", True)),
+        )
+        _write_json(run_path / "seed_metadata.json", seed_meta)
+
+        vec_env = make_vec_env_with_reward_factory(
+            env_config,
+            reward_factory,
+            n_envs=int(ppo_config["n_envs"]),
+            seed=int(seed),
+        )
+        model = build_ppo(vec_env, ppo_config, seed=int(seed))
+
+        t0 = time.perf_counter()
+        early_payload: Optional[dict[str, Any]] = None
+        if early_enabled:
+            if max(early_checkpoints) > expected_timesteps:
+                raise ValueError(
+                    "early_behavioral checkpoints cannot exceed ppo.total_timesteps"
+                )
+            early_payload = collect_and_save_early_during_training(
+                model,
+                env_config=env_config,
+                reward_spec=None,
+                reward_factory=reward_factory,
+                ppo_config=ppo_config,
+                seed=int(seed),
+                run_path=run_path,
+                total_timesteps=expected_timesteps,
+            )
+        else:
+            model.learn(
+                total_timesteps=expected_timesteps,
+                progress_bar=False,
+                log_interval=int(ppo_config.get("log_interval", 10)),
+            )
+        train_duration = time.perf_counter() - t0
+
+        model_path = run_path / "model.zip"
+        model.save(str(model_path))
+
+        eval_result = evaluate_policy(
+            model,
+            env_config=env_config,
+            reward_spec=None,
+            reward_fn=reward_factory(),
+            eval_config=eval_config,
+            output_dir=run_path,
+            candidate_id=candidate_id,
+            family_id=family_id,
+        )
+
+        status.update(
+            {
+                "training_status": "completed",
+                "failure": None,
+                "train_duration_sec": float(train_duration),
+                "eval_duration_sec": float(eval_result["eval_duration_sec"]),
+                "model_path": relpath_to_project(model_path),
+                "metrics": eval_result["metrics"],
+                "device": str(model.device),
+                "early_behavioral_path": (
+                    relpath_to_project(run_path / EARLY_FEATURES_FILENAME)
+                    if early_payload is not None
+                    else None
+                ),
+                "early_checkpoints": (
+                    list(early_payload.get("checkpoints", []))
+                    if early_payload is not None
+                    else None
+                ),
+            }
+        )
+        _write_json(run_path / "status.json", status)
+        return status
+    except Exception as exc:  # noqa: BLE001
+        status.update(
+            {
+                "training_status": "failed",
+                "failure": {"type": type(exc).__name__, "message": str(exc)},
+            }
+        )
+        _write_json(run_path / "status.json", status)
+        logger.exception("Code-reward training failed for %s seed=%s", candidate_id, seed)
+        raise
     finally:
         if vec_env is not None:
             vec_env.close()

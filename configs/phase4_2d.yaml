@@ -1,0 +1,42 @@
+# Phase 4 live pipeline — 2D only (one env at a time).
+run_id: phase4_2d_v1
+env_id: RewardNavigation2D-v0
+env_config_id: 2d
+host: mini_host
+
+# Aligned with prior finding that ~48 2D candidates suffice.
+n_per_generation: 16
+n_generations: 3
+n_seeds: 3
+seeds: [0, 1, 2]
+
+mode: "off"  # warm-up train-all; controller may switch later
+m_min: 24
+k_frac: 0.5
+audit_frac: 0.15
+temperature: 0.7
+prompt_id: gen0_default
+
+probe_path: data/probes/navigation_2d.npz
+env_config: configs/environment.yaml
+ppo_config: configs/ppo.yaml
+eval_config: configs/evaluation.yaml
+
+# Locked operating features for surrogate scoring (user 2026-11-11).
+feature_set: early+math+behavioral
+# early checkpoints used for features (must match configs/ppo.yaml early_behavioral)
+early_feature_timesteps: [2000, 5000, 12000]
+
+llm:
+  # local = hand-written corpus (no API key). Switch to xai when XAI_API_KEY is available.
+  provider: local
+  model: local-corpus
+
+# Docker deferred — run labeling locally until the user re-enables containers.
+container:
+  enabled: false
+  compose_file: docker-compose.triage.yml
+  service: triage-labeler
+
+# Gate 2 CIs: repeat independent 2D runs after the first succeeds (user go-ahead).
+n_repeat_runs_2d: 3

@@ -1,0 +1,13 @@
+Task:
+{{task}}
+
+Improve the parent reward function using its training stats.
+Keep the same compute_reward(transition) -> (float, dict) contract.
+Change weights or terms that likely hurt success or cause collisions.
+Return only the Python function source.
+
+Parent code:
+{{parent_code}}
+
+Parent training stats:
+{{stats}}

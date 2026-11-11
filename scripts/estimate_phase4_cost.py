@@ -18,11 +18,11 @@ REF_MIN_PER_JOB = {
 
 # Live pipeline train-all / warm-up design (new Phase 4 pack).
 N_PER_GEN = 16
-N_GENERATIONS = 5
+N_GENERATIONS = 3  # N=16 x G=3 => 48 candidates (matches prior 2D sufficiency)
 N_SEEDS = 3
 N_WORKERS = 4
-# Gate 2 CIs need repeated 2D runs. Other envs are scheduled only after 2D review.
-N_RUNS_2D = 5
+# Gate 2 CIs: a few repeated 2D runs after the first succeeds. Other envs deferred.
+N_RUNS_2D = 3
 N_RUNS_OTHER = 1
 
 
@@ -80,7 +80,7 @@ def main() -> int:
             "one_env_at_a_time": True,
             "active_env": "2d",
             "llm": {"provider": "xai", "model": "grok-4.3"},
-            "isolation": "docker",
+            "isolation": "local_docker_deferred",
             "workers": args.workers,
             "runs_2d_for_gate2_ci": args.runs_2d,
             "policy": (
@@ -110,7 +110,7 @@ def main() -> int:
         "## Runtime choices",
         "",
         "- LLM: **xAI / grok-4.3** (VERIFY exact API model id at client wiring)",
-        "- Isolation: **Docker**",
+        "- Isolation: **local (Docker deferred)**",
         f"- Workers: **{args.workers}**",
         "",
         "## One live run (train-all)",

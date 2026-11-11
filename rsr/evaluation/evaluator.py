@@ -38,18 +38,27 @@ def evaluate_policy(
     model: PolicyLike,
     *,
     env_config: Mapping[str, Any],
-    reward_spec: RewardSpec,
     eval_config: Mapping[str, Any],
+    reward_spec: RewardSpec | None = None,
     output_dir: str | Path | None = None,
+    reward_fn: Any | None = None,
+    candidate_id: str | None = None,
+    family_id: str | None = None,
 ) -> dict[str, Any]:
     """
     Roll out ``model`` on a fixed set of evaluation seeds.
 
     Returns a dict with aggregate metrics, per-episode records, and timing.
+    Provide ``reward_spec`` and/or an explicit ``reward_fn`` (code rewards).
     """
     seeds = resolve_eval_seeds(eval_config)
     deterministic = bool(eval_config.get("deterministic", True))
-    reward_fn = WeightedRewardFunction.from_spec(reward_spec)
+    if reward_fn is None:
+        if reward_spec is None:
+            raise ValueError("evaluate_policy requires reward_spec or reward_fn")
+        reward_fn = WeightedRewardFunction.from_spec(reward_spec)
+    cid = candidate_id or (reward_spec.candidate_id if reward_spec is not None else "unknown")
+    fid = family_id or (reward_spec.family_id if reward_spec is not None else "code")
 
     t0 = time.perf_counter()
     episodes: list[dict[str, Any]] = []
@@ -91,8 +100,8 @@ def evaluate_policy(
     eval_duration = time.perf_counter() - t0
     metrics = aggregate_episode_metrics(episodes)
     result = {
-        "candidate_id": reward_spec.candidate_id,
-        "family_id": reward_spec.family_id,
+        "candidate_id": cid,
+        "family_id": fid,
         "metrics": metrics_to_serializable(metrics),
         "episodes": episodes,
         "eval_duration_sec": float(eval_duration),
@@ -129,7 +138,7 @@ def evaluate_policy(
             episodes_to_dataframe(episodes).to_csv(out / details_name, index=False)
         logger.info(
             "Evaluation %s: success=%.2f collision=%.2f timeout=%.2f (%.1fs)",
-            reward_spec.candidate_id,
+            cid,
             metrics["success_rate"],
             metrics["collision_rate"],
             metrics["timeout_rate"],

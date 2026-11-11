@@ -19,13 +19,14 @@ alwaysApply: true
 - Label noise: median seed std about 0.023; about 25% of within-family pairs differ by less than 1 standard error (3 seeds).
 - CrowdNav++ campaigns: v1_50k, v4_full_150k (72 pool, robot visible), v5_invisible_24 (24 pool, robot_visible=false, only 2 per family: use top-1 and pairwise). IR-SIM campaign v1_nav24 (24 pool = 12x2, PPO 50k, early 2k/5k/12k) has the same n=2 limitation. Backends via `scripts/run_quality_pipeline.py --env 2d|crowdnav|irsim`.
 - Package is `rsr`. Locked confirm artifacts must not be rewritten.
-- Phase 3.5 done: default feature group `mb`; container runner (Docker); sizing in `docs/phase4_sizing.md`.
+- Phase 3.5 done: `mb` extractor + container scaffold; sizing in `docs/phase4_sizing.md`.
 
 **Runtime choices (2026-11-11).**
 
-- LLM: xAI, model `grok-4.3` (VERIFY exact API model id in Phase 4 client).
-- Isolation: Docker (`Dockerfile.triage` / `docker-compose.triage.yml`).
-- Compute budget (agent default): 4 workers; G=5 gens; N=16; 3 seeds. **One env at a time** — finish 2D (including its repeated runs and result review), then start CrowdNav++ or IR-SIM from scratch only after the user says so. Never auto-chain all envs. See `docs/phase4_sizing.md`.
+- LLM: xAI, model `grok-4.3` (VERIFY exact API model id in Phase 4 client); until key arrives use provider `local`.
+- Isolation: **Docker deferred**. Phase 4 runs locally for now.
+- **Operating feature set: `early+math+behavioral`** (user lock). Surrogate scoring uses early PPO checkpoint features plus math+behavioral. Zero-cost `mb` alone is ablation / Tier0 path only — not the primary scorer.
+- Compute budget: 4 workers; N=16 × G=3 (=48); 3 seeds; up to 3 repeated 2D runs after first success. **One env at a time** (2D first). See `docs/phase4_sizing.md`.
 
 **Global rules (every phase).**
 

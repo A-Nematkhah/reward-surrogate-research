@@ -224,8 +224,10 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 |----------|-----------|
 | No cross-environment transfer; no pre-collected per-env dataset | Labels are a by-product of each live pipeline run; Gate 1b removed from the prompt pack. |
 | LLM: xAI `grok-4.3` | User choice; VERIFY exact API model string when wiring the client. |
-| Isolation: Docker | User choice; Phase 3.5 runner already present. |
-| Compute default: 4 workers; N=16; G=5; 3 seeds; 2D×5 runs first | Enough for Gate 2 CIs on 2D (~10 parallel wall-hours). **One env at a time**: finish 2D and review results before starting CrowdNav++ or IR-SIM; do not auto-chain envs. |
+| Isolation: Docker deferred; local workers for now | User choice (2026-11-11): do not block Phase 4 on Docker. Compose/Dockerfile kept for later. |
+| LLM stand-in: `local` corpus | No API key yet; hand-written 12-family rewards until xAI/Grok is wired. |
+| Operating feature set: **early+math+behavioral** | User choice (2026-11-11) after local probe: LOFO within 0.641 vs 0.586 for `mb` alone. Implies triage scoring needs early PPO checkpoints per candidate (not zero-cost). `mb` remains available for Tier0 / ablations. |
+| Compute default: 4 workers; N=16 × G=3 (=48); 3 seeds; 2D×3 runs after first success | Matches prior finding that ~48 2D candidates suffice; ~3.6 parallel wall-hours for 3 runs. **One env at a time**: finish 2D and review before CrowdNav++/IR-SIM. |
 
 ## Deferred (by design)
 

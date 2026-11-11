@@ -68,12 +68,13 @@ def collect_early_rollout_features(
     model: PolicyLike,
     *,
     env_config: Mapping[str, Any],
-    reward_spec: RewardSpec,
     n_episodes: int,
     seed_start: int,
+    reward_spec: RewardSpec | None = None,
     deterministic: bool = False,
     prefix: str = "early",
     include_stable_stats: bool = True,
+    reward_fn: Any | None = None,
 ) -> dict[str, float]:
     """
     Roll out a partially trained policy and summarize cheap behavioral signals.
@@ -84,7 +85,10 @@ def collect_early_rollout_features(
     if n_episodes <= 0:
         raise ValueError("n_episodes must be positive")
 
-    reward_fn = WeightedRewardFunction.from_spec(reward_spec)
+    if reward_fn is None:
+        if reward_spec is None:
+            raise ValueError("collect_early_rollout_features requires reward_spec or reward_fn")
+        reward_fn = WeightedRewardFunction.from_spec(reward_spec)
 
     goal_deltas: list[float] = []
     returns: list[float] = []

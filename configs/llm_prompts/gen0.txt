@@ -1,0 +1,20 @@
+Task:
+{{task}}
+
+Write a Python reward function for this navigation task.
+
+Requirements:
+- Define exactly: def compute_reward(transition):
+- `transition` is a dict with keys such as progress, success, collision,
+  out_of_bounds, goal_distance, clearance, action, action_delta.
+- Return (total_reward: float, components: dict[str, float]).
+- Keep rewards finite; use progress toward the goal and penalties for
+  collision / time; optional smoothness.
+- No imports except what is already available (math via builtins only in sandbox).
+- No file or network access.
+
+Parent code (none for generation 0):
+{{parent_code}}
+
+Parent training stats:
+{{stats}}

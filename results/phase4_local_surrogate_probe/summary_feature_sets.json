@@ -1,0 +1,128 @@
+{
+  "train_n": 108,
+  "local_n": 16,
+  "local_n_families_in_corpus": 12,
+  "results": [
+    {
+      "feature_set": "math+behavioral",
+      "n_features": 214,
+      "lofo_within_family_spearman": 0.5861368025850012,
+      "lofo_pooled_spearman": 0.8266398841809456,
+      "local_pred_mean": 0.35209999999999986,
+      "local_pred_std": 0.07165826931629651,
+      "local_pred_min": 0.21031249999999996,
+      "local_pred_max": 0.429295833333333,
+      "local_pred_range": 0.21898333333333303,
+      "top3": [
+        {
+          "family": "fast_goal",
+          "pred_success": 0.429295833333333
+        },
+        {
+          "family": "balanced",
+          "pred_success": 0.4219472222222221
+        },
+        {
+          "family": "time_heavy",
+          "pred_success": 0.4203611111111108
+        }
+      ],
+      "bottom3": [
+        {
+          "family": "balanced",
+          "pred_success": 0.27970833333333345
+        },
+        {
+          "family": "safety_heavy",
+          "pred_success": 0.21293055555555546
+        },
+        {
+          "family": "progress_only",
+          "pred_success": 0.21031249999999996
+        }
+      ],
+      "early_imputed_for_local": false
+    },
+    {
+      "feature_set": "early",
+      "n_features": 197,
+      "lofo_within_family_spearman": 0.5825775995267858,
+      "lofo_pooled_spearman": 0.937879113765331,
+      "local_pred_mean": 0.6270465277777783,
+      "local_pred_std": 0.0,
+      "local_pred_min": 0.6270465277777783,
+      "local_pred_max": 0.6270465277777783,
+      "local_pred_range": 0.0,
+      "top3": [
+        {
+          "family": "safety_heavy",
+          "pred_success": 0.6270465277777783
+        },
+        {
+          "family": "distance_penalty",
+          "pred_success": 0.6270465277777783
+        },
+        {
+          "family": "balanced",
+          "pred_success": 0.6270465277777783
+        }
+      ],
+      "bottom3": [
+        {
+          "family": "balanced",
+          "pred_success": 0.6270465277777783
+        },
+        {
+          "family": "time_heavy",
+          "pred_success": 0.6270465277777783
+        },
+        {
+          "family": "nonlinear_progress",
+          "pred_success": 0.6270465277777783
+        }
+      ],
+      "early_imputed_for_local": true
+    },
+    {
+      "feature_set": "early+math+behavioral",
+      "n_features": 411,
+      "lofo_within_family_spearman": 0.6405991983378537,
+      "lofo_pooled_spearman": 0.9381935776858591,
+      "local_pred_mean": 0.536853819444445,
+      "local_pred_std": 0.005270076050854478,
+      "local_pred_min": 0.5309541666666673,
+      "local_pred_max": 0.5549916666666672,
+      "local_pred_range": 0.024037499999999934,
+      "top3": [
+        {
+          "family": "distance_penalty",
+          "pred_success": 0.5549916666666672
+        },
+        {
+          "family": "safety_heavy",
+          "pred_success": 0.5382638888888892
+        },
+        {
+          "family": "risk_clearance",
+          "pred_success": 0.5381875000000007
+        }
+      ],
+      "bottom3": [
+        {
+          "family": "fast_goal",
+          "pred_success": 0.5332118055555561
+        },
+        {
+          "family": "progress_only",
+          "pred_success": 0.5327666666666674
+        },
+        {
+          "family": "nonlinear_progress",
+          "pred_success": 0.5309541666666673
+        }
+      ],
+      "early_imputed_for_local": true
+    }
+  ],
+  "note": "Local candidates have mb only. For early* columns, values are missing and median-imputed from the 108 \u2014 early-only local ranks are nearly constant; early+math+behavioral still separates via mb. Not live PPO labels."
+}

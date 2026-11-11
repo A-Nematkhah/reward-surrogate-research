@@ -12,26 +12,26 @@ live pipeline run (train-all / off warm-up). No cross-environment transfer.
 ## Runtime choices
 
 - LLM: **xAI / grok-4.3** (VERIFY exact API model id at client wiring)
-- Isolation: **Docker**
+- Isolation: **local (Docker deferred)**
 - Workers: **4**
 
 ## One live run (train-all)
 
-- N=16 candidates/generation × G=5 × seeds=3
-- Candidates/run: **80**; jobs/run: **240**
+- N=16 candidates/generation × G=3 × seeds=3
+- Candidates/run: **48**; jobs/run: **144**
 
 ## Active now: 2D
 
-- Independent runs for Gate 2 CIs: **5**
-- Jobs: **1200**
-- Wall-hours @ 4 workers: **10.0** parallel (40.0 serial)
+- Independent runs for Gate 2 CIs: **3**
+- Jobs: **432**
+- Wall-hours @ 4 workers: **3.6** parallel (14.4 serial)
 
 ## Deferred (reference only — do not launch until user go-ahead)
 
 | env | runs | jobs | min/job | wall-h parallel |
 | --- | ---: | ---: | ---: | ---: |
-| irsim | 1 | 240 | 3.5 | 3.5 |
-| crowdnav | 1 | 240 | 6.73 | 6.73 |
+| irsim | 1 | 144 | 3.5 | 2.1 |
+| crowdnav | 1 | 144 | 6.73 | 4.04 |
 
 ## Notes
 

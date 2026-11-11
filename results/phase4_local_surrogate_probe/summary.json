@@ -1,0 +1,42 @@
+{
+  "train_n": 108,
+  "train_success_mean": 0.336988811728395,
+  "train_success_std": 0.279004146689269,
+  "lofo_within_family_spearman": 0.5861368025850012,
+  "lofo_pooled_spearman": 0.8266398841809456,
+  "local_n": 16,
+  "local_n_families_in_corpus": 12,
+  "local_pred_mean": 0.35209999999999986,
+  "local_pred_std": 0.07165826931629651,
+  "local_pred_min": 0.21031249999999996,
+  "local_pred_max": 0.429295833333333,
+  "top3": [
+    {
+      "family": "fast_goal",
+      "pred_success": 0.429295833333333
+    },
+    {
+      "family": "balanced",
+      "pred_success": 0.4219472222222221
+    },
+    {
+      "family": "time_heavy",
+      "pred_success": 0.4203611111111108
+    }
+  ],
+  "bottom3": [
+    {
+      "family": "balanced",
+      "pred_success": 0.27970833333333345
+    },
+    {
+      "family": "safety_heavy",
+      "pred_success": 0.21293055555555546
+    },
+    {
+      "family": "progress_only",
+      "pred_success": 0.21031249999999996
+    }
+  ],
+  "note": "Surrogate trained on parametric 2D math+behavioral \u2192 success_rate. Local candidates are hand-written try-to-be-good styles (no API). Predictions are prior scores only \u2014 not live PPO labels."
+}

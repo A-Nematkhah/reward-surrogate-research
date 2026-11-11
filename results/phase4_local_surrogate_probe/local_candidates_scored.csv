@@ -1,0 +1,17 @@
+index,family,tier0,pred_success,feature_hash,n_features_present,code_head
+10,fast_goal,ok,0.429295833333333,8cd7519c70373e0c,214,def compute_reward(transition):
+4,balanced,ok,0.4219472222222221,4cb230f27fdf4c04,214,def compute_reward(transition):
+6,time_heavy,ok,0.4203611111111108,2b9194950113cf17,214,def compute_reward(transition):
+9,balanced,ok,0.4199472222222221,95cf6aa72def0205,214,def compute_reward(transition):
+3,time_heavy,ok,0.41367222222222205,0d4c2a35a0598276,214,def compute_reward(transition):
+7,potential,ok,0.41176944444444424,090c52df138ab1e5,214,def compute_reward(transition):
+2,balanced,ok,0.3697888888888889,8f419ccf8eb9bc45,214,def compute_reward(transition):
+14,time_heavy,ok,0.36871041666666643,2d4893b4aac7486a,214,def compute_reward(transition):
+0,safety_heavy,ok,0.36556319444444424,2bd0b91b1894e708,214,def compute_reward(transition):
+8,risk_clearance,ok,0.3480722222222221,3737376d90e6ea69,214,def compute_reward(transition):
+12,sparse_goal,ok,0.3415152777777778,9fc2197da9344f3d,214,def compute_reward(transition):
+1,distance_penalty,ok,0.3244305555555555,86b82df755f9c80b,214,def compute_reward(transition):
+15,nonlinear_progress,ok,0.295575,1ee0568217854d29,214,def compute_reward(transition):
+13,balanced,ok,0.27970833333333345,43b3fad92bc48d7a,214,def compute_reward(transition):
+5,safety_heavy,ok,0.21293055555555546,9d17fd638158703c,214,def compute_reward(transition):
+11,progress_only,ok,0.21031249999999996,eae0c268206b5ddb,214,def compute_reward(transition):
