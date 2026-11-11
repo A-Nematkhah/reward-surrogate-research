@@ -218,9 +218,17 @@ Pilot protocol (32 candidates / 7 families / ~20k steps / GroupKFold or early LO
 | OOF pool sim caveat for multi-family draws | Different LOFO fold models; always report single-group pools too. |
 | No HighwayEnv; hosts deferred | Revised prompt pack: only 2D / CrowdNav++ / IR-SIM; in-repo mini host later. |
 
+## Phase 3.5 / pre–Phase 4 (2026-11-11)
+
+| Decision | Rationale |
+|----------|-----------|
+| No cross-environment transfer; no pre-collected per-env dataset | Labels are a by-product of each live pipeline run; Gate 1b removed from the prompt pack. |
+| LLM: xAI `grok-4.3` | User choice; VERIFY exact API model string when wiring the client. |
+| Isolation: Docker | User choice; Phase 3.5 runner already present. |
+| Compute default: 4 workers; N=16; G=5; 3 seeds; 2D×5 runs first | Enough for Gate 2 CIs on 2D (~10 parallel wall-hours). **One env at a time**: finish 2D and review results before starting CrowdNav++ or IR-SIM; do not auto-chain envs. |
+
 ## Deferred (by design)
 
 - Simulator backends live under `env/` (`navigation_2d/`, `crowdnav/`, `ir-sim/`). CrowdNav++ is at `env/crowdnav/`. `python scripts/run_quality_pipeline.py --env crowdnav` trains Phase 1 on `CrowdNavPlusPlus-v0` (ORCA humans) into versioned roots `experiments/crowdnav_<run_id>/` / `results/crowdnav_<run_id>/` (`configs/crowdnav_run.yaml`). The first campaign is archived at `experiments/crowdnav_v1_50k/` and `results/crowdnav_v1_50k/`. The locked ExtraTrees numbers stay the 2D-nav confirm; `environment.yaml` still defaults to `RewardNavigation2D-v0`.
-- LLM reward generation remains future work.
-- Full Active Learning loop is next once this push is accepted.
+- Full Active Learning / live A/B deferred to Phases 7–8.
 - External host wiring (EvoNav / CARD / EUREKA) deferred until after Gate 3; in-repo mini host covers shadow/active tests.

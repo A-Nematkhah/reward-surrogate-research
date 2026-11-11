@@ -1,57 +1,60 @@
 {
   "design": {
-    "n_prompts": 6,
-    "temperatures": [
-      0.3,
-      0.7,
-      1.0
-    ],
-    "n_per_prompt_temp_gen0": 16,
-    "gen0_candidates": 288,
-    "generations": 3,
-    "candidates_per_env_target": 864,
+    "n_per_generation": 16,
+    "generations": 5,
     "seeds": 3,
-    "held_out_prompts": 2
-  },
-  "lineages_gate2": {
-    "min_held_out_lineages": 20,
-    "held_out_fraction": 0.2,
-    "total_lineages_needed": 100,
-    "held_out_lineages": 20,
-    "train_lineages": 80,
-    "planned_lineages": 100
-  },
-  "costs": [
-    {
-      "env": "2d",
-      "n_candidates": 864,
-      "n_seeds": 3,
-      "n_jobs": 2592,
-      "min_per_job": 2.0,
-      "n_workers": 4,
-      "wall_hours_serial": 86.4,
-      "wall_hours_parallel": 21.6
+    "jobs_per_run": 240,
+    "candidates_per_run": 80,
+    "mode": "train-all / off warm-up (labels produced by the run)",
+    "no_cross_env_transfer": true,
+    "one_env_at_a_time": true,
+    "active_env": "2d",
+    "llm": {
+      "provider": "xai",
+      "model": "grok-4.3"
     },
+    "isolation": "docker",
+    "workers": 4,
+    "runs_2d_for_gate2_ci": 5,
+    "policy": "Run 2D to completion and review results before starting another env. Do not auto-chain CrowdNav++ or IR-SIM."
+  },
+  "active_now": {
+    "env": "2d",
+    "n_jobs": 1200,
+    "min_per_job": 2.0,
+    "n_workers": 4,
+    "wall_hours_serial": 40.0,
+    "wall_hours_parallel": 10.0,
+    "n_runs": 5,
+    "jobs_per_run": 240,
+    "candidates_per_run": 80,
+    "status": "active_now"
+  },
+  "deferred_reference": [
     {
       "env": "irsim",
-      "n_candidates": 864,
-      "n_seeds": 3,
-      "n_jobs": 2592,
+      "n_jobs": 240,
       "min_per_job": 3.5,
       "n_workers": 4,
-      "wall_hours_serial": 151.2,
-      "wall_hours_parallel": 37.8
+      "wall_hours_serial": 14.0,
+      "wall_hours_parallel": 3.5,
+      "n_runs": 1,
+      "jobs_per_run": 240,
+      "candidates_per_run": 80,
+      "status": "deferred_until_user_go_ahead_after_2d_review"
     },
     {
       "env": "crowdnav",
-      "n_candidates": 864,
-      "n_seeds": 3,
-      "n_jobs": 2592,
+      "n_jobs": 240,
       "min_per_job": 6.73,
       "n_workers": 4,
-      "wall_hours_serial": 290.74,
-      "wall_hours_parallel": 72.68
+      "wall_hours_serial": 26.92,
+      "wall_hours_parallel": 6.73,
+      "n_runs": 1,
+      "jobs_per_run": 240,
+      "candidates_per_run": 80,
+      "status": "deferred_until_user_go_ahead_after_2d_review"
     }
   ],
-  "total_wall_hours_parallel_all_envs": 132.08
+  "active_wall_hours_parallel": 10.0
 }

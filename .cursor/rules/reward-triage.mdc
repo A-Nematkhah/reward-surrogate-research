@@ -7,6 +7,8 @@ alwaysApply: true
 
 **Goal.** Build a host-agnostic Reward Triage component. Given N LLM-written reward functions for an RL task, it drops weak candidates before expensive PPO training so only the top-k get full runs. Hosts (EvoNav, EUREKA or CARD style loops) call it; it never depends on a host. This repo has exactly three environments: native 2D, CrowdNav++ and IR-SIM. HighwayEnv is not part of it. The host is not chosen yet: this plan only makes the component integration-ready; no external host is wired in.
 
+**Design decision (2026-11-11).** Every environment produces its own labels during the pipeline run itself; there is no pre-collected per-environment dataset and no transfer between environments. Target: online reward search — reach the same success as a train-all loop with fewer PPO steps, learning only from labels the run itself produces.
+
 **Established facts.**
 
 - 2D env `RewardNavigation2D-v0`; 108 parametric rewards (12 families x 3 seeds, 50k PPO steps); six fixed components (progress, goal, collision, obstacle, smoothness, time) with weights.
@@ -17,6 +19,13 @@ alwaysApply: true
 - Label noise: median seed std about 0.023; about 25% of within-family pairs differ by less than 1 standard error (3 seeds).
 - CrowdNav++ campaigns: v1_50k, v4_full_150k (72 pool, robot visible), v5_invisible_24 (24 pool, robot_visible=false, only 2 per family: use top-1 and pairwise). IR-SIM campaign v1_nav24 (24 pool = 12x2, PPO 50k, early 2k/5k/12k) has the same n=2 limitation. Backends via `scripts/run_quality_pipeline.py --env 2d|crowdnav|irsim`.
 - Package is `rsr`. Locked confirm artifacts must not be rewritten.
+- Phase 3.5 done: default feature group `mb`; container runner (Docker); sizing in `docs/phase4_sizing.md`.
+
+**Runtime choices (2026-11-11).**
+
+- LLM: xAI, model `grok-4.3` (VERIFY exact API model id in Phase 4 client).
+- Isolation: Docker (`Dockerfile.triage` / `docker-compose.triage.yml`).
+- Compute budget (agent default): 4 workers; G=5 gens; N=16; 3 seeds. **One env at a time** — finish 2D (including its repeated runs and result review), then start CrowdNav++ or IR-SIM from scratch only after the user says so. Never auto-chain all envs. See `docs/phase4_sizing.md`.
 
 **Global rules (every phase).**
 
@@ -29,6 +38,6 @@ alwaysApply: true
 7. Each phase ends with `pytest -m 'not slow'` green, `docs/phase_reports/phase_N.md`, and one commit per logical step prefixed `phaseN:`.
 8. Keep existing CLI scripts working (thin wrappers) and existing results reproducible.
 
-**Gates.** Stop after Phase 2, 6 and 7; write the gate report and wait for the user.
+**Gates.** Stop after Phase 2 (done: Gate 1 CONDITIONAL), Phase 6 (Gate 2), and Phase 7 (Gate 3); write the gate report and wait. No Gate 1b / no cross-env transfer.
 
 **Envs.** Only 2D, CrowdNav++, IR-SIM. No HighwayEnv. External host wiring deferred until after Gate 3.

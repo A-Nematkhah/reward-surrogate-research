@@ -1,65 +1,38 @@
 #!/usr/bin/env python3
-"""Estimate Phase 4 candidate/lineage counts and wall-hours (no PPO launched)."""
+"""Estimate Phase 4 live-run PPO jobs and wall-hours (no PPO launched)."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Reference timings from prior campaigns (minutes per candidate×seed job).
+# Reference timings from prior campaigns (minutes per candidate x seed job).
 REF_MIN_PER_JOB = {
     "2d": 2.0,  # ~50k PPO on RewardNavigation2D
     "irsim": 3.5,  # ~50k PPO static obstacles
     "crowdnav": 6.73,  # v5 reference at 150k steps
 }
 
-# Generation design from Phase 4 prompt.
-N_PROMPTS = 6
-TEMPERATURES = (0.3, 0.7, 1.0)
-N_PER_PROMPT_TEMP = 16  # generation 0
+# Live pipeline train-all / warm-up design (new Phase 4 pack).
+N_PER_GEN = 16
+N_GENERATIONS = 5
 N_SEEDS = 3
-HELD_OUT_PROMPTS = 2
-MIN_HELD_OUT_LINEAGES = 20
-HELD_OUT_LINEAGE_FRAC = 0.20
+N_WORKERS = 4
+# Gate 2 CIs need repeated 2D runs. Other envs are scheduled only after 2D review.
+N_RUNS_2D = 5
+N_RUNS_OTHER = 1
 
 
-def gen0_candidates() -> int:
-    return N_PROMPTS * len(TEMPERATURES) * N_PER_PROMPT_TEMP
-
-
-def lineages_for_gate2(min_held_out: int = MIN_HELD_OUT_LINEAGES, frac: float = HELD_OUT_LINEAGE_FRAC) -> dict:
-    # Need >= max(min_held_out, frac * total) held-out lineages.
-    # If we hold out 20%, total >= min_held_out / 0.20.
-    total_by_frac = int(math.ceil(min_held_out / frac))
-    total = max(total_by_frac, min_held_out + 1)
-    held = max(min_held_out, int(math.ceil(frac * total)))
-    # Bump total until held-out count from frac meets min.
-    while int(math.floor(frac * total)) < min_held_out and int(math.ceil(frac * total)) < min_held_out:
-        total += 1
-        held = max(min_held_out, int(math.ceil(frac * total)))
-    held = max(min_held_out, int(math.ceil(frac * total)))
-    return {
-        "min_held_out_lineages": min_held_out,
-        "held_out_fraction": frac,
-        "total_lineages_needed": total,
-        "held_out_lineages": held,
-        "train_lineages": total - held,
-    }
-
-
-def wall_hours(n_candidates: int, env: str, n_seeds: int = N_SEEDS, n_workers: int = 4) -> dict:
-    minutes = REF_MIN_PER_JOB[env] * n_candidates * n_seeds
+def wall_hours(n_jobs: int, env: str, n_workers: int) -> dict:
+    minutes = REF_MIN_PER_JOB[env] * n_jobs
     hours_serial = minutes / 60.0
     hours_parallel = hours_serial / max(n_workers, 1)
     return {
         "env": env,
-        "n_candidates": n_candidates,
-        "n_seeds": n_seeds,
-        "n_jobs": n_candidates * n_seeds,
+        "n_jobs": n_jobs,
         "min_per_job": REF_MIN_PER_JOB[env],
         "n_workers": n_workers,
         "wall_hours_serial": round(hours_serial, 2),
@@ -69,90 +42,105 @@ def wall_hours(n_candidates: int, env: str, n_seeds: int = N_SEEDS, n_workers: i
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--workers", type=int, default=4)
-    p.add_argument("--generations", type=int, default=3, help="gen0 + mutation generations")
+    p.add_argument("--workers", type=int, default=N_WORKERS)
+    p.add_argument("--generations", type=int, default=N_GENERATIONS)
+    p.add_argument("--n-per-gen", type=int, default=N_PER_GEN)
+    p.add_argument("--seeds", type=int, default=N_SEEDS)
+    p.add_argument("--runs-2d", type=int, default=N_RUNS_2D)
     p.add_argument("--out", type=Path, default=ROOT / "docs" / "phase4_sizing.md")
     p.add_argument("--json-out", type=Path, default=ROOT / "results" / "phase4_sizing.json")
     args = p.parse_args()
 
-    g0 = gen0_candidates()
-    # Subsequent generations: mutate top-2 parents → assume ~16 new cands per prompt/temp
-    # Simplified: each extra generation adds another gen0-sized cohort (upper bound).
-    n_cand = g0 * max(args.generations, 1)
-    # Target floor from prompt: >=300 candidates × 3 seeds per env
-    n_cand = max(n_cand, 300)
+    jobs_run = args.n_per_gen * args.generations * args.seeds
+    # Active now: 2D only. Other envs are reference estimates for later user go-ahead.
+    active = wall_hours(jobs_run * args.runs_2d, "2d", args.workers)
+    active["n_runs"] = args.runs_2d
+    active["jobs_per_run"] = jobs_run
+    active["candidates_per_run"] = args.n_per_gen * args.generations
+    active["status"] = "active_now"
 
-    lin = lineages_for_gate2()
-    # One lineage per generation-0 (prompt, temperature, slot) family of mutations.
-    # Conservative: need at least lin['total_lineages_needed'] distinct lineages.
-    n_lineages = max(lin["total_lineages_needed"], N_PROMPTS * len(TEMPERATURES))
+    later = []
+    for env in ("irsim", "crowdnav"):
+        c = wall_hours(jobs_run * N_RUNS_OTHER, env, args.workers)
+        c["n_runs"] = N_RUNS_OTHER
+        c["jobs_per_run"] = jobs_run
+        c["candidates_per_run"] = args.n_per_gen * args.generations
+        c["status"] = "deferred_until_user_go_ahead_after_2d_review"
+        later.append(c)
 
-    envs = ["2d", "irsim", "crowdnav"]
-    costs = [wall_hours(n_cand, e, n_workers=args.workers) for e in envs]
     payload = {
         "design": {
-            "n_prompts": N_PROMPTS,
-            "temperatures": list(TEMPERATURES),
-            "n_per_prompt_temp_gen0": N_PER_PROMPT_TEMP,
-            "gen0_candidates": g0,
+            "n_per_generation": args.n_per_gen,
             "generations": args.generations,
-            "candidates_per_env_target": n_cand,
-            "seeds": N_SEEDS,
-            "held_out_prompts": HELD_OUT_PROMPTS,
+            "seeds": args.seeds,
+            "jobs_per_run": jobs_run,
+            "candidates_per_run": args.n_per_gen * args.generations,
+            "mode": "train-all / off warm-up (labels produced by the run)",
+            "no_cross_env_transfer": True,
+            "one_env_at_a_time": True,
+            "active_env": "2d",
+            "llm": {"provider": "xai", "model": "grok-4.3"},
+            "isolation": "docker",
+            "workers": args.workers,
+            "runs_2d_for_gate2_ci": args.runs_2d,
+            "policy": (
+                "Run 2D to completion and review results before starting another env. "
+                "Do not auto-chain CrowdNav++ or IR-SIM."
+            ),
         },
-        "lineages_gate2": {**lin, "planned_lineages": n_lineages},
-        "costs": costs,
-        "total_wall_hours_parallel_all_envs": round(
-            sum(c["wall_hours_parallel"] for c in costs), 2
-        ),
+        "active_now": active,
+        "deferred_reference": later,
+        "active_wall_hours_parallel": active["wall_hours_parallel"],
     }
     args.json_out.parent.mkdir(parents=True, exist_ok=True)
     args.json_out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     lines = [
-        "# Phase 4 sizing (no PPO launched)",
+        "# Phase 4 sizing (live runs; no separate dataset)",
         "",
-        "Computed by `scripts/estimate_phase4_cost.py`. Reference CrowdNav job time:",
-        f"{REF_MIN_PER_JOB['crowdnav']} min/job at 150k steps (v5).",
+        "Computed by `scripts/estimate_phase4_cost.py`. Labels are a by-product of each",
+        "live pipeline run (train-all / off warm-up). No cross-environment transfer.",
         "",
-        "## Candidate design",
+        "## Policy: one environment at a time",
         "",
-        f"- Prompts: {N_PROMPTS}; temperatures: {list(TEMPERATURES)}; gen0 size per (prompt,T): {N_PER_PROMPT_TEMP}",
-        f"- Generation-0 candidates: **{g0}**",
-        f"- Generations planned: **{args.generations}** → target candidates/env: **{n_cand}** (≥300 floor)",
-        f"- Seeds/candidate: **{N_SEEDS}** → jobs/env: **{n_cand * N_SEEDS}**",
+        "1. Run **2D** to completion (including repeated runs for Gate 2 CIs).",
+        "2. Review results with the user.",
+        "3. Only then start **CrowdNav++** or **IR-SIM** from scratch — never auto-chain.",
         "",
-        "## Lineages for Gate 2 (≥20 held-out)",
+        "## Runtime choices",
         "",
-        f"- Held-out fraction: {HELD_OUT_LINEAGE_FRAC:.0%}",
-        f"- Total lineages needed: **{lin['total_lineages_needed']}**",
-        f"- Held-out lineages: **{lin['held_out_lineages']}**; train: **{lin['train_lineages']}**",
-        f"- Planned lineages (≥ prompts×temps): **{n_lineages}**",
-        f"- Also hold out **{HELD_OUT_PROMPTS}** prompts in `SPLITS.json`",
+        "- LLM: **xAI / grok-4.3** (VERIFY exact API model id at client wiring)",
+        "- Isolation: **Docker**",
+        f"- Workers: **{args.workers}**",
         "",
-        "## Wall-hour estimates",
+        "## One live run (train-all)",
         "",
-        f"Workers assumed: **{args.workers}**.",
+        f"- N={args.n_per_gen} candidates/generation × G={args.generations} × seeds={args.seeds}",
+        f"- Candidates/run: **{args.n_per_gen * args.generations}**; jobs/run: **{jobs_run}**",
         "",
-        "| env | candidates | jobs | min/job | wall-h serial | wall-h parallel |",
-        "| --- | ---: | ---: | ---: | ---: | ---: |",
+        "## Active now: 2D",
+        "",
+        f"- Independent runs for Gate 2 CIs: **{args.runs_2d}**",
+        f"- Jobs: **{active['n_jobs']}**",
+        f"- Wall-hours @ {args.workers} workers: **{active['wall_hours_parallel']}** parallel "
+        f"({active['wall_hours_serial']} serial)",
+        "",
+        "## Deferred (reference only — do not launch until user go-ahead)",
+        "",
+        "| env | runs | jobs | min/job | wall-h parallel |",
+        "| --- | ---: | ---: | ---: | ---: |",
     ]
-    for c in costs:
+    for c in later:
         lines.append(
-            f"| {c['env']} | {c['n_candidates']} | {c['n_jobs']} | {c['min_per_job']} | "
-            f"{c['wall_hours_serial']} | {c['wall_hours_parallel']} |"
+            f"| {c['env']} | {c['n_runs']} | {c['n_jobs']} | {c['min_per_job']} | "
+            f"{c['wall_hours_parallel']} |"
         )
     lines += [
-        "",
-        f"**Total parallel wall-hours (all envs, sequential envs):** "
-        f"{payload['total_wall_hours_parallel_all_envs']}",
-        "",
-        "Env order: 2D → IR-SIM → CrowdNav++.",
         "",
         "## Notes",
         "",
         "- Dry-run / `--max-jobs 1` pilots only until the user launches full labeling.",
-        "- Audit quota (10% of Tier-0 rejects) adds a small job overhead not counted above.",
+        "- Audit sample (~15% after active) adds a small overhead not counted above.",
         f"- Machine-readable copy: `{args.json_out.relative_to(ROOT).as_posix()}`",
         "",
     ]
