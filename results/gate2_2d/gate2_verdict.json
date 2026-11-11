@@ -1,0 +1,38 @@
+{
+  "census": {
+    "run_ids": [
+      "phase6_2d_r1b",
+      "phase6_2d_r2",
+      "phase6_2d_r3"
+    ],
+    "n_labeled": 102,
+    "n_lineages": 48,
+    "lineage_size_min": 1,
+    "lineage_size_max": 15,
+    "n_lineages_size_ge_16": 0,
+    "within_lineage_N16_possible": false,
+    "feature_set": "early+math+behavioral",
+    "use_prior": true
+  },
+  "gate": {
+    "threshold_1_recall_ge_0_80": false,
+    "threshold_2_median_regret_le_0_03": true,
+    "threshold_3_delta_recall_ci_excludes_0": false,
+    "threshold_4_savings_ge_0_40": true,
+    "n_lineages": 48,
+    "ge_20_lineages": true,
+    "verdict": "FAIL",
+    "recall_at_k_mean": 0.5595,
+    "regret_at_k_median": 0.0,
+    "recall_minus_random_lo": -0.07499999999999996,
+    "recall_minus_random_hi": 0.675,
+    "recall_minus_random_mean": 0.25739999999999996,
+    "savings_frac": 0.4475,
+    "held_out_lineages_for_ci": 48,
+    "ci_mode": "lineage_bootstrap_via_family_ci_mode",
+    "n_pools": 2000,
+    "n_boot": 1000,
+    "operating_k8_savings_frac_report_only": 0.26,
+    "formula_k5_savings_frac": 0.4475
+  }
+}

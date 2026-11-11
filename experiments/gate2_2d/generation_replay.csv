@@ -1,0 +1,13 @@
+run_id,generation,n_labeled_in_gen,k,recall_at_k,regret_at_k,note
+phase6_2d_r1b,1,9,5,0.0,0.0,labeled_only_exploratory
+phase6_2d_r1b,1,9,4,0.0,0.0,labeled_only_exploratory
+phase6_2d_r1b,2,9,5,0.0,0.004166666666666541,labeled_only_exploratory
+phase6_2d_r1b,2,9,4,0.0,0.029166666666666563,labeled_only_exploratory
+phase6_2d_r2,1,9,5,1.0,0.0,labeled_only_exploratory
+phase6_2d_r2,1,9,4,1.0,0.0,labeled_only_exploratory
+phase6_2d_r2,2,9,5,0.0,0.018750000000000155,labeled_only_exploratory
+phase6_2d_r2,2,9,4,0.0,0.018750000000000155,labeled_only_exploratory
+phase6_2d_r3,1,9,5,0.0,0.012500000000000067,labeled_only_exploratory
+phase6_2d_r3,1,9,4,0.0,0.012500000000000067,labeled_only_exploratory
+phase6_2d_r3,2,9,5,1.0,0.0,labeled_only_exploratory
+phase6_2d_r3,2,9,4,1.0,0.0,labeled_only_exploratory

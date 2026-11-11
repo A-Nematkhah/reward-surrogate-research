@@ -1,0 +1,15 @@
+{
+  "run_ids": [
+    "phase6_2d_r1b",
+    "phase6_2d_r2",
+    "phase6_2d_r3"
+  ],
+  "n_labeled": 102,
+  "n_lineages": 48,
+  "lineage_size_min": 1,
+  "lineage_size_max": 15,
+  "n_lineages_size_ge_16": 0,
+  "within_lineage_N16_possible": false,
+  "feature_set": "early+math+behavioral",
+  "use_prior": true
+}

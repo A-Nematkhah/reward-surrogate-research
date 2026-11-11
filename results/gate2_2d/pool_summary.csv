@@ -1,0 +1,4 @@
+N,k,n_groups_requested,selector,n_pools,ci_mode,n_families_total,n_boot,held_out_groups_threshold_met,recall_at_k_mean,regret_at_k_mean,regret_at_k_median,savings_frac,recall_at_k_mean_lo,recall_at_k_mean_hi,regret_at_k_median_lo,regret_at_k_median_hi,recall_minus_random_mean,recall_minus_random_lo,recall_minus_random_hi
+16,5,1,surrogate,2000.0,family,48,1000,False,0.5595,0.0048968749999999985,0.0,0.4475,0.3,1.0,0.0,0.012500000000000067,0.25739999999999996,-0.07499999999999996,0.675
+16,5,1,random,2000.0,family,48,1000,False,0.295,0.020740625000000002,0.01041666666666663,0.4475,0.175,0.475,0.0,0.01874999999999999,,,
+16,5,1,oracle,2000.0,family,48,1000,False,1.0,0.0,0.0,0.4475,1.0,1.0,0.0,0.0,,,
