@@ -17,6 +17,7 @@ if str(ROOT) not in sys.path:
 from reward_triage.host_loop import LoopConfig, run_loop  # noqa: E402
 from reward_triage.labeling import load_default_configs  # noqa: E402
 from reward_triage.llm_client import make_llm_client  # noqa: E402
+from reward_triage.model import SurrogateModel  # noqa: E402
 
 TASK_2D = (
     "2D continuous navigation: a disk robot moves in a bounded workspace with "
@@ -59,6 +60,25 @@ def main() -> int:
     p.add_argument("--model", type=str, default=None)
     p.add_argument("--no-early", action="store_true", help="Disable early feature collection")
     p.add_argument(
+        "--surrogate",
+        type=Path,
+        default=None,
+        help="Path to Phase-5 artifact dir (model.joblib); enables active filtering after m_min",
+    )
+    p.add_argument("--m-min", type=int, default=None)
+    p.add_argument("--n-generations", type=int, default=None)
+    p.add_argument("--n-per-generation", type=int, default=None)
+    p.add_argument(
+        "--no-adapt",
+        action="store_true",
+        help="Disable per-generation surrogate adapt",
+    )
+    p.add_argument(
+        "--no-adapt-prior",
+        action="store_true",
+        help="Adapt only on this run's labels (no phase1_108 prior blend)",
+    )
+    p.add_argument(
         "--print-real-ppo-cmd",
         action="store_true",
         help="Print pilot commands and exit",
@@ -93,17 +113,28 @@ def main() -> int:
     )
 
     store_path = ROOT / "experiments" / run_id / "label_store.jsonl"
+    surrogate = None
+    if args.surrogate is not None:
+        surrogate = SurrogateModel.load(args.surrogate)
+        print(f"loaded surrogate from {args.surrogate} (n_train={surrogate.meta.n_train if surrogate.meta else '?'})")
+
     loop_cfg = LoopConfig(
         run_id=run_id,
         env_id=str(cfg_raw.get("env_id", "RewardNavigation2D-v0")),
         env_config_id=str(cfg_raw.get("env_config_id", "2d")),
         host=str(cfg_raw.get("host", "mini_host")),
-        n_per_generation=int(cfg_raw.get("n_per_generation", 16)),
-        n_generations=int(cfg_raw.get("n_generations", 3)),
+        n_per_generation=int(
+            args.n_per_generation
+            if args.n_per_generation is not None
+            else cfg_raw.get("n_per_generation", 16)
+        ),
+        n_generations=int(
+            args.n_generations if args.n_generations is not None else cfg_raw.get("n_generations", 3)
+        ),
         n_seeds=int(cfg_raw.get("n_seeds", 3)),
         seeds=tuple(int(s) for s in (cfg_raw.get("seeds") or [0, 1, 2])),
         mode=_coerce_mode(args.mode if args.mode is not None else cfg_raw.get("mode", "off")),
-        m_min=int(cfg_raw.get("m_min", 24)),
+        m_min=int(args.m_min if args.m_min is not None else cfg_raw.get("m_min", 24)),
         k_frac=float(cfg_raw.get("k_frac", 0.5)),
         audit_frac=float(cfg_raw.get("audit_frac", 0.15)),
         temperature=float(cfg_raw.get("temperature", 0.7)),
@@ -118,6 +149,9 @@ def main() -> int:
         env_config=env_config,
         ppo_config=ppo_config,
         eval_config=eval_config,
+        surrogate=surrogate,
+        auto_adapt=not args.no_adapt,
+        adapt_use_prior=not args.no_adapt_prior,
     )
 
     client = make_llm_client(provider, model)

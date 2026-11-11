@@ -10,10 +10,16 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Literal
 
+import numpy as np
+
+from reward_triage.adapt import adapt_after_generation
+from reward_triage.feature_matrix import vectorize_record
 from reward_triage.llm_client import LLMClient, LLMResponse
+from reward_triage.model import SurrogateModel
 from reward_triage.pipeline import triage_candidate
 from reward_triage.probes import load_probe_npz
-from reward_triage.schema import CandidateRecord
+from reward_triage.schema import CandidateRecord, Prediction
+from reward_triage.select import select_candidates
 from reward_triage.store import (
     LabelStore,
     ModeName,
@@ -53,6 +59,9 @@ class LoopConfig:
     env_config: dict[str, Any] | None = None
     ppo_config: dict[str, Any] | None = None
     eval_config: dict[str, Any] | None = None
+    surrogate: SurrogateModel | None = None
+    auto_adapt: bool = True
+    adapt_use_prior: bool = True
 
 
 def code_hash(code: str) -> str:
@@ -238,21 +247,56 @@ def run_generation(
         hashes.append(fhash)
         hard.append(is_hard_reject(report))
 
-    # No surrogate yet in Phase 4 warm-up: scores None → off trains all.
-    scores: list[float | None] = [None] * len(candidates)
-    decisions = select_decisions(
-        len(candidates),
-        mode=mode,
-        k_frac=cfg.k_frac,
-        audit_frac=cfg.audit_frac,
-        hard_reject=hard,
-        scores=scores,
-    )
+    # Selection: off/shadow train-all; active uses surrogate top-k when available.
+    pred_list: list[Prediction | None] = [None] * len(candidates)
+    if mode == "active" and cfg.surrogate is not None and labeled_so_far >= cfg.m_min:
+        X_rows = []
+        for feats in features_list:
+            stub = StoreRecord(
+                candidate=candidates[0],
+                tier0=reports[0],
+                features=feats,
+                feature_hash=None,
+                selection=SelectionLog(
+                    score=None, probability=0.0, decision="skip", mode=mode
+                ),
+                labels=[],
+            )
+            X_rows.append(vectorize_record(stub, cfg.surrogate.feature_cols))
+        X = np.asarray(X_rows, dtype=float)
+        pred_list = list(
+            cfg.surrogate.predict_rows(X, feature_hashes=[h or "" for h in hashes])
+        )
+        selected = select_candidates(
+            pred_list,
+            hard_reject=hard,
+            k_frac=cfg.k_frac,
+            audit_frac=cfg.audit_frac,
+        )
+        decision_tuples = [
+            (s.decision, s.probability, s.reasons) for s in selected
+        ]
+    else:
+        scores: list[float | None] = [None] * len(candidates)
+        decision_tuples = select_decisions(
+            len(candidates),
+            mode=mode if mode != "active" else "off",
+            k_frac=cfg.k_frac,
+            audit_frac=cfg.audit_frac,
+            hard_reject=hard,
+            scores=scores,
+        )
 
     records: list[StoreRecord] = []
     jobs_used = 0
-    for cand, report, feats, fhash, (decision, prob, reasons) in zip(
-        candidates, reports, features_list, hashes, decisions, strict=True
+    for cand, report, feats, fhash, (decision, prob, reasons), pred in zip(
+        candidates,
+        reports,
+        features_list,
+        hashes,
+        decision_tuples,
+        pred_list,
+        strict=True,
     ):
         labels: list[SeedLabel] = []
         do_label = decision in ("train", "audit")
@@ -310,7 +354,7 @@ def run_generation(
             features=merged_feats,
             feature_hash=fhash,
             selection=SelectionLog(
-                score=None,
+                score=None if pred is None else float(pred.mean),
                 probability=prob,
                 decision=decision,  # type: ignore[arg-type]
                 mode=mode,
@@ -347,10 +391,14 @@ def run_loop(
     all_records: list[StoreRecord] = []
     labeled = 0
     parents: list[StoreRecord] = []
+    adapt_log: list[dict[str, Any]] = []
     t0 = time.time()
     job_budget = cfg.max_jobs
+    live_cfg = cfg
     for g in range(cfg.n_generations):
-        gen_cfg = replace(cfg, max_jobs=None if job_budget is None else max(0, job_budget))
+        gen_cfg = replace(
+            live_cfg, max_jobs=None if job_budget is None else max(0, job_budget)
+        )
         template = prompt_gen0 if g == 0 else prompt_mutate
         result = run_generation(
             gen_cfg,
@@ -369,6 +417,25 @@ def run_loop(
             job_budget -= result.n_train_jobs
         parents = _best_parents(result.records, k=2)
 
+        # Online adapt: retrain surrogate after each generation with new labels.
+        if (
+            live_cfg.auto_adapt
+            and live_cfg.surrogate is not None
+            and any(r.labels for r in result.records)
+        ):
+            adapt_dir = store_path.parent / "surrogate"
+            info = adapt_after_generation(
+                live_cfg.surrogate,
+                all_records,
+                out_dir=adapt_dir,
+                generation=g,
+                use_prior=live_cfg.adapt_use_prior,
+            )
+            adapt_log.append(info)
+            if info.get("adapted"):
+                # Next generation uses the updated in-memory model.
+                live_cfg = replace(live_cfg, surrogate=live_cfg.surrogate)
+
     errors = validate_store(all_records)
     summary = {
         "run_id": cfg.run_id,
@@ -381,6 +448,7 @@ def run_loop(
         "validation_errors": errors,
         "wall_time_s": round(time.time() - t0, 3),
         "mode": cfg.mode,
+        "adapt_log": adapt_log,
     }
     summary_path = store_path.parent / "run_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
