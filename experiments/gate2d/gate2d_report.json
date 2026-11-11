@@ -1,0 +1,1621 @@
+{
+  "EXPLORATORY": true,
+  "gate2_verdict_unchanged": "FAIL",
+  "push_status_item0": "experiments/gate2b_diagnostics and experiments/gate2c_harness already on origin/main as of commit 7dc160a",
+  "ablations_codehash": {
+    "early+math+behavioral": {
+      "EXPLORATORY": true,
+      "n_deduped": 69,
+      "slices": {
+        "gen0": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_candidates": 16,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 1.0,
+          "surrogate_regret_at_5_median": 0.0,
+          "random_recall_at_5_same_pools": 0.2966666666666667,
+          "random_regret_at_5_median": 0.04583333333333339,
+          "delta_recall_s_minus_r": 0.7033333333333334,
+          "mean_share_gen0": 1.0,
+          "mean_share_plateau": 0.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "gen0_eps": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 1.0,
+          "eps_recall_1SE_random": 0.32,
+          "eps_recall_0p02_surrogate": 1.0,
+          "eps_recall_0p02_random": 0.32,
+          "hard_recall_surrogate": 1.0,
+          "hard_recall_random": 0.32
+        },
+        "plateau": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_candidates": 53,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 0.38,
+          "surrogate_regret_at_5_median": 0.004166666666666652,
+          "random_recall_at_5_same_pools": 0.31,
+          "random_regret_at_5_median": 0.008333333333333304,
+          "delta_recall_s_minus_r": 0.07,
+          "mean_share_gen0": 0.0,
+          "mean_share_plateau": 1.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "plateau_eps": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 0.7033333333333334,
+          "eps_recall_1SE_random": 0.5833333333333334,
+          "eps_recall_0p02_surrogate": 0.8316666666666667,
+          "eps_recall_0p02_random": 0.7516666666666667,
+          "hard_recall_surrogate": 0.37833333333333335,
+          "hard_recall_random": 0.3283333333333333
+        }
+      },
+      "pooled_claim": "FORBIDDEN \u2014 gen0 and plateau reported separately only"
+    },
+    "math+behavioral": {
+      "EXPLORATORY": true,
+      "n_deduped": 69,
+      "slices": {
+        "gen0": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_candidates": 16,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 1.0,
+          "surrogate_regret_at_5_median": 0.0,
+          "random_recall_at_5_same_pools": 0.33,
+          "random_regret_at_5_median": 0.04583333333333339,
+          "delta_recall_s_minus_r": 0.6699999999999999,
+          "mean_share_gen0": 1.0,
+          "mean_share_plateau": 0.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "gen0_eps": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 1.0,
+          "eps_recall_1SE_random": 0.32,
+          "eps_recall_0p02_surrogate": 1.0,
+          "eps_recall_0p02_random": 0.32,
+          "hard_recall_surrogate": 1.0,
+          "hard_recall_random": 0.32
+        },
+        "plateau": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_candidates": 53,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 0.375,
+          "surrogate_regret_at_5_median": 0.004166666666666541,
+          "random_recall_at_5_same_pools": 0.2833333333333333,
+          "random_regret_at_5_median": 0.008333333333333415,
+          "delta_recall_s_minus_r": 0.09166666666666667,
+          "mean_share_gen0": 0.0,
+          "mean_share_plateau": 1.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "plateau_eps": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 0.7016666666666667,
+          "eps_recall_1SE_random": 0.5833333333333334,
+          "eps_recall_0p02_surrogate": 0.8333333333333334,
+          "eps_recall_0p02_random": 0.7516666666666667,
+          "hard_recall_surrogate": 0.37833333333333335,
+          "hard_recall_random": 0.3283333333333333
+        }
+      },
+      "pooled_claim": "FORBIDDEN \u2014 gen0 and plateau reported separately only"
+    },
+    "early": {
+      "EXPLORATORY": true,
+      "n_deduped": 69,
+      "slices": {
+        "gen0": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_candidates": 16,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 1.0,
+          "surrogate_regret_at_5_median": 0.0,
+          "random_recall_at_5_same_pools": 0.33,
+          "random_regret_at_5_median": 0.04583333333333339,
+          "delta_recall_s_minus_r": 0.6699999999999999,
+          "mean_share_gen0": 1.0,
+          "mean_share_plateau": 0.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "gen0_eps": {
+          "EXPLORATORY": true,
+          "slice": "gen0",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 1.0,
+          "eps_recall_1SE_random": 0.32,
+          "eps_recall_0p02_surrogate": 1.0,
+          "eps_recall_0p02_random": 0.32,
+          "hard_recall_surrogate": 1.0,
+          "hard_recall_random": 0.32
+        },
+        "plateau": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_candidates": 53,
+          "n_pools": 600,
+          "surrogate_recall_at_5": 0.25,
+          "surrogate_regret_at_5_median": 0.008333333333333304,
+          "random_recall_at_5_same_pools": 0.3333333333333333,
+          "random_regret_at_5_median": 0.008333333333333304,
+          "delta_recall_s_minus_r": -0.08333333333333331,
+          "mean_share_gen0": 0.0,
+          "mean_share_plateau": 1.0,
+          "mean_n_groups_realized": 16.0
+        },
+        "plateau_eps": {
+          "EXPLORATORY": true,
+          "slice": "plateau",
+          "n_pools": 600,
+          "eps_recall_1SE_surrogate": 0.62,
+          "eps_recall_1SE_random": 0.5833333333333334,
+          "eps_recall_0p02_surrogate": 0.7466666666666667,
+          "eps_recall_0p02_random": 0.7516666666666667,
+          "hard_recall_surrogate": 0.25333333333333335,
+          "hard_recall_random": 0.3283333333333333
+        }
+      },
+      "pooled_claim": "FORBIDDEN \u2014 gen0 and plateau reported separately only"
+    }
+  },
+  "random_gap_explanation": {
+    "EXPLORATORY": true,
+    "gate2c_pooled_surrogate_recall": 0.493,
+    "simple_uniform": {
+      "EXPLORATORY": true,
+      "n_unique": 69,
+      "analytic_random_k_recall": 0.3125,
+      "mc_random_k_recall": 0.31833333333333336,
+      "note": "Uniform pools of N=16 from M distinct candidates: random-k recall = k/N = 5/16 = 0.3125, independent of M when sampling without replacement then picking k uniformly."
+    },
+    "composition_note": "Gate 2c pooled recall 0.493 mixes gen0+plateau under code_hash folds with expand_groups pool draws (often multi-hash pools). Simple random-k on a uniform N=16 pool has analytic recall k/N=5/16=0.3125. The ~0.18 gap is surrogate skill vs chance on mixed pools \u2014 NOT evidence for a confirmatory claim (EXPLORATORY; leakage-fixed but still selection-biased on plateau). Gen0-only N=16 with 16 hashes is degenerate (share_gen0=1)."
+  },
+  "counterfactual_steps_to_target": {
+    "train_all": {
+      "EXPLORATORY": true,
+      "n_points": 102,
+      "final_best_success": 0.8395833333333332,
+      "final_cum_steps": 15300000,
+      "curve": [
+        {
+          "cum_steps": 150000,
+          "best_success": 0.029166666666666664,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 450000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 750000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1050000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1350000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1650000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1950000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2250000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2550000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2850000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3150000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3450000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4050000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4350000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4650000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4950000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 5250000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5550000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5850000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6150000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6450000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6750000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7050000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7350000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7650000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7950000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 8250000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 8550000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 8850000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 9150000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 9450000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 9750000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 10050000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 10350000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 10650000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 10950000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 11250000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 11550000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 11850000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 12150000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 12450000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 12750000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 13050000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 13350000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 13650000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 13950000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 14250000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 14550000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 14850000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 15150000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        }
+      ],
+      "curve_full_len": 102
+    },
+    "plus_label_cache": {
+      "EXPLORATORY": true,
+      "n_points": 102,
+      "final_best_success": 0.8395833333333332,
+      "final_cum_steps": 10350000,
+      "curve": [
+        {
+          "cum_steps": 150000,
+          "best_success": 0.029166666666666664,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 450000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 750000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1050000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1350000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1650000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1950000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2250000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2550000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2850000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3150000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3450000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4050000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4350000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4650000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4950000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5250000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5550000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5850000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6150000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6450000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6750000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7050000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7350000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7650000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7950000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8250000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8400000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8700000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9000000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9300000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9600000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9900000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 10200000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        }
+      ],
+      "curve_full_len": 102
+    },
+    "plus_plateau_stop": {
+      "EXPLORATORY": true,
+      "n_points": 75,
+      "final_best_success": 0.8270833333333334,
+      "final_cum_steps": 6300000,
+      "curve": [
+        {
+          "cum_steps": 150000,
+          "best_success": 0.029166666666666664,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 300000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 450000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 600000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 750000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 900000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1050000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1200000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1350000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1500000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1650000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1800000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1950000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2100000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2250000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2400000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2550000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2700000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2850000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3000000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3150000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3300000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3450000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3600000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 3900000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4050000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4200000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4350000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4500000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4650000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4800000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 4950000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8270833333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5250000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5400000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5550000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5700000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5700000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 5850000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 6000000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 6150000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 6300000,
+          "best_success": 0.8270833333333334,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        }
+      ],
+      "curve_full_len": 75
+    },
+    "plus_filter": {
+      "EXPLORATORY": true,
+      "n_points": 102,
+      "final_best_success": 0.8395833333333332,
+      "final_cum_steps": 10350000,
+      "curve": [
+        {
+          "cum_steps": 150000,
+          "best_success": 0.029166666666666664,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 450000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 750000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1050000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1350000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1650000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 1950000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2250000,
+          "best_success": 0.7958333333333334,
+          "generation": 0,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2550000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 2850000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3150000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3450000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 3750000,
+          "best_success": 0.81875,
+          "generation": 1,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4050000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4350000,
+          "best_success": 0.81875,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4650000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 4950000,
+          "best_success": 0.8354166666666667,
+          "generation": 2,
+          "run_id": "phase6_2d_r1b"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5100000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5250000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5550000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 5850000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6150000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6450000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 6750000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7050000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7350000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7650000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r2"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7800000,
+          "best_success": 0.8395833333333332,
+          "generation": 0,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 7950000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8250000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8400000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 8700000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9000000,
+          "best_success": 0.8395833333333332,
+          "generation": 1,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9300000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9600000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 9900000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        },
+        {
+          "cum_steps": 10200000,
+          "best_success": 0.8395833333333332,
+          "generation": 2,
+          "run_id": "phase6_2d_r3"
+        }
+      ],
+      "curve_full_len": 102
+    },
+    "caveats": [
+      "All labels treated as observed; skipped candidates have no labels \u2014 train-all is incomplete vs a true train-all.",
+      "Final picks need independent re-evaluation (not done here).",
+      "Policies were not saved in these runs; future runs must save final policies.",
+      "Plateau stop: halt further generations after one gen with no improvement beyond 2 SE of the running best (using gen0 median SE).",
+      "Label cache: duplicate code_hash costs 0 steps and reuses the observed label.",
+      "Filter: only selection.decision in {train, audit}."
+    ],
+    "EXPLORATORY": true
+  },
+  "real_llm_pilot_plan": {
+    "EXPLORATORY": true,
+    "do_not_run_in_this_phase": true,
+    "plan": [
+      "One run only: N=16 \u00d7 G=3 \u00d7 3 seeds, env=2D, run_id=phase6d_xai_pilot1.",
+      "Provider xAI with verified model id (prereg: grok-4.3 \u2014 VERIFY before launch).",
+      "Requires XAI_API_KEY; until then keep --provider local.",
+      "Temperature \u2265 0.9 (higher than 0.7 campaign) for diversity.",
+      "Mutation prompt: require novelty vs parents (explicit diversity constraint / reject near-duplicates by code_hash or mb NN).",
+      "Use run_id-dependent seeds (default); enable label cache.",
+      "Save final policies (model.zip already written under runs/; also snapshot best-of-run policy path in run_summary).",
+      "Independent re-eval of final pick on held-out eval seeds before any claim.",
+      "Pilot only with --max-jobs 1 first; full pilot needs explicit user go-ahead.",
+      "New prereg required before treating pilot as confirmatory."
+    ]
+  }
+}
