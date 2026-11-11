@@ -14,6 +14,9 @@ import numpy as np
 
 from reward_triage.adapt import adapt_after_generation
 from reward_triage.feature_matrix import vectorize_record
+from reward_triage.gate2_harness import seeds_for_run
+from reward_triage.label_cache import LabelCache
+from reward_triage.labeling import label_code_candidate_seeds
 from reward_triage.llm_client import LLMClient, LLMResponse
 from reward_triage.model import SurrogateModel
 from reward_triage.pipeline import triage_candidate
@@ -62,6 +65,8 @@ class LoopConfig:
     surrogate: SurrogateModel | None = None
     auto_adapt: bool = True
     adapt_use_prior: bool = True
+    label_cache: LabelCache | None = None
+    use_run_id_seeds: bool = True
 
 
 def code_hash(code: str) -> str:
@@ -307,34 +312,53 @@ def run_generation(
                 reasons = list(reasons) + ["max_jobs_cap"]
                 do_label = False
             else:
-                n_seed_jobs = len(cfg.seeds)
+                seed_pool = (
+                    seeds_for_run(cfg.run_id, n_seeds=cfg.n_seeds)
+                    if cfg.use_run_id_seeds
+                    else cfg.seeds
+                )
                 if cfg.max_jobs is not None:
                     remaining = cfg.max_jobs - jobs_used
-                    seeds = list(cfg.seeds)[: max(0, remaining)]
+                    seeds = list(seed_pool)[: max(0, remaining)]
                 else:
-                    seeds = list(cfg.seeds)
+                    seeds = list(seed_pool)
                 if cfg.dry_run:
                     labels = mock_seed_labels(
                         seeds, timesteps=cfg.ppo_timesteps, digest=cand.code_hash
                     )
                 else:
-                    from reward_triage.labeling import label_code_candidate_seeds
-
                     if cfg.env_config is None or cfg.ppo_config is None or cfg.eval_config is None:
                         raise RuntimeError(
                             "Real labeling requires env_config, ppo_config, and eval_config"
                         )
-                    labels = label_code_candidate_seeds(
-                        code=cand.code,
-                        candidate_id=cand.candidate_id,
-                        seeds=seeds,
-                        run_root=Path(cfg.experiments_root) / cfg.run_id / "runs",
-                        env_config=cfg.env_config,
-                        ppo_config=cfg.ppo_config,
-                        eval_config=cfg.eval_config,
-                        family_id=str(cand.llm_meta.get("family", "local")),
-                        enable_early=cfg.enable_early,
+                    cached = (
+                        None
+                        if cfg.label_cache is None
+                        else cfg.label_cache.get(cand.code_hash)
                     )
+                    if cached is not None:
+                        labels = cached
+                        reasons = list(reasons) + [
+                            f"label_cache_hit_saved_steps={sum(int(l.train_steps) for l in labels)}"
+                        ]
+                    else:
+                        labels = label_code_candidate_seeds(
+                            code=cand.code,
+                            candidate_id=cand.candidate_id,
+                            seeds=seeds,
+                            run_root=Path(cfg.experiments_root) / cfg.run_id / "runs",
+                            env_config=cfg.env_config,
+                            ppo_config=cfg.ppo_config,
+                            eval_config=cfg.eval_config,
+                            family_id=str(cand.llm_meta.get("family", "local")),
+                            enable_early=cfg.enable_early,
+                        )
+                        if cfg.label_cache is not None and labels:
+                            cfg.label_cache.put(
+                                cand.code_hash,
+                                labels,
+                                meta={"run_id": cfg.run_id, "candidate_id": cand.candidate_id},
+                            )
                 jobs_used += len(seeds)
 
         # Merge mean early_* into feature vector when present (early+math+behavioral).
@@ -449,6 +473,14 @@ def run_loop(
         "wall_time_s": round(time.time() - t0, 3),
         "mode": cfg.mode,
         "adapt_log": adapt_log,
+        "label_cache_stats": (
+            None if live_cfg.label_cache is None else live_cfg.label_cache.stats()
+        ),
+        "seeds": list(
+            seeds_for_run(live_cfg.run_id, n_seeds=live_cfg.n_seeds)
+            if live_cfg.use_run_id_seeds
+            else live_cfg.seeds
+        ),
     }
     summary_path = store_path.parent / "run_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")

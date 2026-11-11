@@ -1,0 +1,80 @@
+{
+  "EXPLORATORY": true,
+  "gate2_verdict_unchanged": "FAIL",
+  "leakage_census": {
+    "n_labeled_rows": 102,
+    "n_unique_code_hash": 69,
+    "n_hashes_with_multi_rows": 17,
+    "EXPLORATORY_NOTE": "Gate2 lineage-only folds allowed same code_hash in train and test across runs"
+  },
+  "pooled_deduped": {
+    "recall_at_k_mean": 0.4925,
+    "regret_at_k_median": 0.0,
+    "spearman_oof": 0.6968002821473802,
+    "n": 69,
+    "n_folds": 69
+  },
+  "gen0_pools": {
+    "recall_at_k_mean": 1.0,
+    "regret_at_k_median": 0.0,
+    "spearman_oof": 0.7323529411764707,
+    "n": 16,
+    "n_folds": 16,
+    "spearman": 0.7323529411764707
+  },
+  "plateau_pools": {
+    "recall_at_k_mean": 0.365,
+    "regret_at_k_median": 0.004166666666666541,
+    "spearman_oof": 0.3893092138360697,
+    "n": 53,
+    "n_folds": 53,
+    "spearman": 0.3893092138360697
+  },
+  "novelty_skip": {
+    "EXPLORATORY": true,
+    "threshold_cv": 0.0,
+    "cv_grid": [
+      {
+        "thr": 0.0,
+        "mean_abs_err_se": 0.0,
+        "skip_rate": 0.2361904761904762
+      },
+      {
+        "thr": 3.814697265625e-06,
+        "mean_abs_err_se": 0.0,
+        "skip_rate": 0.2957142857142857
+      },
+      {
+        "thr": 0.03051707243500397,
+        "mean_abs_err_se": 0.08944428717837334,
+        "skip_rate": 0.4633333333333334
+      }
+    ],
+    "skip_rate": 0.28431372549019607,
+    "n_skipped": 29,
+    "label_error_mean_se_units": 0.0,
+    "label_error_median_se_units": 0.0
+  },
+  "noise_aware_metrics": {
+    "EXPLORATORY": true,
+    "eps_recall_at_5_surrogate": 0.986,
+    "perfect_scorer_recall_under_noise": 0.951
+  },
+  "seeds_for_run_examples": {
+    "phase6_2d_r1b": [
+      871806425,
+      25110619,
+      1671963997
+    ],
+    "phase6_2d_r2": [
+      558773587,
+      1459401282,
+      1438607364
+    ],
+    "phase6_2d_r3": [
+      276779836,
+      290306196,
+      1260952376
+    ]
+  }
+}

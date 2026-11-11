@@ -1,6 +1,9 @@
 # Gate 2 report — lineage-grouped 2D triage viability
 
-**Verdict: FAIL**
+**Verdict: FAIL** (frozen thresholds unchanged)
+
+**INVALID FOR INFERENCE: duplicate-code leakage + plateau.**  
+The original LOLO used `lineage_id` as the fold key while the local corpus reused the same `code_hash` across the three runs. Identical reward code therefore appeared in both train and test folds, inflating apparent ranking skill. Gen-1/2 labels are also selection-biased (active filter). Treat the numeric table below as a locked historical record of the pre-registered FAIL decision, **not** as evidence for surrogate quality. See Phase 6b/6c diagnostics for corrected exploratory analyses. The **allowed claim** previously stated here is **removed**.
 
 Pre-registration: `docs/prereg/gate2.md` (committed before this analysis).  
 Analysis: `scripts/run_gate2_analysis.py` → `experiments/gate2_2d/`, `results/gate2_2d/`.
@@ -12,11 +15,10 @@ Analysis: `scripts/run_gate2_analysis.py` → `experiments/gate2_2d/`, `results/
 - **Threshold 3 fail:** Δrecall vs random mean CI **includes 0** (lo = −0.075, hi = 0.675), even though the point Δ ≈ +0.26.
 - **Threshold 2 pass:** median `regret_at_k` = **0.000** (≤ 0.03).
 - **Threshold 4 pass:** formula `savings_frac` = **0.4475** (≥ 0.40) at early=12k / full=50k, k=5, N=16.
-- **Grouping:** **48** labeled lineages (≥ 20) → recall-level claims are allowed to be tested; not INCONCLUSIVE on sample size.
+- **Grouping:** **48** labeled lineages (≥ 20) → sample-size clause for confirmatory testing was met under the original protocol.
 - Strict within-lineage pools at N=16 are **impossible** (max lineage size = 15). Primary pools expand across lineages (same rule as Gate 1 family expansion).
 
-**Allowed claim:** on this campaign, the surrogate beats random on point-estimate pool recall, with near-zero median regret and early-feature step savings at the k=5 formula.  
-**Not allowed:** any recall≥0.80 claim, or that the surrogate statistically beats random under lineage bootstrap.
+**Not allowed:** any recall≥0.80 claim; any claim that the surrogate statistically beats random; any positive inference from the original Gate-2 point estimates given leakage.
 
 **Stop for human decision.** Do not start CrowdNav++ / IR-SIM / Gate 3 from this report without explicit go-ahead.
 

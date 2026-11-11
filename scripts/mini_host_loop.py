@@ -14,7 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from reward_triage.gate2_harness import seeds_for_run  # noqa: E402
 from reward_triage.host_loop import LoopConfig, run_loop  # noqa: E402
+from reward_triage.label_cache import LabelCache  # noqa: E402
 from reward_triage.labeling import load_default_configs  # noqa: E402
 from reward_triage.llm_client import make_llm_client  # noqa: E402
 from reward_triage.model import SurrogateModel  # noqa: E402
@@ -79,6 +81,16 @@ def main() -> int:
         help="Adapt only on this run's labels (no phase1_108 prior blend)",
     )
     p.add_argument(
+        "--no-label-cache",
+        action="store_true",
+        help="Disable code_hash label cache (always retrain)",
+    )
+    p.add_argument(
+        "--fixed-seeds",
+        action="store_true",
+        help="Use config seeds [0,1,2] instead of run_id-derived seeds",
+    )
+    p.add_argument(
         "--print-real-ppo-cmd",
         action="store_true",
         help="Print pilot commands and exit",
@@ -132,7 +144,11 @@ def main() -> int:
             args.n_generations if args.n_generations is not None else cfg_raw.get("n_generations", 3)
         ),
         n_seeds=int(cfg_raw.get("n_seeds", 3)),
-        seeds=tuple(int(s) for s in (cfg_raw.get("seeds") or [0, 1, 2])),
+        seeds=(
+            tuple(int(s) for s in (cfg_raw.get("seeds") or [0, 1, 2]))
+            if args.fixed_seeds
+            else seeds_for_run(run_id, n_seeds=int(cfg_raw.get("n_seeds", 3)))
+        ),
         mode=_coerce_mode(args.mode if args.mode is not None else cfg_raw.get("mode", "off")),
         m_min=int(args.m_min if args.m_min is not None else cfg_raw.get("m_min", 24)),
         k_frac=float(cfg_raw.get("k_frac", 0.5)),
@@ -152,6 +168,12 @@ def main() -> int:
         surrogate=surrogate,
         auto_adapt=not args.no_adapt,
         adapt_use_prior=not args.no_adapt_prior,
+        label_cache=(
+            None
+            if args.no_label_cache
+            else LabelCache(ROOT / "experiments" / "_label_cache")
+        ),
+        use_run_id_seeds=not args.fixed_seeds,
     )
 
     client = make_llm_client(provider, model)

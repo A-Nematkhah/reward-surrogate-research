@@ -1,0 +1,6 @@
+{
+  "n_labeled_rows": 102,
+  "n_unique_code_hash": 69,
+  "n_hashes_with_multi_rows": 17,
+  "EXPLORATORY_NOTE": "Gate2 lineage-only folds allowed same code_hash in train and test across runs"
+}
